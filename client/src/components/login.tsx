@@ -1,9 +1,9 @@
 import { FunctionComponent, h } from 'preact';
 import { route } from 'preact-router';
 import { useCallback, useEffect, useState } from 'preact/hooks';
+import ROUTES from '../constants/routes';
 import useLogin, { InvalidCredentialsError } from '../hooks/use-login';
 import * as datum from '../utils/datum';
-import { ROUTES } from './router';
 
 const handleInput = (handler: (value: string) => void) => (event: Event) => {
   event.preventDefault();
@@ -35,7 +35,7 @@ const Login: FunctionComponent = () => {
     <>
       <form onSubmit={handleSubmit}>
         <label htmlFor='username'>
-        Username
+          Username
           <input
             id='username'
             type='text'
@@ -45,7 +45,7 @@ const Login: FunctionComponent = () => {
           />
         </label>
         <label htmlFor='password'>
-        Password
+          Password
           <input
             id='password'
             type='password'

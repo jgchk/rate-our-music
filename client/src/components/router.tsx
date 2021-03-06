@@ -1,13 +1,9 @@
 import { FunctionComponent, h } from 'preact';
 import PreactRouter from 'preact-router';
+import ROUTES from '../constants/routes';
 import Home from './home';
 import Login from './login';
 import NotFound from './not-found';
-
-export const ROUTES = {
-  home: '/',
-  login: '/login',
-} as const;
 
 const Router: FunctionComponent = () => (
   <PreactRouter>
