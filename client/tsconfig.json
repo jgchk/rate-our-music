@@ -7,6 +7,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "noUncheckedIndexedAccess": true,
-    "plugins": [{ "name": "typescript-eslint-language-service" }]
-  }
+    "plugins": [{ "name": "typescript-eslint-language-service" }],
+  },
 }

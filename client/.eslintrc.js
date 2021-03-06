@@ -1,38 +1,48 @@
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: "./tsconfig.json",
+    project: './tsconfig.json',
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ['@typescript-eslint'],
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:unicorn/recommended",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:unicorn/recommended',
   ],
   settings: {
     react: {
-      pragma: "h",
-      version: "16.0",
+      pragma: 'h',
+      version: '16.0',
     },
   },
   env: {
     browser: true,
   },
   rules: {
-    "import/no-default-export": "error",
-    "import/order": [
-      "warn",
-      { alphabetize: { order: "asc", caseInsensitive: true } },
+    // formatting
+    'quotes': ['warn', 'single'],
+    'semi': ['warn', 'always'],
+    'comma-dangle': ['warn', 'always'],
+
+    // imports
+    'import/order': [
+      'warn',
+      { alphabetize: { order: 'asc', caseInsensitive: true } },
     ],
-    "sort-imports": ["warn", { ignoreDeclarationSort: true }],
-    "react/prop-types": "off",
+    'sort-imports': ['warn', { ignoreDeclarationSort: true }],
+
+    // react
+    'react/prop-types': 'off',
+
+    // misc
+    'unicorn/prevent-abbreviations': 'off',
   },
 };
