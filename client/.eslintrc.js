@@ -31,13 +31,19 @@ module.exports = {
     'quotes': ['warn', 'single'],
     'semi': ['warn', 'always'],
     'comma-dangle': ['warn', 'always'],
+    'eol-last': ['warn', 'always'],
+    'no-multiple-empty-lines': ['warn', { max: 2, maxEOF: 0 }],
+    'no-trailing-spaces': 'warn',
 
     // imports
     'import/order': [
       'warn',
       { alphabetize: { order: 'asc', caseInsensitive: true } },
     ],
-    'sort-imports': ['warn', { ignoreDeclarationSort: true }],
+    'sort-imports': [
+      'warn',
+      { ignoreDeclarationSort: true },
+    ],
 
     // react
     'react/prop-types': 'off',
