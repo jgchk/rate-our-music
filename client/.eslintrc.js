@@ -30,7 +30,7 @@ module.exports = {
     // formatting
     'quotes': ['warn', 'single'],
     'semi': ['warn', 'always'],
-    'comma-dangle': ['warn', 'always'],
+    'comma-dangle': ['warn', 'always-multiline'],
     'eol-last': ['warn', 'always'],
     'no-multiple-empty-lines': ['warn', { max: 2, maxEOF: 0 }],
     'no-trailing-spaces': 'warn',

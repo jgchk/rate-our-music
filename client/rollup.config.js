@@ -18,7 +18,7 @@ export default {
     nodeResolve(),
     typescript(),
     html(),
-    del({ targets: OUTPUT_DIR, },),
-    dev(OUTPUT_DIR,),
+    del({ targets: OUTPUT_DIR }),
+    dev(OUTPUT_DIR),
   ],
 };

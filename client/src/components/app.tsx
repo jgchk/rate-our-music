@@ -1,4 +1,4 @@
-import { FunctionComponent, h, } from 'preact';
+import { FunctionComponent, h } from 'preact';
 
 const App: FunctionComponent = () => <div>Hello world!</div>;
 
