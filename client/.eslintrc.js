@@ -15,6 +15,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
     'plugin:unicorn/recommended',
   ],
   settings: {
