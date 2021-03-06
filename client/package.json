@@ -4,6 +4,9 @@
     "dev": "NODE_ENV=development rollup -c -w",
     "prod": "NODE_ENV=production rollup -c"
   },
+  "dependencies": {
+    "preact": "^10.5.12"
+  },
   "devDependencies": {
     "@rollup/plugin-html": "^0.2.3",
     "@rollup/plugin-node-resolve": "^11.2.0",
@@ -25,8 +28,5 @@
     "tslib": "^2.1.0",
     "typescript": "^4.2.3",
     "typescript-eslint-language-service": "^4.1.3"
-  },
-  "dependencies": {
-    "preact": "^10.5.12"
   }
 }
