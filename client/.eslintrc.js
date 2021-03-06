@@ -34,6 +34,7 @@ module.exports = {
     'quotes': ['warn', 'single'],
     'semi': ['warn', 'always'],
     'comma-dangle': ['warn', 'always-multiline'],
+    'object-curly-spacing': ['warn', 'always'],
     'eol-last': ['warn', 'always'],
     'no-multiple-empty-lines': ['warn', { max: 2, maxEOF: 0 }],
     'no-trailing-spaces': 'warn',

@@ -40,7 +40,9 @@ impl AccountMutation {
             None => return Err(errors::Error::InvalidCredentials.into()),
         };
         let jwt = auth::create_token(env, account.id)?;
+
         ctx.insert_http_header(http::header::SET_COOKIE, format!("jwt={}", jwt));
+
         Ok(Auth {
             token: jwt,
             account,
