@@ -1,7 +1,9 @@
 import { FunctionComponent, h } from 'preact';
+import { route } from 'preact-router';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import useLogin, { InvalidCredentialsError } from '../hooks/use-login';
 import * as datum from '../utils/datum';
+import { ROUTES } from './router';
 
 const handleInput = (handler: (value: string) => void) => (event: Event) => {
   event.preventDefault();
@@ -23,7 +25,7 @@ const Login: FunctionComponent = () => {
 
   useEffect(() => {
     if (datum.isComplete(state)) {
-      console.log('logged in!');
+      route(ROUTES.home);
     } else if (datum.isFailed(state) && !(state.error instanceof InvalidCredentialsError)) {
       console.error(state);
     }

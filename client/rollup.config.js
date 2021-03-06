@@ -1,3 +1,4 @@
+import path from 'path';
 import process from 'process';
 import alias from '@rollup/plugin-alias';
 import resolve from '@rollup/plugin-node-resolve';
@@ -29,7 +30,14 @@ export default {
     commonjs(),
     typescript(),
     del({ targets: OUTPUT_DIR }),
-    ...IS_DEV ? [html(), dev({ dirs: [OUTPUT_DIR], proxy: { '/graphql': 'http://localhost:3030/graphql' } })] : [],
+    ...IS_DEV ? [
+      html(),
+      dev({
+        dirs: [OUTPUT_DIR],
+        spa: path.join(OUTPUT_DIR, 'index.html'),
+        proxy: { '/graphql': 'http://localhost:3030/graphql' },
+      })
+    ] : [],
     ...IS_PROD ? [terser()] : [],
   ],
 };

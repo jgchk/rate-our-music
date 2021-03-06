@@ -1,12 +1,12 @@
 import { ClientContext, GraphQLClient } from 'graphql-hooks';
 import { FunctionComponent, h } from 'preact';
-import Login from './login';
+import Router from './router';
 
 const client = new GraphQLClient({ url: '/graphql' });
 
 const App: FunctionComponent = () => (
   <ClientContext.Provider value={client}>
-    <Login />
+    <Router />
   </ClientContext.Provider>
 );
 

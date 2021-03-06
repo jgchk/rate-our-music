@@ -54,6 +54,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-unicorn", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:28.0.2"],
             ["graphql-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1"],
             ["preact", "npm:10.5.12"],
+            ["preact-router", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1"],
             ["rollup", "npm:2.40.0"],
             ["rollup-plugin-delete", "npm:2.0.0"],
             ["rollup-plugin-dev", "npm:1.1.3"],
@@ -4217,6 +4218,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["preact-router", [
+        ["npm:3.2.1", {
+          "packageLocation": "./.yarn/cache/preact-router-npm-3.2.1-202bf64360-dd20166e47.zip/node_modules/preact-router/",
+          "packageDependencies": [
+            ["preact-router", "npm:3.2.1"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1", {
+          "packageLocation": "./.yarn/$$virtual/preact-router-virtual-0f3717b7a9/0/cache/preact-router-npm-3.2.1-202bf64360-dd20166e47.zip/node_modules/preact-router/",
+          "packageDependencies": [
+            ["preact-router", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1"],
+            ["@types/preact", null],
+            ["preact", "npm:10.5.12"]
+          ],
+          "packagePeers": [
+            "@types/preact",
+            "preact"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["prelude-ls", [
         ["npm:1.2.1", {
           "packageLocation": "./.yarn/cache/prelude-ls-npm-1.2.1-3e4d272a55-bc1649f521.zip/node_modules/prelude-ls/",
@@ -4324,6 +4347,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-unicorn", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:28.0.2"],
             ["graphql-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1"],
             ["preact", "npm:10.5.12"],
+            ["preact-router", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1"],
             ["rollup", "npm:2.40.0"],
             ["rollup-plugin-delete", "npm:2.0.0"],
             ["rollup-plugin-dev", "npm:1.1.3"],

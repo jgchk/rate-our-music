@@ -3432,6 +3432,15 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"preact-router@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "preact-router@npm:3.2.1"
+  peerDependencies:
+    preact: ">=10"
+  checksum: dd20166e47d3948e12804297e76c36fac6db294e709a97ed52e5cc8f224c28e2bba55d5f4ce9d5945449d2f1ea4d0fe4e6210e117e63839031705be27403023b
+  languageName: node
+  linkType: hard
+
 "preact@npm:^10.5.12":
   version: 10.5.12
   resolution: "preact@npm:10.5.12"
@@ -3529,6 +3538,7 @@ fsevents@~2.3.1:
     eslint-plugin-unicorn: ^28.0.2
     graphql-hooks: ^5.1.1
     preact: ^10.5.12
+    preact-router: ^3.2.1
     rollup: ^2.40.0
     rollup-plugin-delete: ^2.0.0
     rollup-plugin-dev: ^1.1.3
