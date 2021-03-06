@@ -1,5 +1,6 @@
 import { FunctionComponent, h } from 'preact';
+import Login from './login';
 
-const App: FunctionComponent = () => <div>Hello world!</div>;
+const App: FunctionComponent = () => <Login />;
 
 export default App;

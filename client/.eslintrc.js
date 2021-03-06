@@ -28,6 +28,8 @@ module.exports = {
   },
   rules: {
     // formatting
+    'indent': ['warn', 2],
+    'max-len': ['warn', 120],
     'quotes': ['warn', 'single'],
     'semi': ['warn', 'always'],
     'comma-dangle': ['warn', 'always-multiline'],
