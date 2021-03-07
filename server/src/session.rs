@@ -13,7 +13,7 @@ pub struct Session {
 
 impl Session {
     pub async fn new(env: Environment, raw_jwt: &str) -> Result<Option<Self>, Error> {
-        let raw_jwt = raw_jwt.to_owned();
+        let raw_jwt = raw_jwt.trim_start_matches("Bearer ").to_owned();
         let jwt = match env.jwt().decode(&raw_jwt) {
             Ok(jwt) => jwt,
             Err(err) => match err {

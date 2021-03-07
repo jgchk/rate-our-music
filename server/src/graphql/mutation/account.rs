@@ -2,7 +2,6 @@ use crate::auth;
 use crate::errors;
 use crate::model::account::Auth;
 use async_graphql::*;
-use warp::http;
 
 #[derive(Default)]
 pub struct AccountMutation;
@@ -19,8 +18,6 @@ impl AccountMutation {
         let id = env.db().account().create(&username, &password).await?;
         let account = env.db().account().get(id).await?;
         let jwt = auth::create_token(env, account.id)?;
-
-        ctx.insert_http_header(http::header::SET_COOKIE, format!("jwt={}", jwt));
 
         Ok(Auth {
             token: jwt,
@@ -40,8 +37,6 @@ impl AccountMutation {
             None => return Err(errors::Error::InvalidCredentials.into()),
         };
         let jwt = auth::create_token(env, account.id)?;
-
-        ctx.insert_http_header(http::header::SET_COOKIE, format!("jwt={}", jwt));
 
         Ok(Auth {
             token: jwt,
@@ -65,7 +60,6 @@ impl AccountMutation {
                 let env = ctx.data::<crate::graphql::Context>()?;
                 let account = env.db().account().get(session.user_id()).await?;
                 let jwt = auth::create_token(env, account.id)?;
-                ctx.insert_http_header(http::header::SET_COOKIE, format!("jwt={}", jwt));
                 Ok(Auth {
                     token: jwt,
                     account,

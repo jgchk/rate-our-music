@@ -5,7 +5,6 @@
     "prod": "NODE_ENV=production rollup -c"
   },
   "dependencies": {
-    "graphql-hooks": "^5.1.1",
     "preact": "^10.5.12",
     "preact-router": "^3.2.1"
   },

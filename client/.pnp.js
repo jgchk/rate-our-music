@@ -52,7 +52,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:7.22.0"],
             ["eslint-plugin-react-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.0"],
             ["eslint-plugin-unicorn", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:28.0.2"],
-            ["graphql-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1"],
             ["preact", "npm:10.5.12"],
             ["preact-router", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1"],
             ["rollup", "npm:2.40.0"],
@@ -1773,15 +1772,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["dequal", [
-        ["npm:2.0.2", {
-          "packageLocation": "./.yarn/cache/dequal-npm-2.0.2-370927eb6c-3b5b019a87.zip/node_modules/dequal/",
-          "packageDependencies": [
-            ["dequal", "npm:2.0.2"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["destroy", [
         ["npm:1.0.4", {
           "packageLocation": "./.yarn/cache/destroy-npm-1.0.4-a2203e01cb-5a516fc5a8.zip/node_modules/destroy/",
@@ -2374,15 +2364,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["extract-files", [
-        ["npm:9.0.0", {
-          "packageLocation": "./.yarn/cache/extract-files-npm-9.0.0-6ee13e6aab-021b107877.zip/node_modules/extract-files/",
-          "packageDependencies": [
-            ["extract-files", "npm:9.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["extsprintf", [
         ["npm:1.3.0", {
           "packageLocation": "./.yarn/cache/extsprintf-npm-1.3.0-61a92b324c-892efd56aa.zip/node_modules/extsprintf/",
@@ -2721,30 +2702,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/graceful-fs-npm-4.2.6-535b2234f1-84d39c7756.zip/node_modules/graceful-fs/",
           "packageDependencies": [
             ["graceful-fs", "npm:4.2.6"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["graphql-hooks", [
-        ["npm:5.1.1", {
-          "packageLocation": "./.yarn/cache/graphql-hooks-npm-5.1.1-b58943726d-4d615236e2.zip/node_modules/graphql-hooks/",
-          "packageDependencies": [
-            ["graphql-hooks", "npm:5.1.1"]
-          ],
-          "linkType": "SOFT",
-        }],
-        ["virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1", {
-          "packageLocation": "./.yarn/$$virtual/graphql-hooks-virtual-f66aa3209b/0/cache/graphql-hooks-npm-5.1.1-b58943726d-4d615236e2.zip/node_modules/graphql-hooks/",
-          "packageDependencies": [
-            ["graphql-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1"],
-            ["@types/react", null],
-            ["dequal", "npm:2.0.2"],
-            ["extract-files", "npm:9.0.0"],
-            ["react", null]
-          ],
-          "packagePeers": [
-            "@types/react",
-            "react"
           ],
           "linkType": "HARD",
         }]
@@ -4345,7 +4302,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:7.22.0"],
             ["eslint-plugin-react-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.0"],
             ["eslint-plugin-unicorn", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:28.0.2"],
-            ["graphql-hooks", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:5.1.1"],
             ["preact", "npm:10.5.12"],
             ["preact-router", "virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.2.1"],
             ["rollup", "npm:2.40.0"],

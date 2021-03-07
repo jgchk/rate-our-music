@@ -1,16 +1,14 @@
-import { ClientContext, GraphQLClient } from 'graphql-hooks';
 import { FunctionComponent, h } from 'preact';
+import { SessionProvider } from '../contexts/session';
 import Layout from './layout';
 import Router from './router';
 
-const client = new GraphQLClient({ url: '/graphql' });
-
 const App: FunctionComponent = () => (
-  <ClientContext.Provider value={client}>
+  <SessionProvider>
     <Layout>
       <Router />
     </Layout>
-  </ClientContext.Provider>
+  </SessionProvider>
 );
 
 export default App;

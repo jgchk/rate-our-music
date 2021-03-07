@@ -2,8 +2,9 @@ import { FunctionComponent, h } from 'preact';
 import { route } from 'preact-router';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import ROUTES from '../constants/routes';
-import useLogin, { InvalidCredentialsError } from '../hooks/use-login';
-import * as datum from '../utils/datum';
+import { LoggedOut, useSession } from '../contexts/session';
+import { isFailed, isLoading, isSuccess } from '../utils/datum';
+import { InvalidCredentialsError } from '../utils/errors';
 
 const handleInput = (handler: (value: string) => void) => (event: Event) => {
   event.preventDefault();
@@ -12,24 +13,19 @@ const handleInput = (handler: (value: string) => void) => (event: Event) => {
   }
 };
 
-const Login: FunctionComponent = () => {
+const Login: FunctionComponent<{ session: LoggedOut }> = ({ session }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [login, state] = useLogin();
-
   const handleSubmit = useCallback((event: Event) => {
     event.preventDefault();
-    void login(username, password);
-  }, [login, password, username]);
+    void session.login(username, password);
+  }, [password, session, username]);
 
   useEffect(() => {
-    if (datum.isComplete(state)) {
+    if (isSuccess(session.state))
       route(ROUTES.home);
-    } else if (datum.isFailed(state) && !(state.error instanceof InvalidCredentialsError)) {
-      console.error(state);
-    }
-  }, [state]);
+  }, [session.state]);
 
   return (
     <>
@@ -56,10 +52,22 @@ const Login: FunctionComponent = () => {
         </label>
         <input type='submit' value='Login' />
       </form>
-      { datum.isLoading(state) && <div>Loading...</div> }
-      { datum.isFailed(state) && state.error instanceof InvalidCredentialsError && <div>Invalid credentials</div> }
+      { isLoading(session.state) && <div>Loading...</div> }
+      { isFailed(session.state) && session.state.error instanceof InvalidCredentialsError
+        && <div>Invalid credentials</div> }
     </>
   );
 };
 
-export default Login;
+const LoginWrapper: FunctionComponent = () => {
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.type === 'logged in')
+      route(ROUTES.home);
+  }, [session.type]);
+
+  return session.type === 'logged in' ? null : <Login session={session} />;
+};
+
+export default LoginWrapper;

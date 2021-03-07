@@ -29,8 +29,6 @@ async fn main() -> Result<(), Error> {
 
     let graphql = {
         let auth = warp::header("authorization")
-            .or(warp::cookie("jwt"))
-            .unify()
             .map(Some)
             .or(warp::any().map(|| None))
             .unify();

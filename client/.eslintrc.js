@@ -52,7 +52,12 @@ module.exports = {
     // react
     'react/prop-types': 'off',
 
-    // misc
+    // unicorn
     'unicorn/prevent-abbreviations': 'off',
+    'unicorn/no-useless-undefined': 'off',
+    'unicorn/no-null': 'off',
+
+    // misc
+    '@typescript-eslint/explicit-module-boundary-types': 'off'
   },
 };
