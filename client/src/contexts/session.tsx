@@ -1,27 +1,30 @@
 import { FunctionComponent, createContext, h } from 'preact';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { LoginResponse, useLogin } from '../graphql/login';
-import { LogoutResponse, useLogout } from '../graphql/logout';
+import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useLogin } from '../graphql/login';
+import { useLogout } from '../graphql/logout';
 import { useRefresh } from '../graphql/refresh';
 import useContext from '../hooks/use-context';
-import { Datum, isFailed, isSuccess } from '../utils/datum';
+import { isFailed, isSuccess } from '../utils/datum';
 import { GraphQLError, InvalidCredentialsError } from '../utils/errors';
 
 const LOGOUT_KEY = 'logout';
 
-export type Session = LoggingIn | LoginFailed | LoggedIn | LoggingOut | LoggedOut
+export type Session = Initial | LoggingIn | LoginFailed | LoggedIn | LoggingOut | LoggedOut
+export type Initial = { type: 'initial' }
 export type LoggingIn = { type: 'logging in' }
 export type LoginFailed = { type: 'login failed', error: InvalidCredentialsError | GraphQLError[] }
 export type LoggedIn = { type: 'logged in' } & Auth
 export type LoggingOut = { type: 'logging out' } & Auth
 export type LoggedOut = { type: 'logged out' }
 
+const initial: Initial = { type: 'initial' };
 const loggingIn: LoggingIn = { type: 'logging in' };
 const loginFailed = (error: InvalidCredentialsError | GraphQLError[]): LoginFailed => ({ type: 'login failed', error });
 const loggedIn = (auth: Auth): LoggedIn => ({ ...auth, type: 'logged in' });
 const loggingOut = (auth: Auth): LoggingOut => ({ ...auth, type: 'logging out' });
 const loggedOut: LoggedOut = { type: 'logged out' };
 
+export const isInitial = (session: Session): session is Initial => session.type === 'initial';
 export const isLoggingIn = (session: Session): session is LoggingIn => session.type === 'logging in';
 export const isLoginFailed = (session: Session): session is LoginFailed => session.type === 'login failed';
 export const isLoggedIn = (session: Session): session is LoggedIn => session.type === 'logged in';
@@ -47,9 +50,9 @@ const SessionContext = createContext<SessionContext | undefined>(undefined);
 export const SessionProvider: FunctionComponent = ({ children }) => {
   const [login_] = useLogin();
   const [logout_] = useLogout();
-  const [refresh] = useRefresh();
+  const [refresh_] = useRefresh();
 
-  const [session, setSession] = useState<Session>(loggedOut);
+  const [session, setSession] = useState<Session>(initial);
 
   const login = useCallback(async (username: string, password: string) => {
     setSession(loggingIn);
@@ -71,6 +74,15 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
     window.localStorage.setItem(LOGOUT_KEY, new Date().toUTCString());
   }, [logout_, session]);
 
+  const refresh = useCallback(async () => {
+    const response = await refresh_();
+    if (isSuccess(response)) {
+      setSession(loggedIn(response.data.refreshAuth));
+    } else if (isFailed(response)) {
+      setSession(loggedOut);
+    }
+  }, [refresh_]);
+
   // auto logout if we log out on another tab
   useEffect(() => {
     const listener = (event: StorageEvent) => {
@@ -81,19 +93,17 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
     return () => window.removeEventListener('storage', listener);
   }, [logout_]);
 
+  // auto refresh token when it expires
   useEffect(() => {
     if (isLoggedIn(session)) {
       const timeTillExpiration = session.exp * 1000 - Date.now();
-      const re = async () => {
-        const result = await refresh();
-        if (isSuccess(result)) {
-          setSession(loggedIn(result.data.refreshAuth));
-        }
-      };
-      const timeout = setTimeout(() => void re(), timeTillExpiration);
+      const timeout = setTimeout(() => void refresh(), timeTillExpiration);
       return () => clearTimeout(timeout);
     }
   }, [refresh, session]);
+
+  // attempt to refresh token on page load
+  useEffect(() => void refresh(), [refresh]);
 
   return (
     <SessionContext.Provider value={{ session, login, logout }}>

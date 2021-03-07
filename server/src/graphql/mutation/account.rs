@@ -53,6 +53,14 @@ impl AccountMutation {
     }
 
     async fn logout(&self, ctx: &Context<'_>) -> Result<bool> {
+        if let Some(refresh_session) = ctx.data::<crate::graphql::Context>()?.refresh_session() {
+            refresh_session.invalidate().await?;
+            ctx.append_http_header(
+                http::header::SET_COOKIE,
+                "refresh_token=; expires=expires=Thu, 01 Jan 1970 00:00:00 GMT".to_string(),
+            );
+        }
+
         match ctx.data::<crate::graphql::Context>()?.session() {
             Some(session) => {
                 session.invalidate().await?;

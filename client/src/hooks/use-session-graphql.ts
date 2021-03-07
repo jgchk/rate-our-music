@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { isLoggedIn, useSession } from '../contexts/session';
 import { QueryOptions } from '../graphql';
 import { isFailed } from '../utils/datum';
@@ -21,12 +21,14 @@ const useSessionGraphQL = <R, V extends Record<string, string> = Record<string, 
   }), [headers, options]);
   const [call, state, reset] = useGraphQL<R, V>(query, mergedOptions);
 
-  useEffect(() => {
-    if (isFailed(state) && state.error instanceof InvalidCredentialsError)
+  const callWrapper = useCallback(async (innerOptions?: QueryOptions<V>) => {
+    const response = await call(innerOptions);
+    if (isFailed(response) && response.error instanceof InvalidCredentialsError)
       void logout();
-  }, [logout, session, state]);
+    return response;
+  }, [call, logout]);
 
-  return [call, state, reset] as const;
+  return [callWrapper, state, reset] as const;
 };
 
 export default useSessionGraphQL;
