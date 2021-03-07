@@ -1,10 +1,12 @@
 import { FunctionComponent, createContext, h } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { LoginResponse, useLogin } from '../graphql/login';
 import { LogoutResponse, useLogout } from '../graphql/logout';
 import useContext from '../hooks/use-context';
 import { Datum, isSuccess } from '../utils/datum';
 import { GraphQLError, InvalidCredentialsError } from '../utils/errors';
+
+const LOGOUT_KEY = 'logout';
 
 export type Session = LoggedIn | LoggedOut
 export type WithState<T, D> = T & { state: Datum<D, InvalidCredentialsError | GraphQLError[]>}
@@ -42,6 +44,8 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
         account,
         logout: async () => {
           await logout({ headers: { Authorization: `Bearer ${token}` } });
+          // trigger logout on other tabs
+          window.localStorage.setItem(LOGOUT_KEY, new Date().toUTCString());
           resetLogin();
         },
         state: logoutState,
@@ -56,6 +60,17 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
       };
     }
   }, [login, loginState, logout, logoutState, resetLogin]);
+
+  // auto logout if we log out on another tab
+  useEffect(() => {
+    const listener = (event: StorageEvent) => {
+      if (event.key === LOGOUT_KEY && isLoggedIn(session)) {
+        session.logout();
+      }
+    };
+    window.addEventListener('storage', listener);
+    return () => window.removeEventListener('storage', listener);
+  }, [session]);
 
   return (
     <SessionContext.Provider value={session}>
