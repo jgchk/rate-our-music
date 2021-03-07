@@ -13,6 +13,7 @@ const NavBar: FunctionComponent = () => {
         <>
           <div>{session.account.username}</div>
           <button onClick={() => void logout()}>Logout</button>
+          <button onClick={() => void logout({ force: true })}>Force Logout</button>
         </>
       )}
       {isLoggedOut(session) && <NavLink to={ROUTES.login}>Login</NavLink>}

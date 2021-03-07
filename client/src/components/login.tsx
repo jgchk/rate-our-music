@@ -19,7 +19,7 @@ const Login: FunctionComponent = () => {
   const { session, login } = useSession();
   const handleSubmit = useCallback(async (event: Event) => {
     event.preventDefault();
-    await login(username, password);
+    await login({ username, password });
   }, [login, password, username]);
 
   if (isLoggedIn(session))

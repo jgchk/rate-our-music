@@ -5,9 +5,11 @@ type GraphQLResponse<R> = {
   errors?: GraphQLError[]
 }
 
-export type QueryOptions<V extends Record<string, string>> = { variables?: V } & Omit<RequestInit, 'method' | 'body'>
+export type QueryVariables = Record<string, string | boolean>
+export type EmptyQueryVariables = Record<string, never>
+export type QueryOptions<V extends QueryVariables> = { variables?: V } & Omit<RequestInit, 'method' | 'body'>
 
-export const sendQuery = async <R, V extends Record<string, string> = Record<string, never>>(
+export const sendQuery = async <R, V extends QueryVariables = EmptyQueryVariables>(
   query: string, options?: QueryOptions<V>,
 ) => {
   const { headers, variables, ...requestOptions } = options ?? {};

@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { isLoggedIn, useSession } from '../contexts/session';
-import { QueryOptions } from '../graphql';
+import { EmptyQueryVariables, QueryOptions, QueryVariables } from '../graphql';
 import { isFailed } from '../utils/datum';
 import { InvalidCredentialsError } from '../utils/errors';
 import useGraphQL from './use-graphql';
 
-const useSessionGraphQL = <R, V extends Record<string, string> = Record<string, never>>(
+const useSessionGraphQL = <R, V extends QueryVariables = EmptyQueryVariables>(
   query: string, options?: QueryOptions<V>,
 ) => {
   const { session, logout } = useSession();

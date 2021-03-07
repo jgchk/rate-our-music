@@ -42,8 +42,8 @@ type Auth = {
 
 type SessionContext = {
   session: Session
-  login: (username: string, password: string) => Promise<void>
-  logout: () => Promise<void>
+  login: (params: { username: string, password: string }) => Promise<void>
+  logout: (params?: { force?: boolean }) => Promise<void>
 }
 const SessionContext = createContext<SessionContext | undefined>(undefined);
 
@@ -54,7 +54,7 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
 
   const [session, setSession] = useState<Session>(initial);
 
-  const login = useCallback(async (username: string, password: string) => {
+  const login = useCallback(async ({ username, password }: { username: string, password: string }) => {
     setSession(loggingIn);
     const response = await login_({ variables: { username, password } });
     if (isSuccess(response)) {
@@ -64,10 +64,13 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
     }
   }, [login_]);
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (params?: { force?: boolean }) => {
     if (isLoggedIn(session)) {
       setSession(loggingOut(session));
-      await logout_({ headers: { Authorization: `Bearer ${session.token}` } });
+      await logout_({
+        variables: { force: params?.force ?? false },
+        headers: { Authorization: `Bearer ${session.token}` },
+      });
     }
     setSession(loggedOut);
     // trigger logout on other tabs
@@ -91,7 +94,7 @@ export const SessionProvider: FunctionComponent = ({ children }) => {
     };
     window.addEventListener('storage', listener);
     return () => window.removeEventListener('storage', listener);
-  }, [logout_]);
+  }, []);
 
   // auto refresh token when it expires
   useEffect(() => {

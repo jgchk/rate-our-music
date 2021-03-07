@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'preact/hooks';
-import { QueryOptions, sendQuery } from '../graphql';
+import { EmptyQueryVariables, QueryOptions, QueryVariables, sendQuery } from '../graphql';
 import { Datum, failed, initial, loading, success } from '../utils/datum';
 import { GraphQLError, InvalidCredentialsError } from '../utils/errors';
 
 type GraphQLState<R> = Datum<R, InvalidCredentialsError | GraphQLError[]>
 
-const useGraphQL = <R, V extends Record<string, string> = Record<string, never>>(
+const useGraphQL = <R, V extends QueryVariables = EmptyQueryVariables>(
   query: string, options?: QueryOptions<V>,
 ) => {
   const [state, setState] = useState<GraphQLState<R>>(initial);
