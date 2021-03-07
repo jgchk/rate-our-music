@@ -7,7 +7,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import del from 'rollup-plugin-delete';
 import html from '@rollup/plugin-html';
-import dev from 'rollup-plugin-dev';
 import { terser } from 'rollup-plugin-terser';
 
 const OUTPUT_DIR = 'output';
@@ -35,14 +34,7 @@ export default {
     commonjs(),
     typescript(),
     del({ targets: OUTPUT_DIR }),
-    ...IS_DEV ? [
-      html(),
-      dev({
-        dirs: [OUTPUT_DIR],
-        spa: path.join(OUTPUT_DIR, 'index.html'),
-        proxy: { '/graphql': 'http://localhost:3030/graphql' },
-      })
-    ] : [],
+    html(),
     ...IS_PROD ? [terser()] : [],
   ],
 };

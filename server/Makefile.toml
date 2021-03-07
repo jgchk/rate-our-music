@@ -1,0 +1,14 @@
+[tasks.dev]
+command = "cargo"
+args = ["run"]
+watch = { watch = ["./src", "../client/output"] }
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.start]
+command = "target/release/rate-our-music"
+
+[tasks.prod]
+run_task = { name = ["build", "start"] }

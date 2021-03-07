@@ -1,9 +1,9 @@
+use chrono::Duration;
 use crate::auth;
 use crate::errors;
 use crate::model::account::Auth;
 use crate::Environment;
 use async_graphql::*;
-use std::time::Duration;
 use warp::http;
 
 #[derive(Default)]
@@ -89,23 +89,23 @@ impl AccountMutation {
     }
 }
 
-const EXPIRES_IN: Duration = Duration::from_secs(10);
-const REFRESH_EXPIRES_IN: Duration = Duration::from_secs(60 * 60);
 
-fn make_token(env: &Environment, id: i64) -> Result<(String, u64), Error> {
-    let (token, exp) = auth::create_token(env, id, EXPIRES_IN)?;
-    Ok((token, exp))
+fn make_token(env: &Environment, id: i64) -> Result<(String, i64), Error> {
+    let expires_in = Duration::seconds(10);
+    let (token, exp) = auth::create_token(env, id, expires_in)?;
+    Ok((token, exp.timestamp()))
 }
 
 fn make_refresh_token(
     env: &Environment,
     ctx: &Context<'_>,
     id: i64,
-) -> Result<(String, u64), Error> {
-    let (refresh_token, exp) = auth::create_token(env, id, REFRESH_EXPIRES_IN)?;
+) -> Result<(String, i64), Error> {
+    let expires_in = Duration::seconds(20);
+    let (refresh_token, exp) = auth::create_token(env, id, expires_in)?;
     ctx.append_http_header(
         http::header::SET_COOKIE,
-        format!("refresh_token={}; HttpOnly", refresh_token),
+        format!("refresh_token={}; Expires={}; HttpOnly", refresh_token, exp.format("%a, %d %b %Y %T %Z")),
     );
-    Ok((refresh_token, exp))
+    Ok((refresh_token, exp.timestamp()))
 }

@@ -10,7 +10,7 @@ edition = "2018"
 tokio = { version = "1", features = ["full"] }
 sqlx = { version = "0.5", features = ["runtime-tokio-rustls", "postgres", "macros", "migrate"] }
 redis = { version = "0.20", features = ["tokio-comp"] }
-warp = "0.3"
+warp = { version = "0.3", features=["tls"] }
 http-api-problem = { version = "0.21", features = ["warp"] }
 dotenv_codegen = "0.15"
 async-graphql = "2.5"
@@ -19,3 +19,4 @@ jsonwebtoken = "7.2"
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
 shrinkwraprs = "0.3"
+chrono = "0.4"
