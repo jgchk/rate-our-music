@@ -1,6 +1,7 @@
 import path from 'path';
 import process from 'process';
 import alias from '@rollup/plugin-alias';
+import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
@@ -25,6 +26,10 @@ export default {
         { find: 'react', replacement: 'preact/compat' },
         { find: 'react-dom', replacement: 'preact/compat' }
       ]
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      preventAssignment: true
     }),
     resolve(),
     commonjs(),

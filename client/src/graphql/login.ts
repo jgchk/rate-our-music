@@ -1,3 +1,5 @@
+import useGraphQL from '../hooks/use-graphql';
+
 export const LOGIN_MUTATION = `mutation Login($username: String, $password: String) {
   login(username: $username, password: $password) {
     token
@@ -22,3 +24,5 @@ export type LoginResponse = {
     }
   }
 }
+
+export const useLogin = () => useGraphQL<LoginResponse, LoginVariables>(LOGIN_MUTATION);

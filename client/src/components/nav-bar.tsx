@@ -1,21 +1,21 @@
 import { FunctionComponent, h } from 'preact';
-import { Link } from 'preact-router/match';
+import { NavLink } from 'react-router-dom';
 import ROUTES from '../constants/routes';
-import { useSession } from '../contexts/session';
+import { isLoggedIn, isLoggedOut, useSession } from '../contexts/session';
 
 const NavBar: FunctionComponent = () => {
   const session = useSession();
 
   return (
     <nav>
-      <Link href={ROUTES.home}>Home</Link>
-      {session.type === 'logged in' && (
+      <NavLink to={ROUTES.home}>Home</NavLink>
+      {isLoggedIn(session) && (
         <>
           <div>{session.account.username}</div>
           <button onClick={() => session.logout()}>Logout</button>
         </>
       )}
-      {session.type === 'logged out' && <Link href={ROUTES.login}>Login</Link>}
+      {isLoggedOut(session) && <NavLink to={ROUTES.login}>Login</NavLink>}
     </nav>
   );
 };

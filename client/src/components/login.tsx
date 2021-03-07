@@ -1,9 +1,9 @@
 import { FunctionComponent, h } from 'preact';
-import { route } from 'preact-router';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
+import { Redirect } from 'react-router-dom';
 import ROUTES from '../constants/routes';
-import { LoggedOut, useSession } from '../contexts/session';
-import { isFailed, isLoading, isSuccess } from '../utils/datum';
+import { LoggedOut, isLoggedIn, useSession } from '../contexts/session';
+import { isFailed, isLoading } from '../utils/datum';
 import { InvalidCredentialsError } from '../utils/errors';
 
 const handleInput = (handler: (value: string) => void) => (event: Event) => {
@@ -21,11 +21,6 @@ const Login: FunctionComponent<{ session: LoggedOut }> = ({ session }) => {
     event.preventDefault();
     void session.login(username, password);
   }, [password, session, username]);
-
-  useEffect(() => {
-    if (isSuccess(session.state))
-      route(ROUTES.home);
-  }, [session.state]);
 
   return (
     <>
@@ -61,13 +56,9 @@ const Login: FunctionComponent<{ session: LoggedOut }> = ({ session }) => {
 
 const LoginWrapper: FunctionComponent = () => {
   const session = useSession();
-
-  useEffect(() => {
-    if (session.type === 'logged in')
-      route(ROUTES.home);
-  }, [session.type]);
-
-  return session.type === 'logged in' ? null : <Login session={session} />;
+  return isLoggedIn(session)
+    ? <Redirect to={ROUTES.account.replace(':id', session.account.id.toString())} />
+    : <Login session={session} />;
 };
 
 export default LoginWrapper;

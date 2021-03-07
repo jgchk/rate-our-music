@@ -5,14 +5,16 @@
     "prod": "NODE_ENV=production rollup -c"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.1.7",
     "preact": "^10.5.12",
-    "preact-router": "^3.2.1"
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.2",
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-html": "^0.2.3",
     "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-replace": "^2.4.1",
     "@rollup/plugin-typescript": "^8.2.0",
     "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.16.1",

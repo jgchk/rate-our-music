@@ -1,10 +1,9 @@
 import { FunctionComponent, createContext, h } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { useQuery } from '../graphql';
-import { LOGIN_MUTATION, LoginResponse, LoginVariables } from '../graphql/login';
-import { LOGOUT_MUTATION, LogoutResponse, LogoutVariables } from '../graphql/logout';
+import { LoginResponse, useLogin } from '../graphql/login';
+import { LogoutResponse, useLogout } from '../graphql/logout';
 import useContext from '../hooks/use-context';
-import { Datum } from '../utils/datum';
+import { Datum, isSuccess } from '../utils/datum';
 import { GraphQLError, InvalidCredentialsError } from '../utils/errors';
 
 export type Session = LoggedIn | LoggedOut
@@ -25,14 +24,17 @@ type Account = {
   username: string
 }
 
+export const isLoggedIn = (session: Session): session is LoggedIn => session.type === 'logged in';
+export const isLoggedOut = (session: Session): session is LoggedOut => session.type === 'logged out';
+
 const SessionContext = createContext<Session | undefined>(undefined);
 
 export const SessionProvider: FunctionComponent = ({ children }) => {
-  const [login, loginState, resetLogin] = useQuery<LoginResponse, LoginVariables>(LOGIN_MUTATION);
-  const [logout, logoutState] = useQuery<LogoutResponse, LogoutVariables>(LOGOUT_MUTATION);
+  const [login, loginState, resetLogin] = useLogin();
+  const [logout, logoutState] = useLogout();
 
   const session: Session = useMemo(() => {
-    if (loginState.type === 'success') {
+    if (isSuccess(loginState)) {
       const { token, account } = loginState.data.login;
       return {
         type: 'logged in',
