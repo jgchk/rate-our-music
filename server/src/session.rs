@@ -7,36 +7,36 @@ use jsonwebtoken::TokenData;
 
 pub struct Session {
     env: Environment,
-    raw_jwt: String,
-    jwt: TokenData<auth::Claims>,
+    raw_token: String,
+    token: TokenData<auth::Claims>,
 }
 
 impl Session {
-    pub async fn new(env: Environment, raw_jwt: &str) -> Result<Option<Self>, Error> {
-        let raw_jwt = raw_jwt.trim_start_matches("Bearer ").to_owned();
-        let jwt = match env.jwt().decode(&raw_jwt) {
-            Ok(jwt) => jwt,
+    pub async fn new(env: Environment, raw_token: &str) -> Result<Option<Self>, Error> {
+        let raw_token = raw_token.trim_start_matches("Bearer ").to_owned();
+        let token = match env.jwt().decode(&raw_token) {
+            Ok(token) => token,
             Err(err) => match err {
                 Error::JWTError(_) => return Ok(None),
                 _ => return Err(err),
             },
         };
 
-        match is_token_revoked(&env, &raw_jwt).await? {
+        match is_token_revoked(&env, &raw_token).await? {
             true => Ok(None),
-            false => Ok(Some(Self { env, raw_jwt, jwt })),
+            false => Ok(Some(Self { env, raw_token, token })),
         }
     }
 
     pub fn user_id(&self) -> i64 {
-        self.jwt.claims.id
+        self.token.claims.id
     }
 
     pub async fn invalidate(&self) -> Result<(), Error> {
         revoke_token(
             &self.env,
-            &self.raw_jwt,
-            (self.jwt.claims.exp - self.jwt.claims.iat) as usize,
+            &self.raw_token,
+            (self.token.claims.exp - self.token.claims.iat) as usize,
         )
         .await
     }

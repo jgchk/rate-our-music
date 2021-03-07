@@ -1,7 +1,10 @@
 use crate::auth;
 use crate::errors;
 use crate::model::account::Auth;
+use crate::Environment;
 use async_graphql::*;
+use std::time::Duration;
+use warp::http;
 
 #[derive(Default)]
 pub struct AccountMutation;
@@ -17,10 +20,12 @@ impl AccountMutation {
         let env = ctx.data::<crate::graphql::Context>()?;
         let id = env.db().account().create(&username, &password).await?;
         let account = env.db().account().get(id).await?;
-        let jwt = auth::create_token(env, account.id)?;
+        let (token, exp) = make_token(env, account.id)?;
+        make_refresh_token(env, ctx, account.id)?;
 
         Ok(Auth {
-            token: jwt,
+            token,
+            exp,
             account,
         })
     }
@@ -36,10 +41,13 @@ impl AccountMutation {
             Some(user) => user,
             None => return Err(errors::Error::InvalidCredentials.into()),
         };
-        let jwt = auth::create_token(env, account.id)?;
+
+        let (token, exp) = make_token(env, account.id)?;
+        make_refresh_token(env, ctx, account.id)?;
 
         Ok(Auth {
-            token: jwt,
+            token,
+            exp,
             account,
         })
     }
@@ -55,17 +63,39 @@ impl AccountMutation {
     }
 
     async fn refresh_auth(&self, ctx: &Context<'_>) -> Result<Auth> {
-        match ctx.data::<crate::graphql::Context>()?.session() {
-            Some(session) => {
+        match ctx.data::<crate::graphql::Context>()?.refresh_session() {
+            Some(refresh_session) => {
                 let env = ctx.data::<crate::graphql::Context>()?;
-                let account = env.db().account().get(session.user_id()).await?;
-                let jwt = auth::create_token(env, account.id)?;
+                let account = env.db().account().get(refresh_session.user_id()).await?;
+                let (token, exp) = make_token(env, account.id)?;
                 Ok(Auth {
-                    token: jwt,
+                    token,
+                    exp,
                     account,
                 })
             }
-            None => Err(errors::Error::InvalidCredentials.into()),
+            None => Err(errors::Error::InvalidCredentials.into())
         }
     }
+}
+
+const EXPIRES_IN: Duration = Duration::from_secs(10);
+const REFRESH_EXPIRES_IN: Duration = Duration::from_secs(60 * 60);
+
+fn make_token(env: &Environment, id: i64) -> Result<(String, u64), Error> {
+    let (token, exp) = auth::create_token(env, id, EXPIRES_IN)?;
+    Ok((token, exp))
+}
+
+fn make_refresh_token(
+    env: &Environment,
+    ctx: &Context<'_>,
+    id: i64,
+) -> Result<(String, u64), Error> {
+    let (refresh_token, exp) = auth::create_token(env, id, REFRESH_EXPIRES_IN)?;
+    ctx.append_http_header(
+        http::header::SET_COOKIE,
+        format!("refresh_token={}; HttpOnly", refresh_token),
+    );
+    Ok((refresh_token, exp))
 }

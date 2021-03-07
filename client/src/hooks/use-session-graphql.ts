@@ -8,7 +8,7 @@ import useGraphQL from './use-graphql';
 const useSessionGraphQL = <R, V extends Record<string, string> = Record<string, never>>(
   query: string, options?: QueryOptions<V>,
 ) => {
-  const session = useSession();
+  const { session, logout } = useSession();
   const headers = useMemo(
     () => isLoggedIn(session)
       ? { Authorization: `Bearer ${session.token}` }
@@ -22,9 +22,9 @@ const useSessionGraphQL = <R, V extends Record<string, string> = Record<string, 
   const [call, state, reset] = useGraphQL<R, V>(query, mergedOptions);
 
   useEffect(() => {
-    if (isFailed(state) && state.error instanceof InvalidCredentialsError && isLoggedIn(session))
-      session.logout();
-  }, [session, state]);
+    if (isFailed(state) && state.error instanceof InvalidCredentialsError)
+      void logout();
+  }, [logout, session, state]);
 
   return [call, state, reset] as const;
 };

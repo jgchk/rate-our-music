@@ -4,7 +4,7 @@ import ROUTES from '../constants/routes';
 import { isLoggedIn, isLoggedOut, useSession } from '../contexts/session';
 
 const NavBar: FunctionComponent = () => {
-  const session = useSession();
+  const { session, logout } = useSession();
 
   return (
     <nav>
@@ -12,7 +12,7 @@ const NavBar: FunctionComponent = () => {
       {isLoggedIn(session) && (
         <>
           <div>{session.account.username}</div>
-          <button onClick={() => session.logout()}>Logout</button>
+          <button onClick={() => void logout()}>Logout</button>
         </>
       )}
       {isLoggedOut(session) && <NavLink to={ROUTES.login}>Login</NavLink>}

@@ -18,17 +18,18 @@ pub struct Claims {
     pub exp: u64,
 }
 
-pub fn create_token(env: &Environment, id: i64) -> Result<String, Error> {
+pub fn create_token(env: &Environment, id: i64, exp: Duration) -> Result<(String, u64), Error> {
     let start = SystemTime::now();
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards");
     let iat = since_the_epoch.as_secs();
     let exp = since_the_epoch
-        .checked_add(Duration::from_secs(10))
+        .checked_add(exp)
         .map_or(iat, |exp| exp.as_secs());
     let claims = Claims { id, iat, exp };
-    env.jwt().encode(&claims)
+    let token = env.jwt().encode(&claims)?;
+    Ok((token, exp))
 }
 
 pub async fn revoke_token(env: &Environment, token: &str, exp_seconds: usize) -> Result<(), Error> {

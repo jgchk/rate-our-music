@@ -2,8 +2,7 @@ import { FunctionComponent, h } from 'preact';
 import { useCallback, useState } from 'preact/hooks';
 import { Redirect } from 'react-router-dom';
 import ROUTES from '../constants/routes';
-import { LoggedOut, isLoggedIn, useSession } from '../contexts/session';
-import { isFailed, isLoading } from '../utils/datum';
+import { isLoggedIn, isLoggingIn, isLoginFailed, useSession } from '../contexts/session';
 import { InvalidCredentialsError } from '../utils/errors';
 
 const handleInput = (handler: (value: string) => void) => (event: Event) => {
@@ -13,14 +12,18 @@ const handleInput = (handler: (value: string) => void) => (event: Event) => {
   }
 };
 
-const Login: FunctionComponent<{ session: LoggedOut }> = ({ session }) => {
+const Login: FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = useCallback((event: Event) => {
+  const { session, login } = useSession();
+  const handleSubmit = useCallback(async (event: Event) => {
     event.preventDefault();
-    void session.login(username, password);
-  }, [password, session, username]);
+    await login(username, password);
+  }, [login, password, username]);
+
+  if (isLoggedIn(session))
+    return <Redirect to={ROUTES.account.replace(':id', session.account.id.toString())} />;
 
   return (
     <>
@@ -47,18 +50,11 @@ const Login: FunctionComponent<{ session: LoggedOut }> = ({ session }) => {
         </label>
         <input type='submit' value='Login' />
       </form>
-      { isLoading(session.state) && <div>Loading...</div> }
-      { isFailed(session.state) && session.state.error instanceof InvalidCredentialsError
+      { isLoggingIn(session) && <div>Loading...</div> }
+      { isLoginFailed(session) && session.error instanceof InvalidCredentialsError
         && <div>Invalid credentials</div> }
     </>
   );
 };
 
-const LoginWrapper: FunctionComponent = () => {
-  const session = useSession();
-  return isLoggedIn(session)
-    ? <Redirect to={ROUTES.account.replace(':id', session.account.id.toString())} />
-    : <Login session={session} />;
-};
-
-export default LoginWrapper;
+export default Login;

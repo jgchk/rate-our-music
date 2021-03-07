@@ -28,16 +28,22 @@ async fn main() -> Result<(), Error> {
     let env = warp::any().map(move || env.clone());
 
     let graphql = {
-        let auth = warp::header("authorization")
+        let token = warp::header("authorization")
+            .map(Some)
+            .or(warp::any().map(|| None))
+            .unify();
+
+        let refresh_token = warp::cookie("refresh_token")
             .map(Some)
             .or(warp::any().map(|| None))
             .unify();
 
         let context = warp::any()
             .and(env.clone())
-            .and(auth)
-            .and_then(|env, auth| async {
-                graphql::Context::new(env, auth)
+            .and(token)
+            .and(refresh_token)
+            .and_then(|env, token, refresh_token| async {
+                graphql::Context::new(env, token, refresh_token)
                     .await
                     .map_err(warp::Rejection::from)
             })

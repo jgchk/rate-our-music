@@ -11,5 +11,6 @@ pub struct Account {
 #[derive(SimpleObject)]
 pub struct Auth {
     pub token: String,
+    pub exp: u64,
     pub account: Account,
 }
