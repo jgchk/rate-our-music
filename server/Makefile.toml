@@ -1,7 +1,7 @@
 [tasks.dev]
 command = "cargo"
 args = ["run"]
-watch = { watch = ["./src", "../client/output"] }
+watch = { watch = ["./src", "../client/public"] }
 
 [tasks.build]
 command = "cargo"

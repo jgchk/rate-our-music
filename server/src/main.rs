@@ -28,8 +28,8 @@ async fn main() -> Result<(), Error> {
     let env = Environment::new(database_url, redis_url, jwt_secret).await?;
     let env = warp::any().map(move || env.clone());
 
-    let html = fs::read_to_string("../client/output/index.html").expect("Could not find index.html");
-    let static_files = warp::fs::dir("../client/output");
+    let html = fs::read_to_string("../client/public/index.html").expect("Could not find index.html");
+    let static_files = warp::fs::dir("../client/public");
     let frontend = warp::any()
         .map(move || warp::reply::html(html.to_string()));
 
@@ -77,12 +77,7 @@ async fn main() -> Result<(), Error> {
 
     let routes = graphql.or(static_files).or(frontend);
 
-    // warp::serve(routes)
-    //     .run(([127, 0, 0, 1], 3030)).await;
     warp::serve(routes)
-        .tls()
-        .cert_path("certs/localhost+2.pem")
-        .key_path("certs/localhost+2-key.pem")
         .run(([127, 0, 0, 1], 3030)).await;
 
     Ok(())

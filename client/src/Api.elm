@@ -1,4 +1,4 @@
-module Api exposing (Cred, Error, Response, id, login, refresh, refreshTask, username)
+module Api exposing (Cred, Error, Response, Session(..), id, login, logout, refresh, username)
 
 import Api.Mutation as Mutation
 import Api.Object
@@ -7,14 +7,21 @@ import Api.Object.Auth as ObjAuth
 import Graphql.Http
 import Graphql.Http.GraphqlError
 import Graphql.SelectionSet as SelectionSet
-import Platform exposing (Task)
+import Process
 import RemoteData
 import Task
-import Username exposing (Username(..))
+import Time
 
 
 
 -- CRED
+
+
+type Session
+    = LoggedOut
+    | LoggingIn
+    | LoggedIn Cred
+    | LoggingOut
 
 
 type alias Cred =
@@ -26,7 +33,7 @@ type alias Cred =
 
 type alias Account =
     { id : Int
-    , username : Username
+    , username : String
     }
 
 
@@ -35,7 +42,7 @@ id cred =
     cred.account.id
 
 
-username : Cred -> Username
+username : Cred -> String
 username cred =
     cred.account.username
 
@@ -48,17 +55,17 @@ type alias Response decodesTo =
     RemoteData.RemoteData Error decodesTo
 
 
-type alias ResponseMsg decodesTo msg =
+type alias ResponseToMsg decodesTo msg =
     Response decodesTo -> msg
 
 
-send : ResponseMsg decodesTo msg -> Graphql.Http.Request decodesTo -> Cmd msg
+send : ResponseToMsg decodesTo msg -> Graphql.Http.Request decodesTo -> Cmd msg
 send toMsg =
     Graphql.Http.send ((\res -> RemoteData.fromResult res |> RemoteData.mapError decodeError) >> toMsg)
 
 
-login : String -> String -> ResponseMsg Cred msg -> Cmd msg
-login user pass cmd =
+login : String -> String -> ResponseToMsg Cred msg -> Cmd msg
+login user pass toMsg =
     let
         credSelection =
             SelectionSet.map3 Cred
@@ -69,68 +76,81 @@ login user pass cmd =
         accountSelection =
             SelectionSet.map2 Account
                 ObjAccount.id
-                (ObjAccount.username |> mapUsername)
-
-        mapUsername =
-            SelectionSet.map (\u -> Username u)
+                ObjAccount.username
 
         loginMutation =
             Mutation.login { username = user, password = pass } credSelection
     in
     loginMutation
-        |> Graphql.Http.mutationRequest "https://localhost:3030/graphql"
-        |> send cmd
+        |> Graphql.Http.mutationRequest "/graphql"
+        |> send toMsg
 
 
-refresh : ResponseMsg Cred msg -> Cmd msg
-refresh cmd =
+logout : Bool -> Cred -> ResponseToMsg Bool msg -> Cmd msg
+logout force cred toMsg =
     let
-        credSelection =
-            SelectionSet.map3 Cred
-                ObjAuth.token
-                ObjAuth.exp
-                (ObjAuth.account accountSelection)
-
-        accountSelection =
-            SelectionSet.map2 Account
-                ObjAccount.id
-                (ObjAccount.username |> mapUsername)
-
-        mapUsername =
-            SelectionSet.map (\u -> Username u)
-
-        refreshMutation =
-            Mutation.refreshAuth credSelection
+        logoutMutation =
+            Mutation.logout { force = force }
     in
-    refreshMutation
-        |> Graphql.Http.mutationRequest "https://localhost:3030/graphql"
-        |> send cmd
+    logoutMutation
+        |> Graphql.Http.mutationRequest "/graphql"
+        |> Graphql.Http.withHeader "authorization" ("Bearer " ++ cred.token)
+        |> send toMsg
 
 
-refreshTask : Task.Task Error Cred
-refreshTask =
+refresh : Maybe Cred -> (Response Cred -> msg) -> Cmd msg
+refresh maybeCred toMsg =
     let
-        credSelection =
-            SelectionSet.map3 Cred
-                ObjAuth.token
-                ObjAuth.exp
-                (ObjAuth.account accountSelection)
+        refreshBase =
+            let
+                credSelection =
+                    SelectionSet.map3 Cred
+                        ObjAuth.token
+                        ObjAuth.exp
+                        (ObjAuth.account accountSelection)
 
-        accountSelection =
-            SelectionSet.map2 Account
-                ObjAccount.id
-                (ObjAccount.username |> mapUsername)
+                accountSelection =
+                    SelectionSet.map2 Account
+                        ObjAccount.id
+                        ObjAccount.username
 
-        mapUsername =
-            SelectionSet.map (\u -> Username u)
-
-        refreshMutation =
-            Mutation.refreshAuth credSelection
+                refreshMutation =
+                    Mutation.refreshAuth credSelection
+            in
+            refreshMutation
+                |> Graphql.Http.mutationRequest "/graphql"
     in
-    refreshMutation
-        |> Graphql.Http.mutationRequest "https://localhost:3030/graphql"
-        |> Graphql.Http.toTask
-        |> Task.mapError decodeError
+    case maybeCred of
+        Just cred ->
+            Time.now
+                |> Task.andThen
+                    (\time ->
+                        let
+                            nowMillis =
+                                Time.posixToMillis time
+
+                            expMillis =
+                                cred.exp * 1000
+
+                            sleepFor =
+                                toFloat (expMillis - nowMillis)
+                        in
+                        Process.sleep sleepFor
+                    )
+                |> Task.andThen
+                    (always <|
+                        (refreshBase
+                            |> Graphql.Http.toTask
+                            |> Task.mapError decodeError
+                        )
+                    )
+                |> RemoteData.fromTask
+                |> Task.perform identity
+                |> Cmd.map toMsg
+
+        Nothing ->
+            refreshBase
+                |> send toMsg
 
 
 
