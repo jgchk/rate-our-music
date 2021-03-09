@@ -1,7 +1,6 @@
 module Page.NotFound exposing (view)
 
 import Html exposing (Html, h1, main_, text)
-import Html.Attributes exposing (class, id, tabindex)
 
 
 
