@@ -77,6 +77,8 @@ async fn main() -> Result<(), Error> {
 
     let routes = graphql.or(static_files).or(frontend);
 
+    // warp::serve(routes)
+    //     .run(([127, 0, 0, 1], 3030)).await;
     warp::serve(routes)
         .tls()
         .cert_path("certs/localhost+2.pem")

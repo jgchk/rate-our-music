@@ -1539,6 +1539,7 @@ dependencies = [
  "async-graphql-warp",
  "chrono",
  "dotenv_codegen",
+ "futures",
  "http-api-problem",
  "jsonwebtoken",
  "redis",

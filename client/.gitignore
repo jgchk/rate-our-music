@@ -8,4 +8,5 @@
 !/.yarn/cache
 #/.pnp.*
 
+/elm-stuff
 /output
