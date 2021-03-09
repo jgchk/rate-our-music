@@ -101,7 +101,7 @@ fn make_refresh_token(
     ctx: &Context<'_>,
     id: i64,
 ) -> Result<(String, i64), Error> {
-    let expires_in = Duration::seconds(20);
+    let expires_in = Duration::hours(1);
     let (refresh_token, exp) = auth::create_token(env, id, expires_in)?;
     ctx.append_http_header(
         http::header::SET_COOKIE,
