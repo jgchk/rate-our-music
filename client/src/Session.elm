@@ -1,8 +1,11 @@
 module Session exposing (Msg(..), Session(..), cred, init, navKey, update)
 
-import Api exposing (Cred, Response)
+import Api exposing (Cred, Response, refreshTask)
 import Browser.Navigation as Nav
+import Process
 import RemoteData exposing (RemoteData(..))
+import Task
+import Time
 
 
 
@@ -20,7 +23,7 @@ type Session
 
 init : Nav.Key -> ( Session, Cmd Msg )
 init key =
-    ( LoggedOut key, Api.refresh Refresh )
+    ( LoggedOut key, Api.refresh RefreshRequest )
 
 
 cred : Session -> Maybe Cred
@@ -72,14 +75,14 @@ navKey session =
 
 
 type Msg
-    = Refresh (Response Cred)
-    | Login (Response Cred)
+    = RefreshRequest (Response Cred)
+    | LoginRequest (Response Cred)
 
 
 update : Msg -> Session -> ( Session, Cmd Msg )
 update msg model =
     case msg of
-        Refresh data ->
+        RefreshRequest data ->
             case data of
                 NotAsked ->
                     ( model, Cmd.none )
@@ -108,9 +111,9 @@ update msg model =
                     ( LoggedOut (navKey model), Cmd.none )
 
                 Success newCred ->
-                    ( LoggedIn (navKey model) newCred, Cmd.none )
+                    ( LoggedIn (navKey model) newCred, refresh newCred )
 
-        Login data ->
+        LoginRequest data ->
             case data of
                 NotAsked ->
                     ( model, Cmd.none )
@@ -122,4 +125,27 @@ update msg model =
                     ( LoggedOut (navKey model), Cmd.none )
 
                 Success newCred ->
-                    ( LoggedIn (navKey model) newCred, Cmd.none )
+                    ( LoggedIn (navKey model) newCred, refresh newCred )
+
+
+refresh : Cred -> Cmd Msg
+refresh cred_ =
+    Time.now
+        |> Task.andThen
+            (\time ->
+                let
+                    nowMillis =
+                        Time.posixToMillis time
+
+                    expMillis =
+                        cred_.exp * 1000
+
+                    sleepFor =
+                        toFloat (expMillis - nowMillis)
+                in
+                Process.sleep sleepFor
+            )
+        |> Task.andThen (always <| refreshTask)
+        |> RemoteData.fromTask
+        |> Task.perform identity
+        |> Cmd.map RefreshRequest

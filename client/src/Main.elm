@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html
-import Page.Login exposing (Msg(..))
+import Page.Login as Login exposing (Msg(..))
 import RemoteData exposing (RemoteData(..))
 import Router exposing (Msg(..))
 import Session exposing (Msg(..), Session(..))
@@ -91,10 +91,10 @@ update msg model =
                     { model | routerModel = updatedRouterModel }
             in
             case subMsg of
-                GotLoginMsg (LoginRequest data) ->
+                GotLoginMsg (Login.LoginRequest data) ->
                     let
                         ( updatedSession, sessionCmd ) =
-                            Session.update (Login data) model.session
+                            Session.update (Session.LoginRequest data) model.session
                     in
                     ( { updatedModel | session = updatedSession }
                     , Cmd.batch [ cmd, Cmd.map GotSessionMsg sessionCmd ]

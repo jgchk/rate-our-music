@@ -1,4 +1,4 @@
-module Api exposing (Cred, Error, Response, id, login, refresh, username)
+module Api exposing (Cred, Error, Response, id, login, refresh, refreshTask, username)
 
 import Api.Mutation as Mutation
 import Api.Object
@@ -7,7 +7,9 @@ import Api.Object.Auth as ObjAuth
 import Graphql.Http
 import Graphql.Http.GraphqlError
 import Graphql.SelectionSet as SelectionSet
+import Platform exposing (Task)
 import RemoteData
+import Task
 import Username exposing (Username(..))
 
 
@@ -103,6 +105,32 @@ refresh cmd =
     refreshMutation
         |> Graphql.Http.mutationRequest "https://localhost:3030/graphql"
         |> send cmd
+
+
+refreshTask : Task.Task Error Cred
+refreshTask =
+    let
+        credSelection =
+            SelectionSet.map3 Cred
+                ObjAuth.token
+                ObjAuth.exp
+                (ObjAuth.account accountSelection)
+
+        accountSelection =
+            SelectionSet.map2 Account
+                ObjAccount.id
+                (ObjAccount.username |> mapUsername)
+
+        mapUsername =
+            SelectionSet.map (\u -> Username u)
+
+        refreshMutation =
+            Mutation.refreshAuth credSelection
+    in
+    refreshMutation
+        |> Graphql.Http.mutationRequest "https://localhost:3030/graphql"
+        |> Graphql.Http.toTask
+        |> Task.mapError decodeError
 
 
 
