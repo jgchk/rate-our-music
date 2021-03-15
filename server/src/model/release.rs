@@ -7,7 +7,6 @@ use crate::model::genre_vote::GenreVoteType;
 use crate::model::tag::Tag;
 use crate::model::track::Track;
 use async_graphql::{Context, Enum, InputObject, Object, Result, SimpleObject};
-use fake::{Dummy, Fake};
 
 pub struct RawRelease {
     pub release_id: i32,
@@ -39,7 +38,6 @@ impl Into<std::result::Result<Release, Error>> for RawRelease {
     }
 }
 
-#[derive(Dummy)]
 pub struct Release {
     pub release_id: i32,
     pub release_title: String,
@@ -47,7 +45,7 @@ pub struct Release {
     pub release_type: ReleaseType,
 }
 
-#[derive(Debug, Clone, Copy, Dummy)]
+#[derive(Debug, Clone, Copy)]
 pub enum InternalReleaseDate {
     Year(i16),
     YearMonth(i16, i16),
@@ -132,7 +130,7 @@ impl Into<ReleaseDate> for InternalReleaseDate {
     }
 }
 
-#[derive(sqlx::Type, Debug, Clone, Copy, Enum, Eq, PartialEq, Dummy)]
+#[derive(sqlx::Type, Debug, Clone, Copy, Enum, Eq, PartialEq)]
 #[sqlx(type_name = "release_type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ReleaseType {
     Album,

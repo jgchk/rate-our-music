@@ -1,8 +1,6 @@
 use crate::model::release::Release;
 use async_graphql::{Context, Object, Result};
-use fake::{Dummy, Fake};
 
-#[derive(Dummy)]
 pub struct Artist {
     pub artist_id: i32,
     pub artist_name: String,

@@ -559,17 +559,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "88d7ed2934d741c6b37e33e3832298e8850b53fd2d2bea03873375596c7cea4e"
 
 [[package]]
-name = "dummy"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0444a1bba051be9becd18b5c1b66945c95fb84fe72048e43dcd5ac9366443990"
-dependencies = [
- "darling",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -589,17 +578,6 @@ name = "event-listener"
 version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
-
-[[package]]
-name = "fake"
-version = "2.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "704749d52f737f28d7a632d4608db4005822efbb5a1c673c159f1193c9e63832"
-dependencies = [
- "chrono",
- "dummy",
- "rand 0.8.3",
-]
 
 [[package]]
 name = "fake-simd"
@@ -1549,10 +1527,7 @@ dependencies = [
  "async-graphql-warp",
  "chrono",
  "dotenv_codegen",
- "fake",
- "futures",
  "jsonwebtoken",
- "rand 0.8.3",
  "redis",
  "serde",
  "shrinkwraprs",
