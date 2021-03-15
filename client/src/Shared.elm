@@ -87,10 +87,10 @@ update msg model =
                 RemoteData.Failure _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
-                RemoteData.Success { account } ->
+                RemoteData.Success (AuthMutation auth) ->
                     let
                         session =
-                            Api.LoggedIn account
+                            Api.LoggedIn auth
                     in
                     ( { model | session = session }, refresh session )
 
@@ -105,10 +105,10 @@ update msg model =
                 RemoteData.Failure _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
-                RemoteData.Success { account } ->
+                RemoteData.Success (AuthMutation auth) ->
                     let
                         session =
-                            Api.LoggedIn account
+                            Api.LoggedIn auth
                     in
                     ( { model | session = session }, refresh session )
 
@@ -171,12 +171,12 @@ view { page, toMsg } model =
 -- REQUESTS
 
 
-type alias AuthMutation =
-    { account : Auth }
+type AuthMutation
+    = AuthMutation Auth
 
 
-type alias LogoutMutation =
-    { account : Bool }
+type LogoutMutation
+    = LogoutMutation Bool
 
 
 credSelection : SelectionSet Auth Api.Object.Auth

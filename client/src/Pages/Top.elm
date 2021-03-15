@@ -30,7 +30,7 @@ page =
 
 
 view : Url Params -> Document Msg
-view { params } =
+view _ =
     { title = "Homepage"
     , body = [ text "Homepage" ]
     }

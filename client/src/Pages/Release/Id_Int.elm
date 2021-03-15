@@ -136,7 +136,7 @@ view model =
             RemoteData.Failure _ ->
                 [ text "Error" ]
 
-            RemoteData.Success { release } ->
+            RemoteData.Success (ReleaseQuery release) ->
                 [ row []
                     [ column []
                         [ text release.title
@@ -166,8 +166,8 @@ view model =
 -- REQUESTS
 
 
-type alias ReleaseQuery =
-    { release : Release }
+type ReleaseQuery
+    = ReleaseQuery Release
 
 
 getRelease : Api.Object.ReleaseQuery.GetOneRequiredArguments -> Api.Session -> Cmd Msg

@@ -187,7 +187,7 @@ update msg model =
 
         GetArtistsRequest i response ->
             case response of
-                RemoteData.Success { artist } ->
+                RemoteData.Success (ArtistQuery artist) ->
                     ( updateForm (updateArtistEntry i (\entry -> { entry | artists = Just artist })) model, Cmd.none )
 
                 _ ->
@@ -231,8 +231,8 @@ update msg model =
 
         CreateReleaseRequest response ->
             case response of
-                RemoteData.Success { release } ->
-                    ( model, Utils.Route.navigate model.key (Route.Release__Id_Int { id = release.id }) )
+                RemoteData.Success (ReleaseMutation (Release id)) ->
+                    ( model, Utils.Route.navigate model.key (Route.Release__Id_Int { id = id }) )
 
                 _ ->
                     ( model, Cmd.none )
@@ -531,12 +531,12 @@ artistValidator i input =
 -- REQUESTS
 
 
-type alias ReleaseMutation =
-    { release : Release }
+type ReleaseMutation
+    = ReleaseMutation Release
 
 
-type alias Release =
-    { id : Int }
+type Release
+    = Release Int
 
 
 createRelease : ObjReleaseMutation.CreateRequiredArguments -> Api.Session -> Cmd Msg
@@ -553,8 +553,8 @@ createRelease args =
     Api.sendMutation CreateReleaseRequest (Api.Mutation.release rootSelection)
 
 
-type alias ArtistQuery =
-    { artist : List Artist }
+type ArtistQuery
+    = ArtistQuery (List Artist)
 
 
 getArtists : Int -> Api.Object.ArtistQuery.FilterByNameRequiredArguments -> Api.Session -> Cmd Msg
