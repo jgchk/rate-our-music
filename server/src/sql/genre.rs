@@ -12,30 +12,6 @@ impl<'a> GenreDatabase<'a> {
         Self(pool)
     }
 
-    pub async fn create(
-        &self,
-        parent_id: Option<i32>,
-        name: &str,
-        description: Option<&str>,
-    ) -> Result<Genre, Error> {
-        let genre = sqlx::query!(
-            "INSERT INTO genre (genre_parent_id, genre_name, genre_description)
-            VALUES ($1, $2, $3)
-            RETURNING genre_id",
-            parent_id,
-            name,
-            description
-        )
-        .fetch_one(self.0)
-        .await?;
-        Ok(Genre {
-            genre_id: genre.genre_id,
-            genre_parent_id: parent_id,
-            genre_name: name.to_string(),
-            genre_description: description.map(String::from),
-        })
-    }
-
     pub async fn get(&self, id: i32) -> Result<Genre, Error> {
         sqlx::query_as!(Genre, "SELECT * FROM genre WHERE genre_id = $1", id)
             .fetch_one(self.0)

@@ -10,33 +10,6 @@ impl<'a> TrackDatabase<'a> {
         Self(pool)
     }
 
-    pub async fn create(
-        &self,
-        release_id: i32,
-        title: &str,
-        num: i16,
-        duration_ms: Option<i32>,
-    ) -> Result<Track, Error> {
-        let track = sqlx::query!(
-            "INSERT INTO track (release_id, track_title, track_num, track_duration_ms)
-            VALUES ($1, $2, $3, $4)
-            RETURNING track_id",
-            release_id,
-            title,
-            num,
-            duration_ms
-        )
-        .fetch_one(self.0)
-        .await?;
-        Ok(Track {
-            track_id: track.track_id,
-            release_id,
-            track_title: title.to_string(),
-            track_num: num,
-            track_duration_ms: duration_ms,
-        })
-    }
-
     pub async fn get(&self, id: i32) -> Result<Track, Error> {
         sqlx::query_as!(
             Track,

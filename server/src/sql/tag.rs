@@ -10,30 +10,6 @@ impl<'a> TagDatabase<'a> {
         Self(pool)
     }
 
-    pub async fn create(
-        &self,
-        account_id: i32,
-        name: &str,
-        description: Option<&str>,
-    ) -> Result<Tag, Error> {
-        let tag = sqlx::query!(
-            "INSERT INTO tag (account_id, tag_name, tag_description)
-            VALUES ($1, $2, $3)
-            RETURNING tag_id",
-            account_id,
-            name,
-            description
-        )
-        .fetch_one(self.0)
-        .await?;
-        Ok(Tag {
-            tag_id: tag.tag_id,
-            account_id,
-            tag_name: name.to_string(),
-            tag_description: description.map(String::from),
-        })
-    }
-
     pub async fn get(&self, id: i32) -> Result<Tag, Error> {
         sqlx::query_as!(Tag, "SELECT * FROM tag WHERE tag_id = $1", id)
             .fetch_one(self.0)
