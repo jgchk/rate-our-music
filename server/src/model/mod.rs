@@ -1,1 +1,13 @@
 pub mod account;
+pub mod artist;
+pub mod descriptor;
+pub mod descriptor_vote;
+pub mod genre;
+pub mod genre_vote;
+pub mod release;
+pub mod release_artist;
+pub mod release_review;
+pub mod release_tag;
+pub mod tag;
+pub mod track;
+pub mod track_review;

@@ -19,15 +19,22 @@ import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode exposing (Decoder)
 
 
-whoami :
-    SelectionSet decodesTo Api.Object.Account
+account :
+    SelectionSet decodesTo Api.Object.AccountQuery
     -> SelectionSet decodesTo RootQuery
-whoami object____ =
-    Object.selectionForCompositeField "whoami" [] object____ identity
+account object____ =
+    Object.selectionForCompositeField "account" [] object____ identity
 
 
-accounts :
-    SelectionSet decodesTo Api.Object.Account
-    -> SelectionSet (List decodesTo) RootQuery
-accounts object____ =
-    Object.selectionForCompositeField "accounts" [] object____ (identity >> Decode.list)
+artist :
+    SelectionSet decodesTo Api.Object.ArtistQuery
+    -> SelectionSet decodesTo RootQuery
+artist object____ =
+    Object.selectionForCompositeField "artist" [] object____ identity
+
+
+release :
+    SelectionSet decodesTo Api.Object.ReleaseQuery
+    -> SelectionSet decodesTo RootQuery
+release object____ =
+    Object.selectionForCompositeField "release" [] object____ identity

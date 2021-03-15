@@ -9,5 +9,65 @@ type Account
     = Account
 
 
+type AccountMutation
+    = AccountMutation
+
+
+type AccountQuery
+    = AccountQuery
+
+
+type Artist
+    = Artist
+
+
+type ArtistMutation
+    = ArtistMutation
+
+
+type ArtistQuery
+    = ArtistQuery
+
+
 type Auth
     = Auth
+
+
+type Descriptor
+    = Descriptor
+
+
+type DescriptorVote
+    = DescriptorVote
+
+
+type Genre
+    = Genre
+
+
+type GenreVote
+    = GenreVote
+
+
+type Release
+    = Release
+
+
+type ReleaseDate
+    = ReleaseDate
+
+
+type ReleaseMutation
+    = ReleaseMutation
+
+
+type ReleaseQuery
+    = ReleaseQuery
+
+
+type Tag
+    = Tag
+
+
+type Track
+    = Track

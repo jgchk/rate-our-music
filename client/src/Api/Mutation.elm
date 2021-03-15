@@ -19,47 +19,22 @@ import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode exposing (Decoder)
 
 
-type alias CreateAccountRequiredArguments =
-    { username : String
-    , password : String
-    }
-
-
-createAccount :
-    CreateAccountRequiredArguments
-    -> SelectionSet decodesTo Api.Object.Auth
+account :
+    SelectionSet decodesTo Api.Object.AccountMutation
     -> SelectionSet decodesTo RootMutation
-createAccount requiredArgs____ object____ =
-    Object.selectionForCompositeField "createAccount" [ Argument.required "username" requiredArgs____.username Encode.string, Argument.required "password" requiredArgs____.password Encode.string ] object____ identity
+account object____ =
+    Object.selectionForCompositeField "account" [] object____ identity
 
 
-type alias LoginRequiredArguments =
-    { username : String
-    , password : String
-    }
-
-
-login :
-    LoginRequiredArguments
-    -> SelectionSet decodesTo Api.Object.Auth
+artist :
+    SelectionSet decodesTo Api.Object.ArtistMutation
     -> SelectionSet decodesTo RootMutation
-login requiredArgs____ object____ =
-    Object.selectionForCompositeField "login" [ Argument.required "username" requiredArgs____.username Encode.string, Argument.required "password" requiredArgs____.password Encode.string ] object____ identity
+artist object____ =
+    Object.selectionForCompositeField "artist" [] object____ identity
 
 
-type alias LogoutRequiredArguments =
-    { force : Bool }
-
-
-logout :
-    LogoutRequiredArguments
-    -> SelectionSet Bool RootMutation
-logout requiredArgs____ =
-    Object.selectionForField "Bool" "logout" [ Argument.required "force" requiredArgs____.force Encode.bool ] Decode.bool
-
-
-refreshAuth :
-    SelectionSet decodesTo Api.Object.Auth
+release :
+    SelectionSet decodesTo Api.Object.ReleaseMutation
     -> SelectionSet decodesTo RootMutation
-refreshAuth object____ =
-    Object.selectionForCompositeField "refreshAuth" [] object____ identity
+release object____ =
+    Object.selectionForCompositeField "release" [] object____ identity

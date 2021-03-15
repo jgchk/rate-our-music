@@ -16,7 +16,7 @@ view :
 view options =
     row [ spacing 20 ]
         [ link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Top, label = text "Homepage" }
-        , link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.NotFound, label = text "Not found" }
+        , link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Release__Submit, label = text "Submit" }
         , case options.session of
             Api.LoggedOut ->
                 Input.button

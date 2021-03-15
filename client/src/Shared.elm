@@ -8,12 +8,21 @@ module Shared exposing
     , view
     )
 
-import Api
+import Api exposing (Account, Auth)
+import Api.Mutation
+import Api.Object
+import Api.Object.Account as ObjAccount
+import Api.Object.AccountMutation
+import Api.Object.Auth as ObjAuth
 import Browser.Navigation exposing (Key)
 import Components.Navbar as Navbar
 import Element exposing (..)
+import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
+import Process
 import RemoteData exposing (RemoteData(..))
 import Spa.Document exposing (Document)
+import Task
+import Time
 import Url exposing (Url)
 
 
@@ -34,8 +43,12 @@ type alias Model =
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( Model url key Api.LoggedOut
-    , Api.refresh Nothing RefreshRequest
+    let
+        session =
+            Api.LoggingIn
+    in
+    ( { url = url, key = key, session = session }
+    , refresh session
     )
 
 
@@ -45,18 +58,22 @@ init _ url key =
 
 type Msg
     = Login
-    | LoginRequest (Api.Response Api.Cred)
-    | RefreshRequest (Api.Response Api.Cred)
+    | LoginRequest (Api.Response AuthMutation)
+    | RefreshRequest (Api.Response AuthMutation)
     | Logout
-    | LogoutRequest (Api.Response Bool)
+    | LogoutRequest (Api.Response LogoutMutation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Login ->
-            ( { model | session = Api.LoggingIn }
-            , Api.login "user1" "pass1" LoginRequest
+            let
+                session =
+                    Api.LoggingIn
+            in
+            ( { model | session = session }
+            , login { username = "user", password = "pass" } session
             )
 
         LoginRequest remoteData ->
@@ -70,8 +87,12 @@ update msg model =
                 RemoteData.Failure _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
-                RemoteData.Success cred ->
-                    ( { model | session = Api.LoggedIn cred }, Api.refresh (Just cred) RefreshRequest )
+                RemoteData.Success { account } ->
+                    let
+                        session =
+                            Api.LoggedIn account
+                    in
+                    ( { model | session = session }, refresh session )
 
         RefreshRequest remoteData ->
             case remoteData of
@@ -84,14 +105,18 @@ update msg model =
                 RemoteData.Failure _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
-                RemoteData.Success cred ->
-                    ( { model | session = Api.LoggedIn cred }, Api.refresh (Just cred) RefreshRequest )
+                RemoteData.Success { account } ->
+                    let
+                        session =
+                            Api.LoggedIn account
+                    in
+                    ( { model | session = session }, refresh session )
 
         Logout ->
             case model.session of
-                Api.LoggedIn cred ->
+                Api.LoggedIn _ ->
                     ( { model | session = Api.LoggingOut }
-                    , Api.logout False cred LogoutRequest
+                    , logout { force = False } model.session
                     )
 
                 _ ->
@@ -140,3 +165,87 @@ view { page, toMsg } model =
             ]
         ]
     }
+
+
+
+-- REQUESTS
+
+
+type alias AuthMutation =
+    { account : Auth }
+
+
+type alias LogoutMutation =
+    { account : Bool }
+
+
+credSelection : SelectionSet Auth Api.Object.Auth
+credSelection =
+    let
+        accountSelection =
+            SelectionSet.succeed Account
+                |> with ObjAccount.id
+                |> with ObjAccount.username
+    in
+    SelectionSet.succeed Auth
+        |> with ObjAuth.token
+        |> with ObjAuth.exp
+        |> with (ObjAuth.account accountSelection)
+
+
+login : Api.Object.AccountMutation.LoginRequiredArguments -> Api.Session -> Cmd Msg
+login args =
+    let
+        rootSelection =
+            SelectionSet.succeed AuthMutation
+                |> with (Api.Object.AccountMutation.login args credSelection)
+    in
+    Api.sendMutation LoginRequest (Api.Mutation.account rootSelection)
+
+
+logout : Api.Object.AccountMutation.LogoutRequiredArguments -> Api.Session -> Cmd Msg
+logout args =
+    let
+        rootSelection =
+            SelectionSet.succeed LogoutMutation
+                |> with (Api.Object.AccountMutation.logout args)
+    in
+    Api.sendMutation LogoutRequest (Api.Mutation.account rootSelection)
+
+
+refresh : Api.Session -> Cmd Msg
+refresh session =
+    let
+        rootSelection =
+            SelectionSet.succeed AuthMutation
+                |> with (Api.Object.AccountMutation.refreshAuth credSelection)
+    in
+    case Api.auth session of
+        Just cred ->
+            Time.now
+                |> Task.andThen
+                    (\time ->
+                        let
+                            nowMillis =
+                                Time.posixToMillis time
+
+                            expMillis =
+                                cred.exp * 1000
+
+                            sleepFor =
+                                toFloat (expMillis - nowMillis)
+                        in
+                        Process.sleep sleepFor
+                    )
+                |> Task.andThen
+                    (Api.Mutation.account rootSelection
+                        |> Api.mutationRequest
+                        |> Api.withSession session
+                        |> Api.sendTask
+                        |> always
+                    )
+                |> Task.perform identity
+                |> Cmd.map RefreshRequest
+
+        Nothing ->
+            Api.sendMutation RefreshRequest (Api.Mutation.account rootSelection) session

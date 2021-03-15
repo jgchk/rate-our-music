@@ -1,8 +1,9 @@
-use chrono::DateTime;
-use chrono::Utc;
-use chrono::Duration;
 use crate::environment::Environment;
 use crate::errors::Error;
+use crate::model::account::Role;
+use chrono::DateTime;
+use chrono::Duration;
+use chrono::Utc;
 use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 
@@ -14,19 +15,30 @@ pub struct Request {
 
 #[derive(Serialize, Deserialize)]
 pub struct Claims {
-    pub id: i64,
+    pub sub: i32,
     pub iat: i64,
     pub exp: i64,
+    pub roles: Vec<Role>,
 }
 
-pub fn create_token(env: &Environment, id: i64, lifetime: Duration) -> Result<(String, DateTime<Utc>), Error> {
+pub async fn create_token(
+    env: &Environment,
+    id: i32,
+    lifetime: Duration,
+) -> Result<(String, DateTime<Utc>), Error> {
     let issue_date = Utc::now();
     let expiration_date = issue_date + lifetime;
-
     let iat = issue_date.timestamp();
     let exp = expiration_date.timestamp();
 
-    let claims = Claims { id, iat, exp };
+    let account = env.db().account().get(id).await?;
+
+    let claims = Claims {
+        sub: id,
+        iat,
+        exp,
+        roles: account.roles,
+    };
     let token = env.jwt().encode(&claims)?;
 
     Ok((token, expiration_date))

@@ -1,27 +1,31 @@
-use chrono::Duration;
 use crate::auth;
 use crate::errors;
 use crate::model::account::Auth;
+use crate::model::account::Role;
 use crate::Environment;
 use async_graphql::*;
+use chrono::Duration;
 use warp::http;
 
-#[derive(Default)]
 pub struct AccountMutation;
 
 #[Object]
 impl AccountMutation {
-    async fn create_account(
+    async fn create(
         &self,
         ctx: &Context<'_>,
         username: String,
         password: String,
+        roles: Vec<Role>,
     ) -> Result<Auth> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let id = env.db().account().create(&username, &password).await?;
-        let account = env.db().account().get(id).await?;
-        let (token, exp) = make_token(env, account.id)?;
-        make_refresh_token(env, ctx, account.id)?;
+        let account = env
+            .db()
+            .account()
+            .create(&username, &password, roles)
+            .await?;
+        let (token, exp) = make_token(env, account.account_id).await?;
+        make_refresh_token(env, ctx, account.account_id).await?;
 
         Ok(Auth {
             token,
@@ -42,8 +46,8 @@ impl AccountMutation {
             None => return Err(errors::Error::InvalidCredentials.into()),
         };
 
-        let (token, exp) = make_token(env, account.id)?;
-        make_refresh_token(env, ctx, account.id)?;
+        let (token, exp) = make_token(env, account.account_id).await?;
+        make_refresh_token(env, ctx, account.account_id).await?;
 
         Ok(Auth {
             token,
@@ -76,36 +80,40 @@ impl AccountMutation {
         match ctx.data::<crate::graphql::Context>()?.refresh_session() {
             Some(refresh_session) => {
                 let env = ctx.data::<crate::graphql::Context>()?;
-                let account = env.db().account().get(refresh_session.user_id()).await?;
-                let (token, exp) = make_token(env, account.id)?;
+                let account_id = refresh_session.account_id();
+                let account = env.db().account().get(account_id).await?;
+                let (token, exp) = make_token(env, account_id).await?;
                 Ok(Auth {
                     token,
                     exp,
                     account,
                 })
             }
-            None => Err(errors::Error::InvalidCredentials.into())
+            None => Err(errors::Error::InvalidCredentials.into()),
         }
     }
 }
 
-
-fn make_token(env: &Environment, id: i64) -> Result<(String, i64), Error> {
-    let expires_in = Duration::seconds(10);
-    let (token, exp) = auth::create_token(env, id, expires_in)?;
+async fn make_token(env: &Environment, id: i32) -> Result<(String, i64), Error> {
+    let expires_in = Duration::hours(1);
+    let (token, exp) = auth::create_token(env, id, expires_in).await?;
     Ok((token, exp.timestamp()))
 }
 
-fn make_refresh_token(
+async fn make_refresh_token(
     env: &Environment,
     ctx: &Context<'_>,
-    id: i64,
+    id: i32,
 ) -> Result<(String, i64), Error> {
-    let expires_in = Duration::hours(1);
-    let (refresh_token, exp) = auth::create_token(env, id, expires_in)?;
+    let expires_in = Duration::days(365);
+    let (refresh_token, exp) = auth::create_token(env, id, expires_in).await?;
     ctx.append_http_header(
         http::header::SET_COOKIE,
-        format!("refresh_token={}; Expires={}; HttpOnly", refresh_token, exp.format("%a, %d %b %Y %T %Z")),
+        format!(
+            "refresh_token={}; Expires={}; HttpOnly",
+            refresh_token,
+            exp.format("%a, %d %b %Y %T %Z")
+        ),
     );
     Ok((refresh_token, exp.timestamp()))
 }

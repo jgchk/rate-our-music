@@ -3,6 +3,7 @@ use crate::auth::is_token_revoked;
 use crate::auth::revoke_token;
 use crate::environment::Environment;
 use crate::errors::Error;
+use crate::model::account::Role;
 use jsonwebtoken::TokenData;
 
 pub struct Session {
@@ -24,12 +25,20 @@ impl Session {
 
         match is_token_revoked(&env, &raw_token).await? {
             true => Ok(None),
-            false => Ok(Some(Self { env, raw_token, token })),
+            false => Ok(Some(Self {
+                env,
+                raw_token,
+                token,
+            })),
         }
     }
 
-    pub fn user_id(&self) -> i64 {
-        self.token.claims.id
+    pub fn account_id(&self) -> i32 {
+        self.token.claims.sub
+    }
+
+    pub fn roles(&self) -> &Vec<Role> {
+        &self.token.claims.roles
     }
 
     pub async fn invalidate(&self) -> Result<(), Error> {

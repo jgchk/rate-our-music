@@ -4,7 +4,48 @@
 
 module Api.InputObject exposing (..)
 
+import Api.Interface
+import Api.Object
+import Api.Scalar
+import Api.ScalarCodecs
+import Api.Union
+import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
+import Graphql.Internal.Builder.Object as Object
+import Graphql.Internal.Encode as Encode exposing (Value)
+import Graphql.OptionalArgument exposing (OptionalArgument(..))
+import Graphql.SelectionSet exposing (SelectionSet)
+import Json.Decode as Decode
 
-placeholder : String
-placeholder =
-    ""
+
+buildArtistInput :
+    (ArtistInputOptionalFields -> ArtistInputOptionalFields)
+    -> ArtistInput
+buildArtistInput fillOptionals____ =
+    let
+        optionals____ =
+            fillOptionals____
+                { id = Absent, name = Absent }
+    in
+    { id = optionals____.id, name = optionals____.name }
+
+
+type alias ArtistInputOptionalFields =
+    { id : OptionalArgument Int
+    , name : OptionalArgument String
+    }
+
+
+{-| Type for the ArtistInput input object.
+-}
+type alias ArtistInput =
+    { id : OptionalArgument Int
+    , name : OptionalArgument String
+    }
+
+
+{-| Encode a ArtistInput into a value that can be used as an argument.
+-}
+encodeArtistInput : ArtistInput -> Value
+encodeArtistInput input____ =
+    Encode.maybeObject
+        [ ( "id", Encode.int |> Encode.optional input____.id ), ( "name", Encode.string |> Encode.optional input____.name ) ]
