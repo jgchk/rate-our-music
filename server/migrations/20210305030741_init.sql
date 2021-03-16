@@ -1,3 +1,5 @@
+CREATE EXTENSION pgcrypto;
+
 CREATE TYPE role as ENUM (
     'DEV'
 );
