@@ -155,13 +155,13 @@ view :
 view { page, toMsg } model =
     { title = page.title
     , body =
-        [ column [ padding 20, spacing 20, height fill ]
+        [ column [ padding 20, spacing 20, height fill, width fill ]
             [ Navbar.view
                 { session = model.session
                 , onSignIn = toMsg Login
                 , onSignOut = toMsg Logout
                 }
-            , column [ height fill ] page.body
+            , column [ height fill, width fill ] page.body
             ]
         ]
     }

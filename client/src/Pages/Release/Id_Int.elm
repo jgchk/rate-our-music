@@ -12,12 +12,18 @@ import Api.Object.ReleaseQuery
 import Api.Object.Track as ObjTrack
 import Api.Query
 import Element exposing (..)
+import Element.Background as Background
+import Element.Font as Font
 import Graphql.SelectionSet as SelectionSet exposing (with)
+import List
+import List.Extra
 import RemoteData
 import Shared
 import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
+import Utils.Font exposing (scaled)
 
 
 page : Page Params Model Msg
@@ -58,7 +64,9 @@ type alias Release =
 
 
 type alias Artist =
-    { name : String }
+    { id : Int
+    , name : String
+    }
 
 
 type alias ReleaseDate =
@@ -137,26 +145,52 @@ view model =
                 [ text "Error" ]
 
             RemoteData.Success (ReleaseQuery release) ->
-                [ row []
-                    [ column []
-                        [ text release.title
-                        , row [] (List.map (\artist -> text (artist.name ++ " ")) release.artists)
+                [ row
+                    [ Background.color (rgb 0.9 0.9 0.9)
+                    , width (fill |> maximum 1600)
+                    , centerX
+                    , Font.size (scaled 1)
+                    ]
+                    [ column [ width (fillPortion 2) ]
+                        [ el [ Font.size (scaled 3) ] <| text release.title
+                        , row [ Font.size (scaled 2) ]
+                            (List.map
+                                (\artist ->
+                                    [ link []
+                                        { url = Route.toString (Route.Artist__Id_Int { id = artist.id })
+                                        , label = text artist.name
+                                        }
+                                    , text ", "
+                                    ]
+                                )
+                                release.artists
+                                |> List.concat
+                                |> List.Extra.init
+                                |> Maybe.withDefault []
+                            )
                         , text (Maybe.map dateToString release.releaseDate |> Maybe.withDefault "")
                         , text (releaseTypeToString release.releaseType)
-                        , row [] (List.map (\genre -> text genre.name) release.primaryGenres)
-                        , row [] (List.map (\genre -> text genre.name) release.secondaryGenres)
+                        , row [] <| List.map (\genre -> text genre.name) release.primaryGenres
+                        , row [] <| List.map (\genre -> text genre.name) release.secondaryGenres
                         ]
-                    , column []
-                        (List.map
-                            (\track ->
-                                row []
-                                    [ text (String.fromInt track.num)
-                                    , text track.title
-                                    , text (Maybe.withDefault "" (Maybe.map String.fromInt track.durationMs))
-                                    ]
-                            )
-                            release.tracks
-                        )
+                    , column [ width (fillPortion 1 |> maximum 500) ]
+                        [ el
+                            [ width fill
+                            , height (px 500)
+                            , Background.uncropped "https://e.snmc.io/i/fullres/w/8e7a772daaac6c22ca8c6addec3cadad/8813734"
+                            ]
+                            none
+                        , column [] <|
+                            List.map
+                                (\track ->
+                                    row []
+                                        [ text (String.fromInt track.num)
+                                        , text track.title
+                                        , text (Maybe.withDefault "" (Maybe.map String.fromInt track.durationMs))
+                                        ]
+                                )
+                                release.tracks
+                        ]
                     ]
                 ]
     }
@@ -189,6 +223,7 @@ getRelease args =
 
         artistSelection =
             SelectionSet.succeed Artist
+                |> with ObjArtist.id
                 |> with ObjArtist.name
 
         releaseDateSelection =
