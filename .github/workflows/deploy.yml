@@ -44,5 +44,5 @@ jobs:
           envs: DATABASE_URL,REDIS_URL,JWT_SECRET
           script: |
             cd ~/rom/server
-            cargo build --release
+            ~/.cargo/bin/cargo build --release
   
