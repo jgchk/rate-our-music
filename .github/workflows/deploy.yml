@@ -45,4 +45,5 @@ jobs:
           script: |
             cd ~/rom/server
             ~/.cargo/bin/cargo build --release
+            ~/.cargo/bin/cargo sqlx migrate run
   
