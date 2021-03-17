@@ -1,4 +1,4 @@
-name: Deploy
+name: deploy
 
 on:
   push:
@@ -20,10 +20,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           source: "."
           target: "~/rom"
-  
-  build:
-    runs-on: ubuntu-latest
-    steps:
+          
       - name: build frontend
         uses: appleboy/ssh-action@master
         with:
@@ -51,10 +48,7 @@ jobs:
             cd ~/rom/server
             ~/.cargo/bin/cargo build --release
             ~/.cargo/bin/cargo sqlx migrate run
-  
-  run:
-    runs-on: ubuntu-latest
-    steps:
+
       - name: restart supervisor
         uses: appleboy/ssh-action@master
         env:
