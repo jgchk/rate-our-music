@@ -53,10 +53,11 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          envs: DATABASE_URL,REDIS_URL,JWT_SECRET
-          script: sudo supervisorctl restart rom
+          envs: DATABASE_URL,REDIS_URL,JWT_SECRET,PASSWORD
+          script: echo "$PASSWORD" | sudo -S supervisorctl restart rom
