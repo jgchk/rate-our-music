@@ -1,14 +1,17 @@
-name: Deploy
+name: deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      
-      - name: SCP Command to Transfer Files
+      - name: checkout
+        uses: actions/checkout@v1
+      - name: transfer files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -17,8 +20,8 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           source: "."
           target: "~/rom"
-      
-      - name: Building frontend
+          
+      - name: build frontend
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -29,8 +32,7 @@ jobs:
             cd ~/rom/client
             yarn
             yarn build
-            
-      - name: Building backend
+      - name: build backend
         uses: appleboy/ssh-action@master
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -45,4 +47,19 @@ jobs:
           script: |
             cd ~/rom/server
             ~/.cargo/bin/cargo build --release
-  
+            ~/.cargo/bin/cargo sqlx migrate run
+
+      - name: restart supervisor
+        uses: appleboy/ssh-action@master
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SUPERVISOR_PASSWORD: ${{ secrets.PASSWORD }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSHKEY }}
+          envs: DATABASE_URL,REDIS_URL,JWT_SECRET,SUPERVISOR_PASSWORD
+          script: echo "$SUPERVISOR_PASSWORD" | sudo -S supervisorctl restart rom
