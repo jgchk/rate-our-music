@@ -164,6 +164,9 @@ update msg model =
                                         Api.DuplicateUsernameError ->
                                             ValidationProblem UsernameField "username already exists"
 
+                                        Api.InvalidPasswordLength ->
+                                            ValidationProblem PasswordField "password must be 1 to 64 characters"
+
                                         _ ->
                                             ServerProblem error
                                 )

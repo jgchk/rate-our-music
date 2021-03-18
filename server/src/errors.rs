@@ -16,8 +16,10 @@ pub enum Error {
     InsufficientPermissions,
     #[error("invalid date: year {0:?}, month {1:?}, day {2:?}")]
     InvalidDate(Option<i16>, Option<i16>, Option<i16>),
-    #[error("invalid input: {0}")]
-    InvalidInput(String),
+    #[error("ArtistInput must have either `id` or `name`")]
+    InvalidArtistInput,
+    #[error("password must be {0} to {1} characters")]
+    InvalidPasswordLength(i32, i32),
 }
 
 impl warp::reject::Reject for Error {}
