@@ -354,16 +354,16 @@ view model =
                                         []
 
                                     RemoteData.Loading ->
-                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (FeatherIcons.loader |> FeatherIcons.toHtml [] |> html)) ]
+                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (UI.icon <| FeatherIcons.loader)) ]
 
                                     RemoteData.Success exists ->
                                         if exists then
-                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 1 0 0) ] (FeatherIcons.x |> FeatherIcons.toHtml [] |> html))
+                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 1 0 0) ] (UI.icon <| FeatherIcons.x))
                                             , Border.color (rgb 1 0 0)
                                             ]
 
                                         else
-                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 0 1 0) ] (FeatherIcons.check |> FeatherIcons.toHtml [] |> html))
+                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 0 1 0) ] (UI.icon <| FeatherIcons.check))
                                             , Border.color (rgb 0 1 0)
                                             ]
 
@@ -388,14 +388,12 @@ view model =
                                 (Input.button [ alignRight, centerY, padding (UI.spacing 3) ]
                                     { onPress = Just (ShowPassword (not model.form.showPassword))
                                     , label =
-                                        (if model.form.showPassword then
-                                            FeatherIcons.eyeOff
+                                        UI.icon <|
+                                            if model.form.showPassword then
+                                                FeatherIcons.eyeOff
 
-                                         else
-                                            FeatherIcons.eye
-                                        )
-                                            |> FeatherIcons.toHtml []
-                                            |> html
+                                            else
+                                                FeatherIcons.eye
                                     }
                                 )
                            ]
