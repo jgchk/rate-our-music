@@ -17,7 +17,7 @@ impl AccountMutation {
         password: String,
     ) -> Result<Auth> {
         if password.len() == 0 || password.len() > 64 {
-            return Err(errors::Error::InvalidPasswordLength(0, 64).into());
+            return Err(errors::Error::InvalidPasswordLength(1, 64).into());
         }
 
         let env = ctx.data::<crate::graphql::Context>()?;
