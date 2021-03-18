@@ -82,7 +82,6 @@ init shared _ =
 type Msg
     = EnteredUsername String
     | EnteredPassword String
-    | EnteredPasswordConfirmation String
     | SubmittedForm
     | RegisterRequest (Api.Response AccountMutation)
 
@@ -97,11 +96,6 @@ update msg model =
 
         EnteredPassword password ->
             ( updateForm (\form -> { form | password = password }) model
-            , Cmd.none
-            )
-
-        EnteredPasswordConfirmation passwordConfirmation ->
-            ( updateForm (\form -> { form | passwordConfirmation = passwordConfirmation }) model
             , Cmd.none
             )
 
@@ -179,13 +173,6 @@ view model =
                 , label = Input.labelLeft [] (text "Password")
                 , show = False
                 }
-            , Input.newPassword []
-                { onChange = EnteredPasswordConfirmation
-                , text = model.form.passwordConfirmation
-                , placeholder = Nothing
-                , label = Input.labelLeft [] (text "Confirm Password")
-                , show = False
-                }
             , Input.button []
                 { onPress = Just SubmittedForm
                 , label = text "Register"
@@ -202,14 +189,12 @@ view model =
 type alias ValidatedForm =
     { username : String
     , password : String
-    , passwordConfirmation : String
     }
 
 
 type ValidatedField
     = UsernameField
     | PasswordField
-    | PasswordConfirmationField
 
 
 validator : Validator Problem Form ValidatedForm
@@ -217,18 +202,6 @@ validator =
     validate ValidatedForm
         |> verify .username (String.Verify.notBlank (ValidationProblem UsernameField "username is required"))
         |> verify .password (String.Verify.notBlank (ValidationProblem PasswordField "password is required"))
-        |> verify
-            (\form -> { password = form.password, passwordConfirmation = form.passwordConfirmation })
-            (passwordConfirmationValidator (ValidationProblem PasswordConfirmationField "passwords must match"))
-
-
-passwordConfirmationValidator : error -> Validator error { password : String, passwordConfirmation : String } String
-passwordConfirmationValidator error input =
-    if input.password == input.passwordConfirmation then
-        Ok input.password
-
-    else
-        Err ( error, [] )
 
 
 
