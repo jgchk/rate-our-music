@@ -102,7 +102,12 @@ init shared _ =
             , other = []
             }
       }
-    , Cmd.none
+    , case shared.session of
+        Api.LoggedIn auth ->
+            openAccountPage shared.key auth.account.id
+
+        _ ->
+            Cmd.none
     )
 
 
@@ -378,6 +383,7 @@ view model =
                                                 FeatherIcons.eye
                                     }
                                 )
+                           , UI.onEnter SubmittedForm
                            ]
                     )
                     { onChange = EnteredPassword
