@@ -19,6 +19,8 @@ import List.Extra
 import Maybe.Extra
 import RemoteData exposing (RemoteData)
 import Shared
+import Simple.Animation
+import Simple.Animation.Property
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
@@ -341,7 +343,19 @@ view model =
                                         []
 
                                     RemoteData.Loading ->
-                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (UI.icon <| FeatherIcons.loader)) ]
+                                        [ inFront
+                                            (UI.animated el
+                                                (Simple.Animation.fromTo
+                                                    { duration = 1200
+                                                    , options = [ Simple.Animation.loop, Simple.Animation.linear ]
+                                                    }
+                                                    [ Simple.Animation.Property.rotate 0 ]
+                                                    [ Simple.Animation.Property.rotate 360 ]
+                                                )
+                                                [ alignRight, centerY, padding (UI.spacing 3) ]
+                                                (UI.icon <| FeatherIcons.loader)
+                                            )
+                                        ]
 
                                     RemoteData.Success exists ->
                                         if exists then

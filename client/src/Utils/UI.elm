@@ -1,29 +1,31 @@
-module Utils.UI exposing (font, icon, onEnter, spacing)
+module Utils.UI exposing (animated, font, icon, onEnter, spacing)
 
-import Element
+import Element exposing (..)
 import FeatherIcons
 import Html.Events
 import Json.Decode as Decode
+import Simple.Animation
+import Simple.Animation.Animated
 
 
 font : Int -> Int
 font =
-    Element.modular 16 2 >> round
+    modular 16 2 >> round
 
 
 spacing : Int -> Int
 spacing =
-    Element.modular 2 2 >> round
+    modular 2 2 >> round
 
 
-icon : FeatherIcons.Icon -> Element.Element msg
+icon : FeatherIcons.Icon -> Element msg
 icon i =
     i |> FeatherIcons.toHtml [] |> Element.html
 
 
-onEnter : msg -> Element.Attribute msg
+onEnter : msg -> Attribute msg
 onEnter msg =
-    Element.htmlAttribute
+    htmlAttribute
         (Html.Events.on "keyup"
             (Decode.field "key" Decode.string
                 |> Decode.andThen
@@ -36,3 +38,12 @@ onEnter msg =
                     )
             )
         )
+
+
+animated : (List (Attribute msg) -> children -> Element msg) -> Simple.Animation.Animation -> List (Attribute msg) -> children -> Element msg
+animated =
+    Simple.Animation.Animated.ui
+        { behindContent = behindContent
+        , htmlAttribute = htmlAttribute
+        , html = html
+        }
