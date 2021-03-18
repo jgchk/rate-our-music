@@ -20,7 +20,6 @@ import Graphql.SelectionSet as SelectionSet exposing (with)
 import List.Extra
 import Maybe.Verify
 import Process
-import RemoteData
 import SearchBox
 import Shared
 import Spa.Document exposing (Document)
@@ -187,10 +186,10 @@ update msg model =
 
         GetArtistsRequest i response ->
             case response of
-                RemoteData.Success (ArtistQuery artist) ->
+                Ok (ArtistQuery artist) ->
                     ( updateForm (updateArtistEntry i (\entry -> { entry | artists = Just artist })) model, Cmd.none )
 
-                _ ->
+                Err _ ->
                     ( model, Cmd.none )
 
         AddArtist ->
@@ -231,10 +230,10 @@ update msg model =
 
         CreateReleaseRequest response ->
             case response of
-                RemoteData.Success (ReleaseMutation (Release id)) ->
+                Ok (ReleaseMutation (Release id)) ->
                     ( model, Utils.Route.navigate model.key (Route.Release__Id_Int { id = id }) )
 
-                _ ->
+                Err _ ->
                     ( model, Cmd.none )
 
 
@@ -422,15 +421,15 @@ type alias ValidatedForm =
     }
 
 
+type ValidationProblem
+    = ValidationProblem ValidatedField String
+
+
 type ValidatedField
     = TitleField
     | ReleaseTypeField
     | ArtistsField
     | ArtistField Int
-
-
-type ValidationProblem
-    = ValidationProblem ValidatedField String
 
 
 validator : Validator ValidationProblem Form ValidatedForm

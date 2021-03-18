@@ -4,7 +4,6 @@ import Graphql.Http
 import Graphql.Http.GraphqlError
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet exposing (SelectionSet)
-import RemoteData
 import Task
 
 
@@ -47,7 +46,7 @@ auth session =
 
 
 type alias Response decodesTo =
-    RemoteData.RemoteData Error decodesTo
+    Result (List Error) decodesTo
 
 
 type alias ResponseToMsg decodesTo msg =
@@ -66,14 +65,13 @@ withSession session =
 
 send : ResponseToMsg decodesTo msg -> Graphql.Http.Request decodesTo -> Cmd msg
 send toMsg =
-    Graphql.Http.send ((RemoteData.fromResult >> RemoteData.mapError decodeError) >> toMsg)
+    Graphql.Http.send (Result.mapError decodeError >> toMsg)
 
 
-sendTask : Graphql.Http.Request decodesTo -> Task.Task ignored (Response decodesTo)
+sendTask : Graphql.Http.Request decodesTo -> Task.Task (List Error) decodesTo
 sendTask request =
     Graphql.Http.toTask request
-        |> RemoteData.fromTask
-        |> Task.map (RemoteData.mapError decodeError)
+        |> Task.mapError decodeError
 
 
 queryRequest : SelectionSet decodesTo RootQuery -> Graphql.Http.Request decodesTo
@@ -106,32 +104,26 @@ sendMutation toMsg selection session =
 -- ERRORS
 
 
-type GraphqlError
-    = InvalidCredentialsError
-    | GraphqlError Graphql.Http.GraphqlError.GraphqlError
-
-
 type Error
-    = GraphqlErrors (List GraphqlError)
+    = InvalidCredentialsError
+    | UnparsedError Graphql.Http.GraphqlError.GraphqlError
     | HttpError Graphql.Http.HttpError
 
 
-decodeError : Graphql.Http.Error parsedData -> Error
+decodeError : Graphql.Http.Error parsedData -> List Error
 decodeError error =
     case error of
         Graphql.Http.GraphqlError _ graphqlErrors ->
-            GraphqlErrors
-                (List.map
-                    (\graphqlError ->
-                        case graphqlError.message of
-                            "invalid credentials" ->
-                                InvalidCredentialsError
+            List.map
+                (\graphqlError ->
+                    case graphqlError.message of
+                        "invalid credentials" ->
+                            InvalidCredentialsError
 
-                            _ ->
-                                GraphqlError graphqlError
-                    )
-                    graphqlErrors
+                        _ ->
+                            UnparsedError graphqlError
                 )
+                graphqlErrors
 
         Graphql.Http.HttpError httpError ->
-            HttpError httpError
+            [ HttpError httpError ]

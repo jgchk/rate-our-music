@@ -4,7 +4,6 @@
 
 module Api.Object.AccountMutation exposing (..)
 
-import Api.Enum.Role
 import Api.InputObject
 import Api.Interface
 import Api.Object
@@ -20,19 +19,18 @@ import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode
 
 
-type alias CreateRequiredArguments =
+type alias RegisterRequiredArguments =
     { username : String
     , password : String
-    , roles : List Api.Enum.Role.Role
     }
 
 
-create :
-    CreateRequiredArguments
+register :
+    RegisterRequiredArguments
     -> SelectionSet decodesTo Api.Object.Auth
     -> SelectionSet decodesTo Api.Object.AccountMutation
-create requiredArgs____ object____ =
-    Object.selectionForCompositeField "create" [ Argument.required "username" requiredArgs____.username Encode.string, Argument.required "password" requiredArgs____.password Encode.string, Argument.required "roles" requiredArgs____.roles (Encode.enum Api.Enum.Role.toString |> Encode.list) ] object____ identity
+register requiredArgs____ object____ =
+    Object.selectionForCompositeField "register" [ Argument.required "username" requiredArgs____.username Encode.string, Argument.required "password" requiredArgs____.password Encode.string ] object____ identity
 
 
 type alias LoginRequiredArguments =

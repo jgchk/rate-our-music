@@ -17,7 +17,7 @@ import Element.Font as Font
 import Graphql.SelectionSet as SelectionSet exposing (with)
 import List
 import List.Extra
-import RemoteData
+import RemoteData exposing (RemoteData)
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route
@@ -48,7 +48,7 @@ type alias Params =
 
 type alias Model =
     { id : Int
-    , releaseResponse : Api.Response ReleaseQuery
+    , releaseRequest : RemoteData (List Api.Error) Release
     }
 
 
@@ -90,7 +90,7 @@ type alias Track =
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
     ( { id = params.id
-      , releaseResponse = RemoteData.NotAsked
+      , releaseRequest = RemoteData.NotAsked
       }
     , getRelease { id = params.id } shared.session
     )
@@ -108,7 +108,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ReleaseRequest response ->
-            ( { model | releaseResponse = response }, Cmd.none )
+            case response of
+                Ok (ReleaseQuery release) ->
+                    ( { model | releaseRequest = RemoteData.Success release }, Cmd.none )
+
+                Err errors ->
+                    ( { model | releaseRequest = RemoteData.Failure errors }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -118,7 +123,7 @@ save _ shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( model, getRelease { id = model.id } shared.session )
+    ( { model | releaseRequest = RemoteData.Loading }, getRelease { id = model.id } shared.session )
 
 
 subscriptions : Model -> Sub Msg
@@ -134,7 +139,7 @@ view : Model -> Document Msg
 view model =
     { title = "Id_Int"
     , body =
-        case model.releaseResponse of
+        case model.releaseRequest of
             RemoteData.NotAsked ->
                 []
 
@@ -144,7 +149,7 @@ view model =
             RemoteData.Failure _ ->
                 [ text "Error" ]
 
-            RemoteData.Success (ReleaseQuery release) ->
+            RemoteData.Success release ->
                 [ row
                     [ Background.color (rgb 0.9 0.9 0.9)
                     , width (fill |> maximum 1600)

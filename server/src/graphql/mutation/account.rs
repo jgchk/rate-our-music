@@ -1,7 +1,6 @@
 use crate::auth;
 use crate::errors;
 use crate::model::account::Auth;
-use crate::model::account::Role;
 use crate::Environment;
 use async_graphql::*;
 use chrono::Duration;
@@ -11,18 +10,17 @@ pub struct AccountMutation;
 
 #[Object]
 impl AccountMutation {
-    async fn create(
+    async fn register(
         &self,
         ctx: &Context<'_>,
         username: String,
         password: String,
-        roles: Vec<Role>,
     ) -> Result<Auth> {
         let env = ctx.data::<crate::graphql::Context>()?;
         let account = env
             .db()
             .account()
-            .create(&username, &password, roles)
+            .create(&username, &password, Vec::new())
             .await?;
         let (token, exp) = make_token(env, account.account_id).await?;
         make_refresh_token(env, ctx, account.account_id).await?;
