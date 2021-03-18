@@ -71,6 +71,23 @@ impl<'a> AccountDatabase<'a> {
         .fetch_optional(self.0)
         .await?;
 
-        Ok(maybe_account.map(|account| account.into()))
+        Ok(maybe_account.map(Account::from))
+    }
+
+    pub async fn get_by_username(&self, username: &str) -> Result<Option<Account>, Error> {
+        let maybe_account = sqlx::query_as!(
+            RawAccount,
+            r#"SELECT
+                account_id,
+                username,
+                password,
+                roles as "roles: Vec<String>"
+            FROM account
+            WHERE username = $1"#,
+            username
+        )
+        .fetch_optional(self.0)
+        .await?;
+        Ok(maybe_account.map(Account::from))
     }
 }

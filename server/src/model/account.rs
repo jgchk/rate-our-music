@@ -10,13 +10,20 @@ pub struct RawAccount {
     pub roles: Option<Vec<String>>,
 }
 
-impl Into<Account> for RawAccount {
-    fn into(self) -> Account {
-        Account {
-            account_id: self.account_id,
-            username: self.username,
-            password: self.password,
-            roles: self
+pub struct Account {
+    pub account_id: i32,
+    pub username: String,
+    pub password: String,
+    pub roles: Vec<Role>,
+}
+
+impl From<RawAccount> for Account {
+    fn from(raw: RawAccount) -> Self {
+        Self {
+            account_id: raw.account_id,
+            username: raw.username,
+            password: raw.password,
+            roles: raw
                 .roles
                 .unwrap_or_default()
                 .iter()
@@ -24,13 +31,6 @@ impl Into<Account> for RawAccount {
                 .collect::<Vec<_>>(),
         }
     }
-}
-
-pub struct Account {
-    pub account_id: i32,
-    pub username: String,
-    pub password: String,
-    pub roles: Vec<Role>,
 }
 
 #[derive(Serialize, Deserialize, sqlx::Type, Debug, Clone, Copy, Enum, Eq, PartialEq)]

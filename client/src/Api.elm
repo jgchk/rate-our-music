@@ -1,4 +1,4 @@
-module Api exposing (Account, Auth, Error, Response, Session(..), auth, mutationRequest, queryRequest, sendMutation, sendQuery, sendTask, withSession)
+module Api exposing (Account, Auth, Error(..), Response, Session(..), auth, mutationRequest, queryRequest, sendMutation, sendQuery, sendTask, withSession)
 
 import Graphql.Http
 import Graphql.Http.GraphqlError
@@ -106,6 +106,7 @@ sendMutation toMsg selection session =
 
 type Error
     = InvalidCredentialsError
+    | DuplicateUsernameError
     | UnparsedError Graphql.Http.GraphqlError.GraphqlError
     | HttpError Graphql.Http.HttpError
 
@@ -119,6 +120,9 @@ decodeError error =
                     case graphqlError.message of
                         "invalid credentials" ->
                             InvalidCredentialsError
+
+                        "error returned from database: duplicate key value violates unique constraint \"account_username_key\"" ->
+                            DuplicateUsernameError
 
                         _ ->
                             UnparsedError graphqlError

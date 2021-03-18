@@ -5,12 +5,17 @@ import Api.Mutation
 import Api.Object
 import Api.Object.Account
 import Api.Object.AccountMutation
+import Api.Object.AccountQuery
 import Api.Object.Auth
+import Api.Query
 import Browser.Navigation as Nav
 import Element exposing (..)
+import Element.Border as Border
+import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
 import Graphql.SelectionSet as SelectionSet exposing (with)
+import RemoteData exposing (RemoteData)
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route
@@ -19,7 +24,7 @@ import Spa.Url exposing (Url)
 import String.Verify
 import Utils.Route
 import Utils.UI as UI
-import Verify exposing (Validator, validate, verify)
+import Verify
 
 
 page : Page Params Model Msg
@@ -52,6 +57,7 @@ type alias Model =
 
 type alias Form =
     { username : String
+    , doesUsernameExistRequest : RemoteData Api.Error Bool
     , password : String
     , showPassword : Bool
     }
@@ -68,6 +74,7 @@ init shared _ =
       , key = shared.key
       , form =
             { username = ""
+            , doesUsernameExistRequest = RemoteData.NotAsked
             , password = ""
             , showPassword = False
             }
@@ -83,19 +90,31 @@ init shared _ =
 
 type Msg
     = EnteredUsername String
+    | DoesUsernameExistRequest (Api.Response DoesUsernameExistQuery)
     | EnteredPassword String
     | ShowPassword Bool
     | SubmittedForm
-    | RegisterRequest (Api.Response AccountMutation)
+    | RegisterRequest (Api.Response RegisterMutation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         EnteredUsername username ->
-            ( updateForm (\form -> { form | username = username }) model
-            , Cmd.none
+            -- ( u
+            ( updateForm (\form -> { form | username = username, doesUsernameExistRequest = RemoteData.Loading }) model
+            , checkIfUsernameExists { username = username } model.session
             )
+
+        DoesUsernameExistRequest response ->
+            case response of
+                Ok (DoesUsernameExistQuery exists) ->
+                    ( updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists }) model
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
         EnteredPassword password ->
             ( updateForm (\form -> { form | password = password }) model
@@ -121,13 +140,26 @@ update msg model =
 
         RegisterRequest response ->
             case response of
-                Ok (AccountMutation auth) ->
+                Ok (RegisterMutation auth) ->
                     ( { model | session = Api.LoggedIn auth }
                     , openAccountPage model.key auth.account.id
                     )
 
                 Err errors ->
-                    ( { model | session = Api.LoggedOut, problems = List.map ServerProblem errors }
+                    let
+                        problems =
+                            List.map
+                                (\error ->
+                                    case error of
+                                        Api.DuplicateUsernameError ->
+                                            ValidationProblem UsernameField "username already exists"
+
+                                        _ ->
+                                            ServerProblem error
+                                )
+                                errors
+                    in
+                    ( { model | session = Api.LoggedOut, problems = problems }
                     , Cmd.none
                     )
 
@@ -165,39 +197,106 @@ subscriptions _ =
 
 view : Model -> Document Msg
 view model =
+    let
+        findErrors : ValidatedField -> List String
+        findErrors validatedField =
+            List.filterMap
+                (\problem ->
+                    case problem of
+                        ValidationProblem field error ->
+                            if field == validatedField then
+                                Just error
+
+                            else
+                                Nothing
+
+                        _ ->
+                            Nothing
+                )
+                model.problems
+
+        usernameErrors =
+            findErrors UsernameField
+
+        passwordErrors =
+            findErrors PasswordField
+
+        borderAttrs errors =
+            if List.isEmpty errors then
+                []
+
+            else
+                [ Border.color (rgb 1 0 0) ]
+
+        errorMessages errors =
+            if List.isEmpty errors then
+                []
+
+            else
+                List.map (\error -> el [ Font.color (rgb 1 0 0) ] (text error)) errors
+    in
     { title = "Register"
     , body =
         [ column []
-            [ Input.username []
-                { onChange = EnteredUsername
-                , text = model.form.username
-                , placeholder = Nothing
-                , label = Input.labelLeft [] (text "Username")
-                }
-            , row []
-                [ Input.newPassword
-                    [ inFront
-                        (Input.button [ alignRight, centerY, padding (UI.spacing 3) ]
-                            { onPress = Just (ShowPassword (not model.form.showPassword))
-                            , label =
-                                (if model.form.showPassword then
-                                    FeatherIcons.eyeOff
+            [ column []
+                (Input.username
+                    (borderAttrs usernameErrors
+                        ++ (case model.form.doesUsernameExistRequest of
+                                RemoteData.NotAsked ->
+                                    []
 
-                                 else
-                                    FeatherIcons.eye
+                                RemoteData.Loading ->
+                                    [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (FeatherIcons.loader |> FeatherIcons.toHtml [] |> html)) ]
+
+                                RemoteData.Success exists ->
+                                    if exists then
+                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 1 0 0) ] (FeatherIcons.x |> FeatherIcons.toHtml [] |> html))
+                                        , Border.color (rgb 1 0 0)
+                                        ]
+
+                                    else
+                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 0 1 0) ] (FeatherIcons.check |> FeatherIcons.toHtml [] |> html))
+                                        , Border.color (rgb 0 1 0)
+                                        ]
+
+                                RemoteData.Failure _ ->
+                                    []
+                           )
+                    )
+                    { onChange = EnteredUsername
+                    , text = model.form.username
+                    , placeholder = Nothing
+                    , label = Input.labelLeft [] (text "Username")
+                    }
+                    :: errorMessages usernameErrors
+                )
+            , column []
+                (Input.newPassword
+                    (borderAttrs passwordErrors
+                        ++ [ inFront
+                                (Input.button [ alignRight, centerY, padding (UI.spacing 3) ]
+                                    { onPress = Just (ShowPassword (not model.form.showPassword))
+                                    , label =
+                                        (if model.form.showPassword then
+                                            FeatherIcons.eyeOff
+
+                                         else
+                                            FeatherIcons.eye
+                                        )
+                                            |> FeatherIcons.toHtml []
+                                            |> html
+                                    }
                                 )
-                                    |> FeatherIcons.toHtml []
-                                    |> html
-                            }
-                        )
-                    ]
+                           ]
+                    )
                     { onChange = EnteredPassword
                     , text = model.form.password
                     , placeholder = Nothing
                     , label = Input.labelLeft [] (text "Password")
                     , show = model.form.showPassword
                     }
-                ]
+                    :: errorMessages passwordErrors
+                )
             , Input.button []
                 { onPress = Just SubmittedForm
                 , label = text "Register"
@@ -222,26 +321,56 @@ type ValidatedField
     | PasswordField
 
 
-validator : Validator Problem Form ValidatedForm
+validator : Verify.Validator Problem Form ValidatedForm
 validator =
-    validate ValidatedForm
-        |> verify .username (String.Verify.notBlank (ValidationProblem UsernameField "username is required"))
-        |> verify .password (String.Verify.notBlank (ValidationProblem PasswordField "password is required"))
+    Verify.validate ValidatedForm
+        |> Verify.custom validateUsername
+        |> Verify.verify .password (String.Verify.notBlank (ValidationProblem PasswordField "password is required"))
+
+
+validateUsername : Verify.Validator Problem Form String
+validateUsername =
+    let
+        doesntExist form =
+            case form.doesUsernameExistRequest of
+                RemoteData.Success True ->
+                    Err ( ValidationProblem UsernameField "username already exists", [] )
+
+                _ ->
+                    Ok form
+    in
+    doesntExist
+        >> Result.andThen
+            (\form -> String.Verify.notBlank (ValidationProblem UsernameField "username is required") form.username)
 
 
 
 -- REQUESTS
 
 
-type AccountMutation
-    = AccountMutation Api.Auth
+type DoesUsernameExistQuery
+    = DoesUsernameExistQuery Bool
+
+
+checkIfUsernameExists : Api.Object.AccountQuery.DoesUsernameExistRequiredArguments -> Api.Session -> Cmd Msg
+checkIfUsernameExists args =
+    let
+        rootSelection =
+            SelectionSet.succeed DoesUsernameExistQuery
+                |> with (Api.Object.AccountQuery.doesUsernameExist args)
+    in
+    Api.sendQuery DoesUsernameExistRequest (Api.Query.account rootSelection)
+
+
+type RegisterMutation
+    = RegisterMutation Api.Auth
 
 
 registerAccount : Api.Object.AccountMutation.RegisterRequiredArguments -> Api.Session -> Cmd Msg
 registerAccount args =
     let
         rootSelection =
-            SelectionSet.succeed AccountMutation
+            SelectionSet.succeed RegisterMutation
                 |> with (Api.Object.AccountMutation.register args credSelection)
 
         credSelection =
