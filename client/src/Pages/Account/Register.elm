@@ -129,6 +129,20 @@ update msg model =
                 >> Zipper.into .form (\form model_ -> { model_ | form = form })
                 >> Zipper.map updateFn
                 >> Zipper.unzip
+
+        updateProblems : Model -> Model
+        updateProblems =
+            Zipper.zip
+                >> Zipper.map
+                    (\model_ ->
+                        { model_
+                            | problems =
+                                { validation = validator True model_.form
+                                , other = []
+                                }
+                        }
+                    )
+                >> Zipper.unzip
     in
     case msg of
         EnteredUsername username ->
@@ -139,17 +153,7 @@ update msg model =
                 updatedModel =
                     model
                         |> updateForm (\form -> { form | username = username })
-                        |> Zipper.zip
-                        |> Zipper.map
-                            (\model_ ->
-                                { model_
-                                    | problems =
-                                        { validation = validator True model_.form
-                                        , other = []
-                                        }
-                                }
-                            )
-                        |> Zipper.unzip
+                        |> updateProblems
                         |> (\model_ ->
                                 updateForm
                                     (\form ->
@@ -185,23 +189,11 @@ update msg model =
         DoesUsernameExistRequest response ->
             case response of
                 Ok (DoesUsernameExistQuery exists) ->
-                    let
-                        updatedModel =
-                            model
-                                |> updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists })
-                                |> Zipper.zip
-                                |> Zipper.map
-                                    (\model_ ->
-                                        { model_
-                                            | problems =
-                                                { validation = validator True model_.form
-                                                , other = []
-                                                }
-                                        }
-                                    )
-                                |> Zipper.unzip
-                    in
-                    ( updatedModel, Cmd.none )
+                    ( model
+                        |> updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists })
+                        |> updateProblems
+                    , Cmd.none
+                    )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -209,17 +201,7 @@ update msg model =
         EnteredPassword password ->
             ( model
                 |> updateForm (\form -> { form | password = password })
-                |> Zipper.zip
-                |> Zipper.map
-                    (\model_ ->
-                        { model_
-                            | problems =
-                                { validation = validator True model_.form
-                                , other = []
-                                }
-                        }
-                    )
-                |> Zipper.unzip
+                |> updateProblems
             , Cmd.none
             )
 
