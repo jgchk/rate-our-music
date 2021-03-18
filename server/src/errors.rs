@@ -18,6 +18,9 @@ pub enum Error {
     InvalidDate(Option<i16>, Option<i16>, Option<i16>),
     #[error("ArtistInput must have either `id` or `name`")]
     InvalidArtistInput,
+
+    #[error("username must be {0} to {1} characters")]
+    InvalidUsernameLength(i32, i32),
     #[error("password must be {0} to {1} characters")]
     InvalidPasswordLength(i32, i32),
 }

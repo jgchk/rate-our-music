@@ -15,17 +15,17 @@ import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
 import Graphql.SelectionSet as SelectionSet exposing (with)
+import List.Extra
+import Maybe.Extra
 import RemoteData exposing (RemoteData)
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
-import String.Verify
 import Utils.Debounce
 import Utils.Route
 import Utils.UI as UI
-import Verify
 import Zipper
 
 
@@ -53,7 +53,10 @@ type alias Model =
     { session : Api.Session
     , key : Nav.Key
     , form : Form
-    , problems : List Problem
+    , problems :
+        { validation : ValidationErrors
+        , other : List Api.Error
+        }
     }
 
 
@@ -65,9 +68,15 @@ type alias Form =
     }
 
 
-type Problem
-    = ValidationProblem ValidatedField String
-    | ServerProblem Api.Error
+type alias ValidationErrors =
+    { username :
+        { invalidLength : Bool
+        , alreadyExists : Bool
+        }
+    , password :
+        { invalidLength : Bool
+        }
+    }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
@@ -80,7 +89,18 @@ init shared _ =
             , password = ""
             , showPassword = False
             }
-      , problems = []
+      , problems =
+            { validation =
+                { username =
+                    { invalidLength = False
+                    , alreadyExists = False
+                    }
+                , password =
+                    { invalidLength = False
+                    }
+                }
+            , other = []
+            }
       }
     , Cmd.none
     )
@@ -103,18 +123,54 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        updateForm : (Form -> Form) -> Model
+        updateForm : (Form -> Form) -> Model -> Model
         updateForm updateFn =
-            model
-                |> Zipper.zip
-                |> Zipper.into .form (\form model_ -> { model_ | form = form })
-                |> Zipper.map updateFn
-                |> Zipper.unzip
+            Zipper.zip
+                >> Zipper.into .form (\form model_ -> { model_ | form = form })
+                >> Zipper.map updateFn
+                >> Zipper.unzip
     in
     case msg of
         EnteredUsername username ->
-            ( updateForm (\form -> { form | username = username, doesUsernameExistRequest = RemoteData.Loading })
-            , Utils.Debounce.queue 500 (TimePassed username)
+            let
+                shouldMakeUsernameExistsRequest model_ =
+                    String.length model_.form.username > 0 && not model_.problems.validation.username.invalidLength
+
+                updatedModel =
+                    model
+                        |> updateForm (\form -> { form | username = username })
+                        |> Zipper.zip
+                        |> Zipper.map
+                            (\model_ ->
+                                { model_
+                                    | problems =
+                                        { validation = validator True model_.form
+                                        , other = []
+                                        }
+                                }
+                            )
+                        |> Zipper.unzip
+                        |> (\model_ ->
+                                updateForm
+                                    (\form ->
+                                        { form
+                                            | doesUsernameExistRequest =
+                                                if shouldMakeUsernameExistsRequest model_ then
+                                                    RemoteData.Loading
+
+                                                else
+                                                    RemoteData.NotAsked
+                                        }
+                                    )
+                                    model_
+                           )
+            in
+            ( updatedModel
+            , if shouldMakeUsernameExistsRequest updatedModel then
+                Utils.Debounce.queue 500 (TimePassed username)
+
+              else
+                Cmd.none
             )
 
         TimePassed debouncedUsername ->
@@ -129,51 +185,68 @@ update msg model =
         DoesUsernameExistRequest response ->
             case response of
                 Ok (DoesUsernameExistQuery exists) ->
-                    ( updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists })
-                    , Cmd.none
-                    )
+                    let
+                        updatedModel =
+                            model
+                                |> updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists })
+                                |> Zipper.zip
+                                |> Zipper.map
+                                    (\model_ ->
+                                        { model_
+                                            | problems =
+                                                { validation = validator True model_.form
+                                                , other = []
+                                                }
+                                        }
+                                    )
+                                |> Zipper.unzip
+                    in
+                    ( updatedModel, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )
 
         EnteredPassword password ->
-            let
-                passwordLengthProblem =
-                    ValidationProblem PasswordField "password must be 1 to 64 characters"
-
-                problemsWithoutPasswordLengthProblem =
-                    List.filter (\problem -> problem /= passwordLengthProblem) model.problems
-
-                problems =
-                    if String.length password > 64 then
-                        passwordLengthProblem :: problemsWithoutPasswordLengthProblem
-
-                    else
-                        problemsWithoutPasswordLengthProblem
-            in
-            ( updateForm (\form -> { form | password = password })
+            ( model
+                |> updateForm (\form -> { form | password = password })
                 |> Zipper.zip
-                |> Zipper.map (\model_ -> { model_ | problems = problems })
+                |> Zipper.map
+                    (\model_ ->
+                        { model_
+                            | problems =
+                                { validation = validator True model_.form
+                                , other = []
+                                }
+                        }
+                    )
                 |> Zipper.unzip
             , Cmd.none
             )
 
         ShowPassword show ->
-            ( updateForm (\form -> { form | showPassword = show })
+            ( model |> updateForm (\form -> { form | showPassword = show })
             , Cmd.none
             )
 
         SubmittedForm ->
-            case validator model.form of
-                Ok validForm ->
-                    ( { model | session = Api.LoggingIn }
-                    , registerAccount { username = validForm.username, password = validForm.password } model.session
-                    )
+            let
+                validationErrors =
+                    validator False model.form
+            in
+            if isValid validationErrors then
+                ( { model | session = Api.LoggingIn }
+                , registerAccount { username = model.form.username, password = model.form.password } model.session
+                )
 
-                Err ( firstProblem, otherProblems ) ->
-                    ( { model | problems = firstProblem :: otherProblems }
-                    , Cmd.none
-                    )
+            else
+                ( { model
+                    | problems =
+                        { validation = validationErrors
+                        , other = []
+                        }
+                  }
+                , Cmd.none
+                )
 
         RegisterRequest response ->
             case response of
@@ -184,20 +257,39 @@ update msg model =
 
                 Err errors ->
                     let
-                        problems =
-                            List.map
+                        usernameInvalidLength =
+                            Maybe.Extra.isJust <| List.Extra.find ((==) Api.UsernameLengthError) errors
+
+                        usernameAlreadyExists =
+                            Maybe.Extra.isJust <| List.Extra.find ((==) Api.DuplicateUsernameError) errors
+
+                        passwordInvalidLength =
+                            Maybe.Extra.isJust <| List.Extra.find ((==) Api.PasswordLengthError) errors
+
+                        otherErrors =
+                            List.filter
                                 (\error ->
-                                    case error of
-                                        Api.DuplicateUsernameError ->
-                                            ValidationProblem UsernameField "username already exists"
-
-                                        Api.InvalidPasswordLength ->
-                                            ValidationProblem PasswordField "password must be 1 to 64 characters"
-
-                                        _ ->
-                                            ServerProblem error
+                                    error
+                                        /= Api.UsernameLengthError
+                                        && error
+                                        /= Api.DuplicateUsernameError
+                                        && error
+                                        /= Api.PasswordLengthError
                                 )
                                 errors
+
+                        problems =
+                            { validation =
+                                { username =
+                                    { invalidLength = usernameInvalidLength
+                                    , alreadyExists = usernameAlreadyExists
+                                    }
+                                , password =
+                                    { invalidLength = passwordInvalidLength
+                                    }
+                                }
+                            , other = otherErrors
+                            }
                     in
                     ( { model | session = Api.LoggedOut, problems = problems }
                     , Cmd.none
@@ -233,28 +325,8 @@ subscriptions _ =
 view : Model -> Document Msg
 view model =
     let
-        findErrors : ValidatedField -> List String
-        findErrors validatedField =
-            List.filterMap
-                (\problem ->
-                    case problem of
-                        ValidationProblem field error ->
-                            if field == validatedField then
-                                Just error
-
-                            else
-                                Nothing
-
-                        _ ->
-                            Nothing
-                )
-                model.problems
-
-        usernameErrors =
-            findErrors UsernameField
-
-        passwordErrors =
-            findErrors PasswordField
+        validationProblems =
+            formatValidationErrors model.problems.validation
 
         borderAttrs errors =
             if List.isEmpty errors then
@@ -275,27 +347,31 @@ view model =
         [ column []
             [ column []
                 (Input.username
-                    (borderAttrs usernameErrors
-                        ++ (case model.form.doesUsernameExistRequest of
-                                RemoteData.NotAsked ->
-                                    []
+                    (borderAttrs validationProblems.username
+                        ++ (if String.length model.form.username > 0 then
+                                case model.form.doesUsernameExistRequest of
+                                    RemoteData.NotAsked ->
+                                        []
 
-                                RemoteData.Loading ->
-                                    [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (FeatherIcons.loader |> FeatherIcons.toHtml [] |> html)) ]
+                                    RemoteData.Loading ->
+                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3) ] (FeatherIcons.loader |> FeatherIcons.toHtml [] |> html)) ]
 
-                                RemoteData.Success exists ->
-                                    if exists then
-                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 1 0 0) ] (FeatherIcons.x |> FeatherIcons.toHtml [] |> html))
-                                        , Border.color (rgb 1 0 0)
-                                        ]
+                                    RemoteData.Success exists ->
+                                        if exists then
+                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 1 0 0) ] (FeatherIcons.x |> FeatherIcons.toHtml [] |> html))
+                                            , Border.color (rgb 1 0 0)
+                                            ]
 
-                                    else
-                                        [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 0 1 0) ] (FeatherIcons.check |> FeatherIcons.toHtml [] |> html))
-                                        , Border.color (rgb 0 1 0)
-                                        ]
+                                        else
+                                            [ inFront (el [ alignRight, centerY, padding (UI.spacing 3), Font.color (rgb 0 1 0) ] (FeatherIcons.check |> FeatherIcons.toHtml [] |> html))
+                                            , Border.color (rgb 0 1 0)
+                                            ]
 
-                                RemoteData.Failure _ ->
-                                    []
+                                    RemoteData.Failure _ ->
+                                        []
+
+                            else
+                                []
                            )
                     )
                     { onChange = EnteredUsername
@@ -303,11 +379,11 @@ view model =
                     , placeholder = Nothing
                     , label = Input.labelLeft [] (text "Username")
                     }
-                    :: errorMessages usernameErrors
+                    :: errorMessages validationProblems.username
                 )
             , column []
                 (Input.newPassword
-                    (borderAttrs passwordErrors
+                    (borderAttrs validationProblems.password
                         ++ [ inFront
                                 (Input.button [ alignRight, centerY, padding (UI.spacing 3) ]
                                     { onPress = Just (ShowPassword (not model.form.showPassword))
@@ -330,7 +406,7 @@ view model =
                     , label = Input.labelLeft [] (text "Password")
                     , show = model.form.showPassword
                     }
-                    :: errorMessages passwordErrors
+                    :: errorMessages validationProblems.password
                 )
             , Input.button []
                 { onPress = Just SubmittedForm
@@ -345,38 +421,73 @@ view model =
 -- FORM
 
 
-type alias ValidatedForm =
-    { username : String
-    , password : String
+validator : Bool -> Form -> ValidationErrors
+validator isLive form =
+    let
+        usernameTooShort =
+            not isLive && String.length form.username < 1
+
+        usernameTooLong =
+            String.length form.username > 64
+
+        usernameAlreadyExists =
+            form.doesUsernameExistRequest == RemoteData.Success True
+
+        passwordTooShort =
+            not isLive && String.length form.password < 1
+
+        passwordTooLong =
+            String.length form.password > 64
+    in
+    { username =
+        { invalidLength = usernameTooShort || usernameTooLong
+        , alreadyExists = usernameAlreadyExists
+        }
+    , password =
+        { invalidLength = passwordTooShort || passwordTooLong
+        }
     }
 
 
-type ValidatedField
-    = UsernameField
-    | PasswordField
+isValid : ValidationErrors -> Bool
+isValid errors =
+    not
+        (errors.username.invalidLength
+            || errors.username.alreadyExists
+            || errors.password.invalidLength
+        )
 
 
-validator : Verify.Validator Problem Form ValidatedForm
-validator =
-    Verify.validate ValidatedForm
-        |> Verify.custom validateUsername
-        |> Verify.verify .password (String.Verify.notBlank (ValidationProblem PasswordField "password is required"))
-
-
-validateUsername : Verify.Validator Problem Form String
-validateUsername =
+formatValidationErrors : ValidationErrors -> { username : List String, password : List String }
+formatValidationErrors errors =
     let
-        doesntExist form =
-            case form.doesUsernameExistRequest of
-                RemoteData.Success True ->
-                    Err ( ValidationProblem UsernameField "username already exists", [] )
+        usernameErrors =
+            []
+                ++ (if errors.username.invalidLength then
+                        [ "must be between 1 and 64 characters" ]
 
-                _ ->
-                    Ok form
+                    else
+                        []
+                   )
+                ++ (if errors.username.alreadyExists then
+                        [ "username already exists" ]
+
+                    else
+                        []
+                   )
+
+        passwordErrors =
+            []
+                ++ (if errors.password.invalidLength then
+                        [ "must be between 1 and 64 characters" ]
+
+                    else
+                        []
+                   )
     in
-    doesntExist
-        >> Result.andThen
-            (\form -> String.Verify.notBlank (ValidationProblem UsernameField "username is required") form.username)
+    { username = usernameErrors
+    , password = passwordErrors
+    }
 
 
 

@@ -16,7 +16,10 @@ impl AccountMutation {
         username: String,
         password: String,
     ) -> Result<Auth> {
-        if password.len() == 0 || password.len() > 64 {
+        if username.len() < 1 || username.len() > 64 {
+            return Err(errors::Error::InvalidUsernameLength(1, 64).into());
+        }
+        if password.len() < 1 || password.len() > 64 {
             return Err(errors::Error::InvalidPasswordLength(1, 64).into());
         }
 

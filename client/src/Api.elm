@@ -107,7 +107,8 @@ sendMutation toMsg selection session =
 type Error
     = InvalidCredentialsError
     | DuplicateUsernameError
-    | InvalidPasswordLength
+    | UsernameLengthError
+    | PasswordLengthError
     | UnparsedError Graphql.Http.GraphqlError.GraphqlError
     | HttpError Graphql.Http.HttpError
 
@@ -125,8 +126,11 @@ decodeError error =
                         "error returned from database: duplicate key value violates unique constraint \"account_username_key\"" ->
                             DuplicateUsernameError
 
+                        "username must be 1 to 64 characters" ->
+                            UsernameLengthError
+
                         "password must be 1 to 64 characters" ->
-                            InvalidPasswordLength
+                            PasswordLengthError
 
                         _ ->
                             UnparsedError graphqlError
