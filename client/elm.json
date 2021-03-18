@@ -18,7 +18,8 @@
             "krisajenkins/remotedata": "6.0.1",
             "mdgriffith/elm-ui": "1.1.7",
             "russelldavies/elm-ui-searchbox": "1.1.0",
-            "stoeffel/elm-verify": "5.0.0"
+            "stoeffel/elm-verify": "5.0.0",
+            "z5h/zipper": "1.0.1"
         },
         "indirect": {
             "elm/bytes": "1.0.8",

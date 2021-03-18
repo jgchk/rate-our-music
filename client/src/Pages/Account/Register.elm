@@ -26,6 +26,7 @@ import Utils.Debounce
 import Utils.Route
 import Utils.UI as UI
 import Verify
+import Zipper
 
 
 page : Page Params Model Msg
@@ -101,9 +102,18 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        updateForm : (Form -> Form) -> Model
+        updateForm updateFn =
+            model
+                |> Zipper.zip
+                |> Zipper.into .form (\form model_ -> { model_ | form = form })
+                |> Zipper.map updateFn
+                |> Zipper.unzip
+    in
     case msg of
         EnteredUsername username ->
-            ( updateForm (\form -> { form | username = username, doesUsernameExistRequest = RemoteData.Loading }) model
+            ( updateForm (\form -> { form | username = username, doesUsernameExistRequest = RemoteData.Loading })
             , Utils.Debounce.queue 500 (TimePassed username)
             )
 
@@ -119,7 +129,7 @@ update msg model =
         DoesUsernameExistRequest response ->
             case response of
                 Ok (DoesUsernameExistQuery exists) ->
-                    ( updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists }) model
+                    ( updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Success exists })
                     , Cmd.none
                     )
 
@@ -127,12 +137,29 @@ update msg model =
                     ( model, Cmd.none )
 
         EnteredPassword password ->
-            ( updateForm (\form -> { form | password = password }) model
+            let
+                passwordLengthProblem =
+                    ValidationProblem PasswordField "password must be 1 to 64 characters"
+
+                problemsWithoutPasswordLengthProblem =
+                    List.filter (\problem -> problem /= passwordLengthProblem) model.problems
+
+                problems =
+                    if String.length password > 64 then
+                        passwordLengthProblem :: problemsWithoutPasswordLengthProblem
+
+                    else
+                        problemsWithoutPasswordLengthProblem
+            in
+            ( updateForm (\form -> { form | password = password })
+                |> Zipper.zip
+                |> Zipper.map (\model_ -> { model_ | problems = problems })
+                |> Zipper.unzip
             , Cmd.none
             )
 
         ShowPassword show ->
-            ( updateForm (\form -> { form | showPassword = show }) model
+            ( updateForm (\form -> { form | showPassword = show })
             , Cmd.none
             )
 
@@ -175,11 +202,6 @@ update msg model =
                     ( { model | session = Api.LoggedOut, problems = problems }
                     , Cmd.none
                     )
-
-
-updateForm : (Form -> Form) -> Model -> Model
-updateForm transform model =
-    { model | form = transform model.form }
 
 
 save : Model -> Shared.Model -> Shared.Model
