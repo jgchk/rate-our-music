@@ -23,7 +23,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
-import Utils.Font exposing (scaled)
+import Utils.UI as UI
 
 
 page : Page Params Model Msg
@@ -154,11 +154,11 @@ view model =
                     [ Background.color (rgb 0.9 0.9 0.9)
                     , width (fill |> maximum 1600)
                     , centerX
-                    , Font.size (scaled 1)
+                    , Font.size (UI.font 1)
                     ]
                     [ column [ width (fillPortion 2) ]
-                        [ el [ Font.size (scaled 3) ] <| text release.title
-                        , row [ Font.size (scaled 2) ]
+                        [ el [ Font.size (UI.font 3) ] <| text release.title
+                        , row [ Font.size (UI.font 2) ]
                             (List.map
                                 (\artist ->
                                     [ link []

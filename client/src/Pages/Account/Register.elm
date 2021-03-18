@@ -9,6 +9,7 @@ import Api.Object.Auth
 import Browser.Navigation as Nav
 import Element exposing (..)
 import Element.Input as Input
+import FeatherIcons
 import Graphql.SelectionSet as SelectionSet exposing (with)
 import Shared
 import Spa.Document exposing (Document)
@@ -17,6 +18,7 @@ import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import String.Verify
 import Utils.Route
+import Utils.UI as UI
 import Verify exposing (Validator, validate, verify)
 
 
@@ -51,7 +53,7 @@ type alias Model =
 type alias Form =
     { username : String
     , password : String
-    , passwordConfirmation : String
+    , showPassword : Bool
     }
 
 
@@ -67,7 +69,7 @@ init shared _ =
       , form =
             { username = ""
             , password = ""
-            , passwordConfirmation = ""
+            , showPassword = False
             }
       , problems = []
       }
@@ -82,6 +84,7 @@ init shared _ =
 type Msg
     = EnteredUsername String
     | EnteredPassword String
+    | ShowPassword Bool
     | SubmittedForm
     | RegisterRequest (Api.Response AccountMutation)
 
@@ -96,6 +99,11 @@ update msg model =
 
         EnteredPassword password ->
             ( updateForm (\form -> { form | password = password }) model
+            , Cmd.none
+            )
+
+        ShowPassword show ->
+            ( updateForm (\form -> { form | showPassword = show }) model
             , Cmd.none
             )
 
@@ -166,13 +174,30 @@ view model =
                 , placeholder = Nothing
                 , label = Input.labelLeft [] (text "Username")
                 }
-            , Input.newPassword []
-                { onChange = EnteredPassword
-                , text = model.form.password
-                , placeholder = Nothing
-                , label = Input.labelLeft [] (text "Password")
-                , show = False
-                }
+            , row []
+                [ Input.newPassword
+                    [ inFront
+                        (Input.button [ alignRight, centerY, padding (UI.spacing 3) ]
+                            { onPress = Just (ShowPassword (not model.form.showPassword))
+                            , label =
+                                (if model.form.showPassword then
+                                    FeatherIcons.eye
+
+                                 else
+                                    FeatherIcons.eyeOff
+                                )
+                                    |> FeatherIcons.toHtml []
+                                    |> html
+                            }
+                        )
+                    ]
+                    { onChange = EnteredPassword
+                    , text = model.form.password
+                    , placeholder = Nothing
+                    , label = Input.labelLeft [] (text "Password")
+                    , show = model.form.showPassword
+                    }
+                ]
             , Input.button []
                 { onPress = Just SubmittedForm
                 , label = text "Register"
