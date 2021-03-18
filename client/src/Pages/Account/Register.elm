@@ -22,6 +22,7 @@ import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import String.Verify
+import Utils.Debounce
 import Utils.Route
 import Utils.UI as UI
 import Verify
@@ -90,6 +91,7 @@ init shared _ =
 
 type Msg
     = EnteredUsername String
+    | TimePassed String
     | DoesUsernameExistRequest (Api.Response DoesUsernameExistQuery)
     | EnteredPassword String
     | ShowPassword Bool
@@ -101,10 +103,18 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         EnteredUsername username ->
-            -- ( u
             ( updateForm (\form -> { form | username = username, doesUsernameExistRequest = RemoteData.Loading }) model
-            , checkIfUsernameExists { username = username } model.session
+            , Utils.Debounce.queue 500 (TimePassed username)
             )
+
+        TimePassed debouncedUsername ->
+            if debouncedUsername == model.form.username then
+                ( model
+                , checkIfUsernameExists { username = debouncedUsername } model.session
+                )
+
+            else
+                ( model, Cmd.none )
 
         DoesUsernameExistRequest response ->
             case response of

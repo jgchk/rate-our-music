@@ -19,7 +19,6 @@ import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (with)
 import List.Extra
 import Maybe.Verify
-import Process
 import SearchBox
 import Shared
 import Spa.Document exposing (Document)
@@ -27,7 +26,7 @@ import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import String.Verify
-import Task
+import Utils.Debounce
 import Utils.Route
 import Verify exposing (Validator, validate, verify)
 
@@ -169,7 +168,7 @@ update msg model =
                             )
                         )
                         model
-                    , enqueueDebounceFor i artistText
+                    , Utils.Debounce.queue 500 (TimePassed i artistText)
                     )
 
                 SearchBox.SearchBoxChanged subMsg ->
@@ -398,16 +397,6 @@ releaseTypeToString releaseType =
 
         Video ->
             "Video"
-
-
-enqueueDebounceFor : Int -> String -> Cmd Msg
-enqueueDebounceFor index string =
-    if String.isEmpty string then
-        Cmd.none
-
-    else
-        Process.sleep 500
-            |> Task.perform (always (TimePassed index string))
 
 
 
