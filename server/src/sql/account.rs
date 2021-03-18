@@ -19,7 +19,7 @@ impl<'a> AccountDatabase<'a> {
         roles: Vec<Role>,
     ) -> Result<Account, Error> {
         let account = sqlx::query!(
-            "INSERT INTO account (username, password, roles) VALUES ($1, crypt($2, gen_salt('bf')), $3) RETURNING account_id",
+            "INSERT INTO account (username, password, roles) VALUES ($1, crypt($2, gen_salt('bf')), $3::role[]) RETURNING account_id",
             username,
             password,
             roles.iter().map(|role| role.to_string()).collect::<Vec<String>>() as Vec<String>
@@ -71,6 +71,23 @@ impl<'a> AccountDatabase<'a> {
         .fetch_optional(self.0)
         .await?;
 
-        Ok(maybe_account.map(|account| account.into()))
+        Ok(maybe_account.map(Account::from))
+    }
+
+    pub async fn get_by_username(&self, username: &str) -> Result<Option<Account>, Error> {
+        let maybe_account = sqlx::query_as!(
+            RawAccount,
+            r#"SELECT
+                account_id,
+                username,
+                password,
+                roles as "roles: Vec<String>"
+            FROM account
+            WHERE username = $1"#,
+            username
+        )
+        .fetch_optional(self.0)
+        .await?;
+        Ok(maybe_account.map(Account::from))
     }
 }

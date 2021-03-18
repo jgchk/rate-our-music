@@ -19,8 +19,6 @@ import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (with)
 import List.Extra
 import Maybe.Verify
-import Process
-import RemoteData
 import SearchBox
 import Shared
 import Spa.Document exposing (Document)
@@ -28,9 +26,10 @@ import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import String.Verify
-import Task
+import Utils.Debounce
 import Utils.Route
 import Verify exposing (Validator, validate, verify)
+import Zipper
 
 
 page : Page Params Model Msg
@@ -125,14 +124,31 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        updateForm : (Form -> Form) -> Model
+        updateForm updateFn =
+            model
+                |> Zipper.zip
+                |> Zipper.into .form (\form model_ -> { model_ | form = form })
+                |> Zipper.map updateFn
+                |> Zipper.unzip
+
+        updateArtistEntry : Int -> (ArtistEntry -> ArtistEntry) -> Form -> Form
+        updateArtistEntry i transform form =
+            { form | artistEntries = List.Extra.updateAt i transform form.artistEntries }
+    in
     case msg of
         EnteredTitle title ->
-            ( updateForm (\form -> { form | title = title }) model, Cmd.none )
+            ( updateForm (\form -> { form | title = title })
+            , Cmd.none
+            )
 
         ChangedReleaseType changeEvent ->
             case changeEvent of
                 SearchBox.SelectionChanged releaseType ->
-                    ( updateForm (\form -> { form | maybeReleaseType = Just releaseType }) model, Cmd.none )
+                    ( updateForm (\form -> { form | maybeReleaseType = Just releaseType })
+                    , Cmd.none
+                    )
 
                 SearchBox.TextChanged releaseTypeText ->
                     ( updateForm
@@ -143,19 +159,20 @@ update msg model =
                                 , releaseTypeSearchBox = SearchBox.reset form.releaseTypeSearchBox
                             }
                         )
-                        model
                     , Cmd.none
                     )
 
                 SearchBox.SearchBoxChanged subMsg ->
-                    ( updateForm (\form -> { form | releaseTypeSearchBox = SearchBox.update subMsg model.form.releaseTypeSearchBox }) model
+                    ( updateForm (\form -> { form | releaseTypeSearchBox = SearchBox.update subMsg model.form.releaseTypeSearchBox })
                     , Cmd.none
                     )
 
         ChangedArtist i changeEvent ->
             case changeEvent of
                 SearchBox.SelectionChanged artist ->
-                    ( updateForm (updateArtistEntry i (\entry -> { entry | maybeArtist = Just artist })) model, Cmd.none )
+                    ( updateForm (updateArtistEntry i (\entry -> { entry | maybeArtist = Just artist }))
+                    , Cmd.none
+                    )
 
                 SearchBox.TextChanged artistText ->
                     ( updateForm
@@ -169,16 +186,17 @@ update msg model =
                                 }
                             )
                         )
-                        model
-                    , enqueueDebounceFor i artistText
+                    , Utils.Debounce.queue 500 (TimePassed i artistText)
                     )
 
                 SearchBox.SearchBoxChanged subMsg ->
-                    ( updateForm (updateArtistEntry i (\entry -> { entry | artistSearchBox = SearchBox.update subMsg entry.artistSearchBox })) model, Cmd.none )
+                    ( updateForm (updateArtistEntry i (\entry -> { entry | artistSearchBox = SearchBox.update subMsg entry.artistSearchBox }))
+                    , Cmd.none
+                    )
 
         TimePassed i debouncedString ->
             if Just debouncedString == Maybe.map .artistText (List.Extra.getAt i model.form.artistEntries) then
-                ( updateForm (updateArtistEntry i (\entry -> { entry | artistSearchBox = SearchBox.setLoading entry.artistSearchBox })) model
+                ( updateForm (updateArtistEntry i (\entry -> { entry | artistSearchBox = SearchBox.setLoading entry.artistSearchBox }))
                 , getArtists i { name = debouncedString } model.session
                 )
 
@@ -187,10 +205,12 @@ update msg model =
 
         GetArtistsRequest i response ->
             case response of
-                RemoteData.Success (ArtistQuery artist) ->
-                    ( updateForm (updateArtistEntry i (\entry -> { entry | artists = Just artist })) model, Cmd.none )
+                Ok (ArtistQuery artist) ->
+                    ( updateForm (updateArtistEntry i (\entry -> { entry | artists = Just artist }))
+                    , Cmd.none
+                    )
 
-                _ ->
+                Err _ ->
                     ( model, Cmd.none )
 
         AddArtist ->
@@ -207,12 +227,13 @@ update msg model =
                                    ]
                     }
                 )
-                model
             , Cmd.none
             )
 
         RemoveArtist i ->
-            ( updateForm (\form -> { form | artistEntries = List.Extra.removeAt i form.artistEntries }) model, Cmd.none )
+            ( updateForm (\form -> { form | artistEntries = List.Extra.removeAt i form.artistEntries })
+            , Cmd.none
+            )
 
         SubmittedForm ->
             case validator model.form of
@@ -231,21 +252,11 @@ update msg model =
 
         CreateReleaseRequest response ->
             case response of
-                RemoteData.Success (ReleaseMutation (Release id)) ->
+                Ok (ReleaseMutation (Release id)) ->
                     ( model, Utils.Route.navigate model.key (Route.Release__Id_Int { id = id }) )
 
-                _ ->
+                Err _ ->
                     ( model, Cmd.none )
-
-
-updateForm : (Form -> Form) -> Model -> Model
-updateForm transform model =
-    { model | form = transform model.form }
-
-
-updateArtistEntry : Int -> (ArtistEntry -> ArtistEntry) -> Form -> Form
-updateArtistEntry i transform form =
-    { form | artistEntries = List.Extra.updateAt i transform form.artistEntries }
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -401,16 +412,6 @@ releaseTypeToString releaseType =
             "Video"
 
 
-enqueueDebounceFor : Int -> String -> Cmd Msg
-enqueueDebounceFor index string =
-    if String.isEmpty string then
-        Cmd.none
-
-    else
-        Process.sleep 500
-            |> Task.perform (always (TimePassed index string))
-
-
 
 -- FORM
 
@@ -422,15 +423,15 @@ type alias ValidatedForm =
     }
 
 
+type ValidationProblem
+    = ValidationProblem ValidatedField String
+
+
 type ValidatedField
     = TitleField
     | ReleaseTypeField
     | ArtistsField
     | ArtistField Int
-
-
-type ValidationProblem
-    = ValidationProblem ValidatedField String
 
 
 validator : Validator ValidationProblem Form ValidatedForm

@@ -56,16 +56,12 @@ impl ArtistInputInternal {
     fn from(input: &ArtistInput) -> Result<Self, errors::Error> {
         match input.id {
             Some(id) => match &input.name {
-                Some(_name) => Err(errors::Error::InvalidInput(
-                    "ArtistInput cannot have both `id` and `name`".to_string(),
-                )),
+                Some(_name) => Err(errors::Error::InvalidArtistInput),
                 None => Ok(ArtistInputInternal::Existing(id)),
             },
             None => match &input.name {
                 Some(name) => Ok(ArtistInputInternal::New(name.to_string())),
-                None => Err(errors::Error::InvalidInput(
-                    "ArtistInput must specify either `id` or `name`".to_string(),
-                )),
+                None => Err(errors::Error::InvalidArtistInput),
             },
         }
     }

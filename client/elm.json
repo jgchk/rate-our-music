@@ -6,6 +6,7 @@
     "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
+            "andrewMacmurray/elm-simple-animation": "2.0.1",
             "dillonkearns/elm-graphql": "5.0.4",
             "elm/browser": "1.0.2",
             "elm/core": "1.0.5",
@@ -14,10 +15,14 @@
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm-community/list-extra": "8.3.0",
+            "elm-community/maybe-extra": "5.2.0",
+            "elm-community/result-extra": "2.4.0",
+            "feathericons/elm-feather": "1.5.0",
             "krisajenkins/remotedata": "6.0.1",
             "mdgriffith/elm-ui": "1.1.7",
             "russelldavies/elm-ui-searchbox": "1.1.0",
-            "stoeffel/elm-verify": "5.0.0"
+            "stoeffel/elm-verify": "5.0.0",
+            "z5h/zipper": "1.0.1"
         },
         "indirect": {
             "elm/bytes": "1.0.8",

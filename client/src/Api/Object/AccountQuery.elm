@@ -24,3 +24,14 @@ me :
     -> SelectionSet decodesTo Api.Object.AccountQuery
 me object____ =
     Object.selectionForCompositeField "me" [] object____ identity
+
+
+type alias DoesUsernameExistRequiredArguments =
+    { username : String }
+
+
+doesUsernameExist :
+    DoesUsernameExistRequiredArguments
+    -> SelectionSet Bool Api.Object.AccountQuery
+doesUsernameExist requiredArgs____ =
+    Object.selectionForField "Bool" "doesUsernameExist" [ Argument.required "username" requiredArgs____.username Encode.string ] Decode.bool

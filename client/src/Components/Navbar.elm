@@ -10,31 +10,39 @@ import Spa.Generated.Route as Route
 view :
     { session : Api.Session
     , onSignIn : msg
+    , onSignUp : msg
     , onSignOut : msg
     }
     -> Element msg
 view options =
     row [ spacing 20 ]
-        [ link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Top, label = text "Homepage" }
-        , link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Release__Submit, label = text "Submit" }
-        , case options.session of
-            Api.LoggedOut ->
-                Input.button
-                    []
-                    { onPress = Just options.onSignIn
-                    , label = text "Sign in"
-                    }
+        ([ link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Top, label = text "Homepage" }
+         , link [ Font.color (rgb 0 0.25 0.5), Font.underline ] { url = Route.toString Route.Release__Submit, label = text "Submit" }
+         ]
+            ++ (case options.session of
+                    Api.LoggedOut ->
+                        [ Input.button []
+                            { onPress = Just options.onSignIn
+                            , label = text "Sign in"
+                            }
+                        , Input.button []
+                            { onPress = Just options.onSignUp
+                            , label = text "Sign up"
+                            }
+                        ]
 
-            Api.LoggingIn ->
-                text "Logging in..."
+                    Api.LoggingIn ->
+                        [ text "Logging in..." ]
 
-            Api.LoggedIn _ ->
-                Input.button
-                    []
-                    { onPress = Just options.onSignOut
-                    , label = text "Sign out"
-                    }
+                    Api.LoggedIn _ ->
+                        [ Input.button
+                            []
+                            { onPress = Just options.onSignOut
+                            , label = text "Sign out"
+                            }
+                        ]
 
-            Api.LoggingOut ->
-                text "Logging out..."
-        ]
+                    Api.LoggingOut ->
+                        [ text "Logging out..." ]
+               )
+        )

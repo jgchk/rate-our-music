@@ -21,9 +21,11 @@ import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Process
 import RemoteData exposing (RemoteData(..))
 import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route
 import Task
 import Time
 import Url exposing (Url)
+import Utils.Route
 
 
 
@@ -57,16 +59,20 @@ init _ url key =
 
 
 type Msg
-    = Login
+    = Register
+    | Login
+    | Logout
     | LoginRequest (Api.Response AuthMutation)
     | RefreshRequest (Api.Response AuthMutation)
-    | Logout
     | LogoutRequest (Api.Response LogoutMutation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Register ->
+            ( model, Utils.Route.navigate model.key Route.Account__Register )
+
         Login ->
             let
                 session =
@@ -75,42 +81,6 @@ update msg model =
             ( { model | session = session }
             , login { username = "user", password = "pass" } session
             )
-
-        LoginRequest remoteData ->
-            case remoteData of
-                RemoteData.NotAsked ->
-                    ( model, Cmd.none )
-
-                RemoteData.Loading ->
-                    ( { model | session = Api.LoggingIn }, Cmd.none )
-
-                RemoteData.Failure _ ->
-                    ( { model | session = Api.LoggedOut }, Cmd.none )
-
-                RemoteData.Success (AuthMutation auth) ->
-                    let
-                        session =
-                            Api.LoggedIn auth
-                    in
-                    ( { model | session = session }, refresh session )
-
-        RefreshRequest remoteData ->
-            case remoteData of
-                RemoteData.NotAsked ->
-                    ( model, Cmd.none )
-
-                RemoteData.Loading ->
-                    ( model, Cmd.none )
-
-                RemoteData.Failure _ ->
-                    ( { model | session = Api.LoggedOut }, Cmd.none )
-
-                RemoteData.Success (AuthMutation auth) ->
-                    let
-                        session =
-                            Api.LoggedIn auth
-                    in
-                    ( { model | session = session }, refresh session )
 
         Logout ->
             case model.session of
@@ -124,18 +94,36 @@ update msg model =
                     , Cmd.none
                     )
 
-        LogoutRequest remoteData ->
-            case remoteData of
-                RemoteData.NotAsked ->
-                    ( model, Cmd.none )
+        LoginRequest response ->
+            case response of
+                Ok (AuthMutation auth) ->
+                    let
+                        session =
+                            Api.LoggedIn auth
+                    in
+                    ( { model | session = session }, refresh session )
 
-                RemoteData.Loading ->
-                    ( { model | session = Api.LoggingOut }, Cmd.none )
-
-                RemoteData.Failure _ ->
+                Err _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
-                RemoteData.Success _ ->
+        RefreshRequest response ->
+            case response of
+                Ok (AuthMutation auth) ->
+                    let
+                        session =
+                            Api.LoggedIn auth
+                    in
+                    ( { model | session = session }, refresh session )
+
+                Err _ ->
+                    ( { model | session = Api.LoggedOut }, Cmd.none )
+
+        LogoutRequest response ->
+            case response of
+                Ok _ ->
+                    ( { model | session = Api.LoggedOut }, Cmd.none )
+
+                Err _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
 
@@ -159,6 +147,7 @@ view { page, toMsg } model =
             [ Navbar.view
                 { session = model.session
                 , onSignIn = toMsg Login
+                , onSignUp = toMsg Register
                 , onSignOut = toMsg Logout
                 }
             , column [ height fill, width fill ] page.body
@@ -244,7 +233,7 @@ refresh session =
                         |> Api.sendTask
                         |> always
                     )
-                |> Task.perform identity
+                |> Task.attempt identity
                 |> Cmd.map RefreshRequest
 
         Nothing ->
