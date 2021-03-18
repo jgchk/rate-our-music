@@ -181,10 +181,10 @@ view model =
                             { onPress = Just (ShowPassword (not model.form.showPassword))
                             , label =
                                 (if model.form.showPassword then
-                                    FeatherIcons.eye
+                                    FeatherIcons.eyeOff
 
                                  else
-                                    FeatherIcons.eyeOff
+                                    FeatherIcons.eye
                                 )
                                     |> FeatherIcons.toHtml []
                                     |> html
