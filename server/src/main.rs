@@ -16,9 +16,9 @@ use crate::errors::Error;
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_warp::Response;
 use std::convert::Infallible;
+use std::fs;
 use warp::http::Response as HttpResponse;
 use warp::Filter;
-use std::fs;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -28,10 +28,10 @@ async fn main() -> Result<(), Error> {
     let env = Environment::new(database_url, redis_url, jwt_secret).await?;
     let env = warp::any().map(move || env.clone());
 
-    let html = fs::read_to_string("../client/public/index.html").expect("Could not find index.html");
+    let html =
+        fs::read_to_string("../client/public/index.html").expect("Could not find index.html");
     let static_files = warp::fs::dir("../client/public");
-    let frontend = warp::any()
-        .map(move || warp::reply::html(html.to_string()));
+    let frontend = warp::path::end().map(move || warp::reply::html(html.to_string()));
 
     let graphql = {
         let token = warp::header("authorization")
@@ -77,8 +77,7 @@ async fn main() -> Result<(), Error> {
 
     let routes = graphql.or(static_files).or(frontend);
 
-    warp::serve(routes)
-        .run(([127, 0, 0, 1], 3030)).await;
+    warp::serve(routes).run(([127, 0, 0, 1], 3030)).await;
 
     Ok(())
 }
