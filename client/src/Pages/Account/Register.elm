@@ -22,7 +22,6 @@ import Shared
 import Simple.Animation
 import Simple.Animation.Property
 import Spa.Document exposing (Document)
-import Spa.Generated.Route as Route
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import Utils.Debounce
@@ -106,7 +105,7 @@ init shared _ =
       }
     , case shared.session of
         Api.LoggedIn auth ->
-            openAccountPage shared.key auth.account.id
+            Utils.Route.openAccountPage shared.key auth.account.id
 
         _ ->
             Cmd.none
@@ -244,7 +243,7 @@ update msg model =
             case response of
                 Ok (RegisterMutation auth) ->
                     ( { model | session = Api.LoggedIn auth }
-                    , openAccountPage model.key auth.account.id
+                    , Utils.Route.openAccountPage model.key auth.account.id
                     )
 
                 Err errors ->
@@ -298,7 +297,7 @@ load shared model =
     ( { model | session = shared.session, key = shared.key }
     , case shared.session of
         Api.LoggedIn auth ->
-            openAccountPage shared.key auth.account.id
+            Utils.Route.openAccountPage shared.key auth.account.id
 
         _ ->
             Cmd.none
@@ -534,12 +533,3 @@ registerAccount args =
                 |> with Api.Object.Account.username
     in
     Api.sendMutation RegisterRequest (Api.Mutation.account rootSelection)
-
-
-
--- NAVIGATION
-
-
-openAccountPage : Nav.Key -> Int -> Cmd msg
-openAccountPage key id =
-    Utils.Route.navigate key (Route.Account__Id_Int { id = id })
