@@ -64,7 +64,7 @@ type alias Model =
 
 type alias Form =
     { username : String
-    , doesUsernameExistRequest : RemoteData Api.Error Bool
+    , doesUsernameExistRequest : RemoteData (List Api.Error) Bool
     , password : String
     , showPassword : Bool
     }
@@ -202,8 +202,11 @@ update msg model =
                     , Cmd.none
                     )
 
-                Err _ ->
-                    ( model, Cmd.none )
+                Err errors ->
+                    ( model
+                        |> updateForm (\form -> { form | doesUsernameExistRequest = RemoteData.Failure errors })
+                    , Cmd.none
+                    )
 
         EnteredPassword password ->
             ( model

@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           source: "."
           target: "~/rom"
-          
+
       - name: build frontend
         uses: appleboy/ssh-action@master
         with:
