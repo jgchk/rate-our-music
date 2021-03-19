@@ -4,6 +4,7 @@ pub mod descriptor;
 pub mod descriptor_vote;
 pub mod genre;
 pub mod genre_vote;
+pub mod log;
 pub mod release;
 pub mod release_artist;
 pub mod release_review;

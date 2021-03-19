@@ -4,6 +4,7 @@ mod descriptor;
 mod descriptor_vote;
 mod genre;
 mod genre_vote;
+mod log;
 mod release;
 mod tag;
 mod track;
@@ -15,6 +16,7 @@ use descriptor::DescriptorDatabase;
 use descriptor_vote::DescriptorVoteDatabase;
 use genre::GenreDatabase;
 use genre_vote::GenreVoteDatabase;
+use log::LogDatabase;
 use release::ReleaseDatabase;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -69,5 +71,9 @@ impl Database {
 
     pub fn tag(&self) -> TagDatabase {
         TagDatabase::new(&self.pool)
+    }
+
+    pub fn log(&self) -> LogDatabase {
+        LogDatabase::new(&self.pool)
     }
 }

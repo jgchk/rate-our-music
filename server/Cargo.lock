@@ -1530,6 +1530,7 @@ dependencies = [
  "jsonwebtoken",
  "redis",
  "serde",
+ "serde_json",
  "shrinkwraprs",
  "sqlx",
  "thiserror",

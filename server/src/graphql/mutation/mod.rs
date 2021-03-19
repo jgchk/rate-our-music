@@ -1,10 +1,12 @@
 mod account;
 mod artist;
+mod logging;
 mod release;
 
 use account::AccountMutation;
 use artist::ArtistMutation;
 use async_graphql::*;
+use logging::LoggingMutation;
 use release::ReleaseMutation;
 
 pub struct Mutation;
@@ -21,5 +23,9 @@ impl Mutation {
 
     async fn release(&self) -> ReleaseMutation {
         ReleaseMutation
+    }
+
+    async fn logging(&self) -> LoggingMutation {
+        LoggingMutation
     }
 }

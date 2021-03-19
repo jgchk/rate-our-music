@@ -38,3 +38,10 @@ release :
     -> SelectionSet decodesTo RootMutation
 release object____ =
     Object.selectionForCompositeField "release" [] object____ identity
+
+
+logging :
+    SelectionSet decodesTo Api.Object.LoggingMutation
+    -> SelectionSet decodesTo RootMutation
+logging object____ =
+    Object.selectionForCompositeField "logging" [] object____ identity

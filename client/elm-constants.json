@@ -1,0 +1,5 @@
+{
+  "path": "./src",
+  "moduleName": "Constants",
+  "values": ["ENVIRONMENT"]
+}

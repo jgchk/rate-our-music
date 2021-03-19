@@ -1,6 +1,7 @@
 module Pages.Account.Login exposing (Model, Msg, Params, page)
 
 import Api
+import Api.Enum.LogEnvironment
 import Api.Mutation
 import Api.Object
 import Api.Object.Account
@@ -18,6 +19,7 @@ import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
+import Utils.Log
 import Utils.Route
 import Utils.UI
 import Zipper
@@ -46,6 +48,7 @@ type alias Params =
 type alias Model =
     { session : Api.Session
     , key : Nav.Key
+    , environment : Api.Enum.LogEnvironment.LogEnvironment
     , form : Form
     , problems :
         { invalidCredentials : Bool
@@ -65,6 +68,7 @@ init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared _ =
     ( { session = shared.session
       , key = shared.key
+      , environment = shared.environment
       , form =
             { username = ""
             , password = ""
@@ -94,6 +98,7 @@ type Msg
     | ShowPassword Bool
     | SubmittedForm
     | LoginRequest (Api.Response LoginMutation)
+    | LogRequest (Api.Response Utils.Log.LogMutation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -146,8 +151,21 @@ update msg model =
                         | session = Api.LoggedOut
                         , problems = { invalidCredentials = invalidCredentials, other = otherErrors }
                       }
-                    , Cmd.none
+                    , if List.isEmpty otherErrors then
+                        Cmd.none
+
+                      else
+                        Utils.Log.apiErrors model.environment
+                            LogRequest
+                            { scope = "Pages/Account/Login.elm"
+                            , message = "Uncaught error"
+                            , errors = errors
+                            }
+                            model.session
                     )
+
+        LogRequest _ ->
+            ( model, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -157,7 +175,11 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | session = shared.session, key = shared.key }
+    ( { model
+        | session = shared.session
+        , key = shared.key
+        , environment = shared.environment
+      }
     , case shared.session of
         Api.LoggedIn auth ->
             Utils.Route.openAccountPage shared.key auth.account.id
