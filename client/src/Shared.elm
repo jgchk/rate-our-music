@@ -74,13 +74,7 @@ update msg model =
             ( model, Utils.Route.navigate model.key Route.Account__Register )
 
         Login ->
-            let
-                session =
-                    Api.LoggingIn
-            in
-            ( { model | session = session }
-            , login { username = "user", password = "pass" } session
-            )
+            ( model, Utils.Route.navigate model.key Route.Account__Login )
 
         Logout ->
             case model.session of
