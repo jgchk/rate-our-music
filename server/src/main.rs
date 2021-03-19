@@ -31,7 +31,7 @@ async fn main() -> Result<(), Error> {
     let html =
         fs::read_to_string("../client/public/index.html").expect("Could not find index.html");
     let static_files = warp::fs::dir("../client/public");
-    let frontend = warp::path::end().map(move || warp::reply::html(html.to_string()));
+    let frontend = warp::any().map(move || warp::reply::html(html.to_string()));
 
     let graphql = {
         let token = warp::header("authorization")
