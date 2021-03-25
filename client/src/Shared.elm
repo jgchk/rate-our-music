@@ -9,15 +9,20 @@ module Shared exposing
     )
 
 import Api exposing (Account, Auth)
+import Api.Enum.LogEnvironment
 import Api.Mutation
 import Api.Object
 import Api.Object.Account as ObjAccount
 import Api.Object.AccountMutation
 import Api.Object.Auth as ObjAuth
+import Api.Object.Log exposing (environment)
 import Browser.Navigation exposing (Key)
 import Components.Navbar as Navbar
+import Constants
 import Element exposing (..)
+import Graphql.OptionalArgument
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
+import Json.Decode
 import Process
 import RemoteData exposing (RemoteData(..))
 import Spa.Document exposing (Document)
@@ -25,6 +30,7 @@ import Spa.Generated.Route as Route
 import Task
 import Time
 import Url exposing (Url)
+import Utils.Log
 import Utils.Route
 
 
@@ -40,6 +46,7 @@ type alias Model =
     { url : Url
     , key : Key
     , session : Api.Session
+    , environment : Api.Enum.LogEnvironment.LogEnvironment
     }
 
 
@@ -48,9 +55,34 @@ init _ url key =
     let
         session =
             Api.LoggingIn
+
+        ( environment, cmd ) =
+            case Json.Decode.decodeString Api.Enum.LogEnvironment.decoder ("\"" ++ Constants.environment ++ "\"") of
+                Ok env ->
+                    ( env, Cmd.none )
+
+                Err reason ->
+                    let
+                        env =
+                            Api.Enum.LogEnvironment.Unknown
+                    in
+                    ( env
+                    , Utils.Log.error env
+                        LogRequest
+                        { scope = "Shared.elm"
+                        , message = "Could not parse environment"
+                        , name = "DecodeError"
+                        , data = Graphql.OptionalArgument.Present (Json.Decode.errorToString reason)
+                        }
+                        session
+                    )
     in
-    ( { url = url, key = key, session = session }
-    , refresh session
+    ( { url = url
+      , key = key
+      , session = session
+      , environment = environment
+      }
+    , Cmd.batch [ refresh session, cmd ]
     )
 
 
@@ -65,6 +97,7 @@ type Msg
     | LoginRequest (Api.Response AuthMutation)
     | RefreshRequest (Api.Response AuthMutation)
     | LogoutRequest (Api.Response LogoutMutation)
+    | LogRequest (Api.Response Utils.Log.LogMutation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -120,6 +153,9 @@ update msg model =
                 Err _ ->
                     ( { model | session = Api.LoggedOut }, Cmd.none )
 
+        LogRequest _ ->
+            ( model, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
@@ -174,16 +210,6 @@ credSelection =
         |> with ObjAuth.token
         |> with ObjAuth.exp
         |> with (ObjAuth.account accountSelection)
-
-
-login : Api.Object.AccountMutation.LoginRequiredArguments -> Api.Session -> Cmd Msg
-login args =
-    let
-        rootSelection =
-            SelectionSet.succeed AuthMutation
-                |> with (Api.Object.AccountMutation.login args credSelection)
-    in
-    Api.sendMutation LoginRequest (Api.Mutation.account rootSelection)
 
 
 logout : Api.Object.AccountMutation.LogoutRequiredArguments -> Api.Session -> Cmd Msg

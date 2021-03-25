@@ -49,6 +49,14 @@ type GenreVote
     = GenreVote
 
 
+type Log
+    = Log
+
+
+type LoggingMutation
+    = LoggingMutation
+
+
 type Release
     = Release
 

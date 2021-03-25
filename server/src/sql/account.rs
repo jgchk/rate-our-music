@@ -19,10 +19,15 @@ impl<'a> AccountDatabase<'a> {
         roles: Vec<Role>,
     ) -> Result<Account, Error> {
         let account = sqlx::query!(
-            "INSERT INTO account (username, password, roles) VALUES ($1, crypt($2, gen_salt('bf')), $3::role[]) RETURNING account_id",
+            "INSERT INTO account (username, password, roles)
+            VALUES ($1, crypt($2, gen_salt('bf')), $3::role[])
+            RETURNING account_id",
             username,
             password,
-            roles.iter().map(|role| role.to_string()).collect::<Vec<String>>() as Vec<String>
+            roles
+                .iter()
+                .map(|role| role.to_string())
+                .collect::<Vec<String>>() as Vec<String>
         )
         .fetch_one(self.0)
         .await?;

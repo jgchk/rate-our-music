@@ -1,9 +1,11 @@
-module Api exposing (Account, Auth, Error(..), Response, Session(..), auth, mutationRequest, queryRequest, sendMutation, sendQuery, sendTask, withSession)
+module Api exposing (Account, Auth, Error(..), Response, ResponseToMsg, Session(..), auth, encodeError, mutationRequest, queryRequest, sendMutation, sendQuery, sendTask, withSession)
 
 import Graphql.Http
 import Graphql.Http.GraphqlError
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet exposing (SelectionSet)
+import Json.Decode
+import Json.Encode
 import Task
 
 
@@ -139,3 +141,72 @@ decodeError error =
 
         Graphql.Http.HttpError httpError ->
             [ HttpError httpError ]
+
+
+encodeError : Error -> ( String, Maybe Json.Encode.Value )
+encodeError error =
+    case error of
+        InvalidCredentialsError ->
+            ( "InvalidCredentialsError", Nothing )
+
+        DuplicateUsernameError ->
+            ( "DuplicateUsernameError", Nothing )
+
+        UsernameLengthError ->
+            ( "UsernameLengthError", Nothing )
+
+        PasswordLengthError ->
+            ( "PasswordLengthError", Nothing )
+
+        UnparsedError err ->
+            ( "UnparsedError"
+            , Just
+                (Json.Encode.object
+                    [ ( "message", Json.Encode.string err.message )
+                    , ( "locations"
+                      , Json.Encode.list
+                            (\location ->
+                                Json.Encode.object
+                                    [ ( "line", Json.Encode.int location.line )
+                                    , ( "column", Json.Encode.int location.column )
+                                    ]
+                            )
+                            (Maybe.withDefault [] err.locations)
+                      )
+                    , ( "details", Json.Encode.dict identity identity err.details )
+                    ]
+                )
+            )
+
+        HttpError err ->
+            case err of
+                Graphql.Http.BadUrl url ->
+                    ( "BadUrl", Just (Json.Encode.object [ ( "url", Json.Encode.string url ) ]) )
+
+                Graphql.Http.Timeout ->
+                    ( "Timeout", Nothing )
+
+                Graphql.Http.NetworkError ->
+                    ( "NetworkError", Nothing )
+
+                Graphql.Http.BadStatus metadata responseBody ->
+                    ( "BadStatus"
+                    , Just
+                        (Json.Encode.object
+                            [ ( "metadata"
+                              , Json.Encode.object
+                                    [ ( "url", Json.Encode.string metadata.url )
+                                    , ( "statusCode", Json.Encode.int metadata.statusCode )
+                                    , ( "statusText", Json.Encode.string metadata.statusText )
+                                    , ( "headers", Json.Encode.dict identity Json.Encode.string metadata.headers )
+                                    ]
+                              )
+                            , ( "responseBody", Json.Encode.string responseBody )
+                            ]
+                        )
+                    )
+
+                Graphql.Http.BadPayload decoderError ->
+                    ( "BadPayload"
+                    , Just (Json.Encode.object [ ( "decoderError", Json.Encode.string (Json.Decode.errorToString decoderError) ) ])
+                    )

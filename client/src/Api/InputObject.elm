@@ -49,3 +49,43 @@ encodeArtistInput : ArtistInput -> Value
 encodeArtistInput input____ =
     Encode.maybeObject
         [ ( "id", Encode.int |> Encode.optional input____.id ), ( "name", Encode.string |> Encode.optional input____.name ) ]
+
+
+buildErrorInput :
+    ErrorInputRequiredFields
+    -> (ErrorInputOptionalFields -> ErrorInputOptionalFields)
+    -> ErrorInput
+buildErrorInput required____ fillOptionals____ =
+    let
+        optionals____ =
+            fillOptionals____
+                { data = Absent }
+    in
+    { message = required____.message, name = required____.name, data = optionals____.data }
+
+
+type alias ErrorInputRequiredFields =
+    { message : String
+    , name : String
+    }
+
+
+type alias ErrorInputOptionalFields =
+    { data : OptionalArgument String }
+
+
+{-| Type for the ErrorInput input object.
+-}
+type alias ErrorInput =
+    { message : String
+    , name : String
+    , data : OptionalArgument String
+    }
+
+
+{-| Encode a ErrorInput into a value that can be used as an argument.
+-}
+encodeErrorInput : ErrorInput -> Value
+encodeErrorInput input____ =
+    Encode.maybeObject
+        [ ( "message", Encode.string input____.message |> Just ), ( "name", Encode.string input____.name |> Just ), ( "data", Encode.string |> Encode.optional input____.data ) ]
