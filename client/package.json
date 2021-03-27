@@ -4,6 +4,9 @@
     "dev": "NODE_ENV=development rollup -c -w",
     "prod": "NODE_ENV=production rollup -c"
   },
+  "dependencies": {
+    "preact": "^10.5.13"
+  },
   "devDependencies": {
     "@rollup/plugin-html": "^0.2.3",
     "@rollup/plugin-node-resolve": "^11.2.1",
@@ -33,9 +36,6 @@
     "stylelint-config-standard": "^21.0.0",
     "typescript": "^4.2.3",
     "typescript-plugin-css-modules": "^3.2.0"
-  },
-  "dependencies": {
-    "preact": "^10.5.13"
   },
   "simple-git-hooks": {
     "pre-commit": "cd client && yarn lint-staged"
