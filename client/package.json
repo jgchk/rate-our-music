@@ -1,34 +1,48 @@
 {
-  "name": "our-elm-spa-app",
-  "version": "1.0.0",
-  "description": "A project created with elm-spa",
+  "name": "rate-our-music",
   "scripts": {
-    "start": "ENVIRONMENT=DEVELOPMENT run-s build:dev dev",
-    "build": "ENVIRONMENT=PRODUCTION run-s build:elm-spa build:elm-constants build:elm build:compress build:mangle",
-    "build:elm": "elm make src/Main.elm --optimize --output=public/dist/elm.compiled.js",
-    "build:compress": "terser public/dist/elm.compiled.js --compress 'pure_funcs=\"F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9\",pure_getters=true,keep_fargs=false,unsafe_comps=true,unsafe=true,passes=4' --output=public/dist/elm.compiled.js",
-    "build:mangle": "terser public/dist/elm.compiled.js --mangle --output=public/dist/elm.compiled.js",
-    "build:elm-constants": "elm-constants",
-    "build:elm-spa": "elm-spa build .",
-    "build:dev": "run-s build:elm-spa build:elm-constants build:dev:elm",
-    "build:dev:elm": "elm make src/Main.elm --debug --output=public/dist/elm.compiled.js",
-    "dev": "run-p dev:elm-spa dev:elm-constants dev:elm",
-    "dev:elm": "elm-live src/Main.elm -u -d public -x /graphql -y http://localhost:3030/graphql -- --debug --output=public/dist/elm.compiled.js",
-    "dev:elm-spa": "chokidar src/Pages -c \"elm-spa build .\"",
-    "dev:elm-constants": "chokidar elm-constants.json -c \"elm-constants\"",
-    "api": "elm-graphql http://127.0.0.1:3030/graphql"
+    "dev": "NODE_ENV=development rollup -c -w",
+    "prod": "NODE_ENV=production rollup -c"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@dillonkearns/elm-graphql": "^4.2.0",
-    "chokidar-cli": "^2.1.0",
-    "elm": "^0.19.1-5",
-    "elm-constants": "^1.0.0",
-    "elm-live": "^4.0.2",
-    "elm-spa": "^5.0.4",
-    "npm-run-all": "^4.1.5",
-    "terser": "^5.6.0"
+    "@rollup/plugin-html": "^0.2.3",
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "@rollup/plugin-typescript": "^8.2.1",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unicorn": "^29.0.0",
+    "lint-staged": "^10.5.4",
+    "postcss": "^8.2.8",
+    "prettier": "^2.2.1",
+    "rollup": "^2.42.4",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "simple-git-hooks": "^2.2.0",
+    "stylelint": "^13.12.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^21.0.0",
+    "typescript": "^4.2.3",
+    "typescript-plugin-css-modules": "^3.2.0"
+  },
+  "dependencies": {
+    "preact": "^10.5.13"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.css": "stylelint --fix",
+    "*": "prettier --write --ignore-unknown"
   }
 }
