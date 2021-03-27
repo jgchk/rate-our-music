@@ -38,7 +38,7 @@
     "preact": "^10.5.13"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "cd client && yarn lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
