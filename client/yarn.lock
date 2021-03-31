@@ -8675,6 +8675,7 @@ __metadata:
     cssnano: ^4.1.10
     eslint: ^7.23.0
     eslint-config-prettier: ^8.1.0
+    eslint-import-resolver-node: ^0.3.4
     eslint-import-resolver-typescript: ^2.4.0
     eslint-plugin-import: ^2.22.1
     eslint-plugin-react: ^7.23.1

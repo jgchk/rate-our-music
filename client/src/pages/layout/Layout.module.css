@@ -1,0 +1,11 @@
+.outer {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.inner {
+  flex: 1;
+  max-width: 1600px;
+}

@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'preact'
 import { Release } from '../../state'
-import { Rating } from './Rating'
-import classes from './Release.module.css'
-import { ReleaseDate } from './ReleaseDate'
-import { Track } from './Track'
+import { Rating } from './components/Rating'
+import { ReleaseDate } from './components/ReleaseDate'
+import { Track } from './components/Track'
+import classes from './ReleasePage.module.css'
 
 export type Props = {
   release: Release

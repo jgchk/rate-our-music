@@ -101,6 +101,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'eslint-config-prettier',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:8.1.0',
                   ],
+                  ['eslint-import-resolver-node', 'npm:0.3.4'],
                   [
                     'eslint-import-resolver-typescript',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.4.0',
@@ -7271,23 +7272,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
-              {
-                packageLocation:
-                  './.yarn/$$virtual/debug-virtual-6cfa7ae8cd/0/cache/debug-npm-2.6.9-7d4cb597dc-559f44f98c.zip/node_modules/debug/',
-                packageDependencies: [
-                  [
-                    'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
-                  ],
-                  ['ms', 'npm:2.0.0'],
-                  ['supports-color', null],
-                ],
-                packagePeers: ['supports-color'],
-                linkType: 'HARD',
-              },
-            ],
-            [
               'virtual:3abc7293633a55696a5838099f141cd80340abee3a9f667080dc28d52fb56e3dc6b6f168445faf844d5d77843d76d02cd3d14c4fe6703ab3adf117f9ab25b69f#npm:3.1.0',
               {
                 packageLocation:
@@ -7315,6 +7299,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:901e1408cc8bfef5550e648cc3ee4f1ec6e307e3f5baab3ad60f0ba461a3df0a2fb4207ed57f6ec68edeacbb88063dcc84f3c35bb45638ba421a021eb350b42b#npm:4.3.2',
                   ],
                   ['ms', 'npm:2.1.2'],
+                  ['supports-color', null],
+                ],
+                packagePeers: ['supports-color'],
+                linkType: 'HARD',
+              },
+            ],
+            [
+              'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/debug-virtual-d08cd93353/0/cache/debug-npm-2.6.9-7d4cb597dc-559f44f98c.zip/node_modules/debug/',
+                packageDependencies: [
+                  [
+                    'debug',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
+                  ],
+                  ['ms', 'npm:2.0.0'],
                   ['supports-color', null],
                 ],
                 packagePeers: ['supports-color'],
@@ -8228,7 +8229,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['eslint-import-resolver-node', 'npm:0.3.4'],
                   [
                     'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
                   ],
                   [
                     'resolve',
@@ -8306,7 +8307,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['eslint-module-utils', 'npm:2.6.0'],
                   [
                     'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
                   ],
                   ['pkg-dir', 'npm:2.0.0'],
                 ],
@@ -8343,7 +8344,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['contains-path', 'npm:0.1.0'],
                   [
                     'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
                   ],
                   ['doctrine', 'npm:1.5.0'],
                   ['eslint', 'npm:7.23.0'],
@@ -8825,7 +8826,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['expand-brackets', 'npm:2.1.4'],
                   [
                     'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
                   ],
                   ['define-property', 'npm:0.2.5'],
                   ['extend-shallow', 'npm:2.0.1'],
@@ -16912,6 +16913,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'eslint-config-prettier',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:8.1.0',
                   ],
+                  ['eslint-import-resolver-node', 'npm:0.3.4'],
                   [
                     'eslint-import-resolver-typescript',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.4.0',
@@ -18490,7 +18492,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['base', 'npm:0.11.2'],
                   [
                     'debug',
-                    'virtual:2bcc47d217f870e3d52f0e55493dc34fd3da852877f7db32fa2940cc320151746026495daf6a34a974488cf5a949d93be1e2dc1ffba036faf081a9b15fcd2252#npm:2.6.9',
+                    'virtual:fa0173d26738ef894de6f639abae81ef8c1dc3fb742f450a622367c86186d9f4d23dbd3bcc38bbe27382c39f87e11cad6137dd70480a36e752eee25974706e2c#npm:2.6.9',
                   ],
                   ['define-property', 'npm:0.2.5'],
                   ['extend-shallow', 'npm:2.0.1'],

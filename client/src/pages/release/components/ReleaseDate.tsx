@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact'
-import { MonthIndex, PartialDate } from '../../state'
+import { MonthIndex, PartialDate } from '../../../state'
 
 const formatMonth = (i: MonthIndex) => {
   switch (i) {
