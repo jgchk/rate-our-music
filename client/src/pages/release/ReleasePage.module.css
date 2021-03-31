@@ -3,16 +3,22 @@
 }
 
 .column {
-  flex: 1;
+  &.left {
+    flex: 1;
+  }
+
+  &.right {
+    flex: 2;
+  }
 }
 
-.cover-art {
+.coverArt {
   width: 100%;
   max-height: 800px;
   object-fit: contain;
 }
 
-.comma-separated-list {
+.commaSeparatedList {
   > li {
     display: inline;
     &::after {

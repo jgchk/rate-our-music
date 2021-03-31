@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
 import { Release } from '../../state'
 import { Rating } from './components/Rating'
@@ -11,7 +12,7 @@ export type Props = {
 
 export const ReleasePage: FunctionComponent<Props> = ({ release }) => (
   <div className={classes.container}>
-    <div className={classes.column}>
+    <div className={clsx(classes.column, classes.left)}>
       <img className={classes.coverArt} src={release.coverArt} />
       <div>
         {release.tracks.map((track, i) => (
@@ -19,7 +20,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ release }) => (
         ))}
       </div>
     </div>
-    <div className={classes.column}>
+    <div className={clsx(classes.column, classes.right)}>
       <div>{release.title}</div>
       <ol className={classes.commaSeparatedList}>
         {release.artists.map((artist) => (

@@ -3,12 +3,7 @@
     "strict": true,
     "lib": ["DOM"],
     "target": "ES2017",
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules",
-        "options": { "classnameTransform": "camelCaseOnly" }
-      }
-    ],
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
 
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
