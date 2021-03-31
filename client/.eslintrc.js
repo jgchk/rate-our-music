@@ -1,3 +1,7 @@
+const project = process.cwd().includes('client')
+  ? 'tsconfig.json'
+  : './client/tsconfig.json'
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -20,16 +24,31 @@ module.exports = {
   ],
   settings: {
     react: { version: '16.0' },
+    'import/resolver': {
+      typescript: {
+        project,
+      },
+    },
   },
   rules: {
+    'import/order': [
+      'warn',
+      { alphabetize: { order: 'asc', caseInsensitive: true } },
+    ],
+    'sort-imports': ['warn', { ignoreDeclarationSort: true }],
+
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
 
     'unicorn/filename-case': [
       'error',
       { cases: { kebabCase: true, pascalCase: true } },
     ],
+    'unicorn/prevent-abbreviations': 'off',
+    'unicorn/no-array-callback-reference': 'off',
   },
   env: {
     browser: true,
+    node: true,
   },
 }

@@ -1,0 +1,17 @@
+overwrite: true
+schema: 'http://localhost:3030/graphql'
+documents: 'src/**/*.graphql'
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'gql-plugins/plain-sdk/index.js'
+    config:
+      documentMode: string
+  ./graphql.schema.json:
+    plugins:
+      - 'introspection'
+hooks:
+  afterAllFileWrite:
+    - prettier --write

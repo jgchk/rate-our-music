@@ -1,8 +1,21 @@
 {
   "compilerOptions": {
     "strict": true,
+    "lib": ["DOM"],
+    "target": "ES2017",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": { "classnameTransform": "camelCaseOnly" }
+      }
+    ],
+
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
-  }
+
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["./src/**/*", "./types/**/*"]
 }

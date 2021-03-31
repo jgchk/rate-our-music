@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+}
+
+.star {
+  &.empty {
+    opacity: 0.25;
+  }
+
+  &.half {
+    opacity: 0.5;
+  }
+
+  &.full {
+    opacity: 1;
+  }
+}

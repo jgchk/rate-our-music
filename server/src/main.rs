@@ -28,9 +28,8 @@ async fn main() -> Result<(), Error> {
     let env = Environment::new(database_url, redis_url, jwt_secret).await?;
     let env = warp::any().map(move || env.clone());
 
-    let html =
-        fs::read_to_string("../client/public/index.html").expect("Could not find index.html");
-    let static_files = warp::fs::dir("../client/public");
+    let html = fs::read_to_string("../client/build/index.html").expect("Could not find index.html");
+    let static_files = warp::fs::dir("../client/build");
     let frontend = warp::any().map(move || warp::reply::html(html.to_string()));
 
     let graphql = {

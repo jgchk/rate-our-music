@@ -1,5 +1,9 @@
 /.yarn
-/output
+/build
 
 .eslintrc.js
-rollup.config.js
+snowpack.config.js
+postcss.config.js
+
+/gql-plugins
+/src/generated/graphql.ts

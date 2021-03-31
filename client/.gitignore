@@ -8,5 +8,5 @@
 !/.yarn/cache
 #/.pnp.*
 
-/output
+/build
 .eslintcache

@@ -1,0 +1,12 @@
+query GetRelease($id: Int!) {
+  release {
+    getOne(id: $id) {
+      id
+      title
+      artists {
+        id
+        name
+      }
+    }
+  }
+}

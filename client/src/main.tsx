@@ -1,8 +1,9 @@
 import { render } from 'preact'
 import { App } from './App'
 
-const rootElement = document.createElement('div')
-rootElement.id = 'root'
-document.body.append(rootElement)
+// eslint-disable-next-line unicorn/prefer-query-selector
+const rootElement = document.getElementById('root')
 
-render(<App />, rootElement)
+if (rootElement) {
+  render(<App />, rootElement)
+}

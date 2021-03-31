@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+}
+
+.num {
+  flex: 1;
+}
+
+.title {
+  flex: 15;
+}
+
+.duration {
+  flex: 1;
+  text-align: right;
+}

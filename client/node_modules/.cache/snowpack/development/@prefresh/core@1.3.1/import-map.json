@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@prefresh/core": "./@prefresh/core.js"
+  }
+}
