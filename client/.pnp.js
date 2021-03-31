@@ -41,6 +41,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               {
                 packageLocation: './',
                 packageDependencies: [
+                  ['@canarise/snowpack-eslint-plugin', 'npm:0.2.0'],
                   [
                     '@graphql-codegen/cli',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.3',
@@ -1872,6 +1873,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['@babel/helper-validator-identifier', 'npm:7.12.11'],
                   ['lodash', 'npm:4.17.21'],
                   ['to-fast-properties', 'npm:2.0.0'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@canarise/snowpack-eslint-plugin',
+          [
+            [
+              'npm:0.2.0',
+              {
+                packageLocation:
+                  './.yarn/cache/@canarise-snowpack-eslint-plugin-npm-0.2.0-e05920cb79-0bd49cc4f4.zip/node_modules/@canarise/snowpack-eslint-plugin/',
+                packageDependencies: [
+                  ['@canarise/snowpack-eslint-plugin', 'npm:0.2.0'],
+                  ['eslint', 'npm:7.23.0'],
                 ],
                 linkType: 'HARD',
               },
@@ -16834,6 +16852,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation: './',
                 packageDependencies: [
                   ['rate-our-music', 'workspace:.'],
+                  ['@canarise/snowpack-eslint-plugin', 'npm:0.2.0'],
                   [
                     '@graphql-codegen/cli',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.3',

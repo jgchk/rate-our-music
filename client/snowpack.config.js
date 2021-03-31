@@ -9,6 +9,10 @@ module.exports = {
   },
   plugins: [
     ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
+    [
+      '@canarise/snowpack-eslint-plugin',
+      { globs: ['src/**/*.ts', 'src/**/*.tsx'] },
+    ],
     '@snowpack/plugin-postcss',
     '@prefresh/snowpack',
   ],

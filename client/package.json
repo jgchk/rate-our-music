@@ -17,6 +17,7 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
+    "@canarise/snowpack-eslint-plugin": "^0.2.0",
     "@graphql-codegen/cli": "1.21.3",
     "@graphql-codegen/introspection": "1.18.1",
     "@graphql-codegen/plugin-helpers": "^1.18.4",
