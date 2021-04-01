@@ -1,23 +1,14 @@
 import { FunctionComponent } from 'preact'
-import { useEffect } from 'preact/hooks'
-import { Layout } from './pages/layout/Layout'
+import { Layout } from './layout/Layout'
 import { ReleasePage } from './pages/release/ReleasePage'
-import { state } from './state'
-import { gql } from './utils/gql'
+import { StateProvider } from './state/store'
+
 import './global.css'
 
-export const App: FunctionComponent = () => {
-  useEffect(() => {
-    const f = async () => {
-      const r = await gql.GetRelease({ id: 0 })()
-      console.log(r)
-    }
-    void f()
-  }, [])
-
-  return (
+export const App: FunctionComponent = () => (
+  <StateProvider>
     <Layout>
-      <ReleasePage release={state} />
+      <ReleasePage />
     </Layout>
-  )
-}
+  </StateProvider>
+)

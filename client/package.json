@@ -8,9 +8,7 @@
     "gql:codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.1",
     "clsx": "^1.1.1",
-    "eslint-import-resolver-typescript": "^2.4.0",
     "fp-ts": "^2.9.5",
     "preact": "^10.5.13",
     "preact-feather": "^4.2.1",
@@ -37,6 +35,7 @@
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-import-resolver-node": "^0.3.4",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",

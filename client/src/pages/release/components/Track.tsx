@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact'
-import { Track as TrackModel } from '../../../state'
+import { Track as TrackModel } from '../../../state/release'
 import classes from './Track.module.css'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
@@ -26,6 +26,8 @@ export const Track: FunctionComponent<Props> = ({ track, index }) => (
   <div className={classes.container}>
     <div className={classes.num}>{index + 1}</div>
     <div className={classes.title}>{track.title}</div>
-    <div className={classes.duration}>{formatTime(track.duration)}</div>
+    <div className={classes.duration}>
+      {track.durationMs && formatTime(track.durationMs)}
+    </div>
   </div>
 )

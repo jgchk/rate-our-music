@@ -7,6 +7,19 @@ module.exports = {
     public: { url: '/', static: true },
     src: { url: '/dist' },
   },
+  routes: [
+    {
+      src: '/graphql',
+      dest: (req, res) => proxy.web(req, res),
+    },
+  ],
+  alias: {
+    react: 'preact/compat',
+    'react-dom': 'preact/compat',
+  },
+  buildOptions: {
+    jsxInject: "import { h } from 'preact'",
+  },
   plugins: [
     ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
     [
@@ -16,14 +29,8 @@ module.exports = {
     '@snowpack/plugin-postcss',
     '@prefresh/snowpack',
   ],
-  packageOptions: {},
-  devOptions: {},
-  buildOptions: {
-    jsxInject: "import { h } from 'preact'",
-  },
   optimize: {
     minify: true,
     target: 'es2017',
   },
-  routes: [{ src: '/graphql', dest: (req, res) => proxy.web(req, res) }],
 }

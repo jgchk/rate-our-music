@@ -1,57 +1,9 @@
-export type Release = {
-  id: number
-  title: string
-  artists: Artist[]
-  releaseDate: PartialDate
-  coverArt: string
-  tracks: Track[]
-  genres: Genre[]
-  siteRating: number
-  friendRating: number
-  similarUserRating: number
-  userReview: Review
-  reviews: Review[]
-}
-
-export type Artist = {
-  id: number
-  name: string
-}
-
-export type PartialDate = {
-  day?: number
-  month?: MonthIndex
-  year: number
-}
-
-export type MonthIndex = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
-
-export type Track = {
-  id: number
-  title: string
-  duration: number
-}
-
-export type Review = {
-  id: number
-  user: {
-    id: number
-    username: string
-  }
-  rating: number | undefined
-  text: string | undefined
-}
-
-export type Genre = {
-  id: number
-  name: string
-  weight: number
-}
+import { Release } from './release'
 
 const getDuration = (minutes: number, seconds: number) =>
   (minutes * 60 + seconds) * 1000
 
-export const state: Release = {
+export const tempRelease: Release = {
   id: 0,
   title: 'Complex Playground',
   artists: [{ id: 0, name: 'Euglossine' }],
@@ -59,16 +11,16 @@ export const state: Release = {
   coverArt:
     'https://e.snmc.io/i/fullres/w/07868f8cceae0b3a6cbb5cc006e9823b/5602710',
   tracks: [
-    { id: 0, title: 'Welcome!', duration: getDuration(3, 26) },
-    { id: 1, title: 'Complex Playground', duration: getDuration(4, 33) },
-    { id: 2, title: 'Nucleus Pilot', duration: getDuration(4, 42) },
-    { id: 3, title: 'Bright Bound Foray', duration: getDuration(2, 8) },
-    { id: 4, title: 'Prairie', duration: getDuration(3, 53) },
-    { id: 5, title: 'Miraculous Ornament', duration: getDuration(3, 54) },
-    { id: 6, title: 'Tilted and Twist', duration: getDuration(2, 28) },
-    { id: 7, title: 'Silver Knot', duration: getDuration(4, 12) },
-    { id: 8, title: 'The Last Roulette', duration: getDuration(4, 15) },
-    { id: 9, title: 'Jetski Diva [digi-bonus]', duration: getDuration(4, 3) },
+    { id: 0, title: 'Welcome!', durationMs: getDuration(3, 26) },
+    { id: 1, title: 'Complex Playground', durationMs: getDuration(4, 33) },
+    { id: 2, title: 'Nucleus Pilot', durationMs: getDuration(4, 42) },
+    { id: 3, title: 'Bright Bound Foray', durationMs: getDuration(2, 8) },
+    { id: 4, title: 'Prairie', durationMs: getDuration(3, 53) },
+    { id: 5, title: 'Miraculous Ornament', durationMs: getDuration(3, 54) },
+    { id: 6, title: 'Tilted and Twist', durationMs: getDuration(2, 28) },
+    { id: 7, title: 'Silver Knot', durationMs: getDuration(4, 12) },
+    { id: 8, title: 'The Last Roulette', durationMs: getDuration(4, 15) },
+    { id: 9, title: 'Jetski Diva [digi-bonus]', durationMs: getDuration(4, 3) },
   ],
   genres: [
     { id: 0, name: 'Utopian Virtual', weight: 1 },

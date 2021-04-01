@@ -7,6 +7,20 @@ query GetRelease($id: Int!) {
         id
         name
       }
+      releaseDate {
+        day
+        month
+        year
+      }
+      tracks {
+        id
+        title
+        durationMs
+      }
+      genres(voteType: PRIMARY) {
+        id
+        name
+      }
     }
   }
 }

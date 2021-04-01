@@ -6,7 +6,8 @@ import {
   GraphqlError,
   GraphqlResponse,
   getSdk,
-  isGraphqlError,
+  graphqlError,
+  isErrorResponse,
 } from '../generated/graphql'
 import { HttpError, post } from './http'
 
@@ -22,8 +23,8 @@ const requester = <R, V>(
       flow(
         (response) => () => response.json<GraphqlResponse<R>>(),
         map((gql) =>
-          isGraphqlError(gql)
-            ? left(new GraphqlError(gql.errors))
+          isErrorResponse(gql)
+            ? left(graphqlError(gql.errors))
             : right(gql.data)
         )
       )

@@ -273,6 +273,16 @@ export type GetReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
     getOne: { __typename?: 'Release' } & Pick<Release, 'id' | 'title'> & {
         artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>>
+        releaseDate?: Maybe<
+          { __typename?: 'ReleaseDate' } & Pick<
+            ReleaseDate,
+            'day' | 'month' | 'year'
+          >
+        >
+        tracks: Array<
+          { __typename?: 'Track' } & Pick<Track, 'id' | 'title' | 'durationMs'>
+        >
+        genres: Array<{ __typename?: 'Genre' } & Pick<Genre, 'id' | 'name'>>
       }
   }
 }
@@ -284,6 +294,20 @@ export const GetReleaseDocument = `
       id
       title
       artists {
+        id
+        name
+      }
+      releaseDate {
+        day
+        month
+        year
+      }
+      tracks {
+        id
+        title
+        durationMs
+      }
+      genres(voteType: PRIMARY) {
         id
         name
       }
@@ -317,19 +341,23 @@ export type GraphqlErrorLocation = {
   column: number
 }
 
-export const isGraphqlError = <D>(
+export const isErrorResponse = <D>(
   response: GraphqlResponse<D>
 ): response is GraphqlErrorResponse => !!response.errors
 
-export class GraphqlError extends Error {
-  name = 'GraphqlError'
+export type GraphqlError = {
+  name: 'GraphqlError'
+  message?: string
   errors: GraphqlErr[]
-
-  constructor(errors: GraphqlErr[], message?: string) {
-    super(message)
-    this.errors = errors
-  }
 }
+
+export const graphqlError = (
+  errors: GraphqlErr[],
+  message?: string
+): GraphqlError => ({ name: 'GraphqlError', message, errors })
+
+export const isGraphqlError = (error: any): error is GraphqlError =>
+  typeof error === 'object' && error.name === 'GraphqlError'
 
 export type Requester<O = Record<string, never>> = <R, V>(
   doc: string,

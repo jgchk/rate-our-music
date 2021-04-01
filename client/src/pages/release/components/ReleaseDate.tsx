@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'preact'
-import { MonthIndex, PartialDate } from '../../../state'
+import { PartialDate } from '../../../state/release'
 
-const formatMonth = (i: MonthIndex) => {
+const formatMonth = (i: number) => {
   switch (i) {
     case 1:
       return 'Jan'

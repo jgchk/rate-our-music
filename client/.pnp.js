@@ -74,7 +74,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     '@prefresh/snowpack',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.1.2',
                   ],
-                  ['@reduxjs/toolkit', 'npm:1.5.1'],
                   [
                     '@snowpack/plugin-postcss',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.2.1',
@@ -3441,26 +3440,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation:
                   './.yarn/cache/@prefresh-utils-npm-1.1.1-8557b33c36-cf906ad24d.zip/node_modules/@prefresh/utils/',
                 packageDependencies: [['@prefresh/utils', 'npm:1.1.1']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          '@reduxjs/toolkit',
-          [
-            [
-              'npm:1.5.1',
-              {
-                packageLocation:
-                  './.yarn/cache/@reduxjs-toolkit-npm-1.5.1-dc553c0c72-6d485fc8ff.zip/node_modules/@reduxjs/toolkit/',
-                packageDependencies: [
-                  ['@reduxjs/toolkit', 'npm:1.5.1'],
-                  ['immer', 'npm:8.0.4'],
-                  ['redux', 'npm:4.0.5'],
-                  ['redux-thunk', 'npm:2.3.0'],
-                  ['reselect', 'npm:4.0.0'],
-                ],
                 linkType: 'HARD',
               },
             ],
@@ -10848,20 +10827,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
-          'immer',
-          [
-            [
-              'npm:8.0.4',
-              {
-                packageLocation:
-                  './.yarn/cache/immer-npm-8.0.4-ead80982a1-047d4af1c6.zip/node_modules/immer/',
-                packageDependencies: [['immer', 'npm:8.0.4']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
           'immutable',
           [
             [
@@ -16886,7 +16851,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     '@prefresh/snowpack',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:3.1.2',
                   ],
-                  ['@reduxjs/toolkit', 'npm:1.5.1'],
                   [
                     '@snowpack/plugin-postcss',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.2.1',
@@ -17199,20 +17163,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['loose-envify', 'npm:1.4.0'],
                   ['symbol-observable', 'npm:1.2.0'],
                 ],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'redux-thunk',
-          [
-            [
-              'npm:2.3.0',
-              {
-                packageLocation:
-                  './.yarn/cache/redux-thunk-npm-2.3.0-a5eb89e35e-2d7210b88c.zip/node_modules/redux-thunk/',
-                packageDependencies: [['redux-thunk', 'npm:2.3.0']],
                 linkType: 'HARD',
               },
             ],
@@ -17703,20 +17653,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation:
                   './.yarn/cache/requires-port-npm-1.0.0-fd036b488a-0db25fb2ac.zip/node_modules/requires-port/',
                 packageDependencies: [['requires-port', 'npm:1.0.0']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'reselect',
-          [
-            [
-              'npm:4.0.0',
-              {
-                packageLocation:
-                  './.yarn/cache/reselect-npm-4.0.0-4189778eed-3480930929.zip/node_modules/reselect/',
-                packageDependencies: [['reselect', 'npm:4.0.0']],
                 linkType: 'HARD',
               },
             ],
