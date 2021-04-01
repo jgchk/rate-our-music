@@ -19,7 +19,7 @@
 }
 
 .commaSeparatedList {
-  > li {
+  & > li {
     display: inline;
     &::after {
       content: ', ';
