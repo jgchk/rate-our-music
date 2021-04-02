@@ -62,7 +62,6 @@ export const ReleasePage: FunctionComponent = () => {
           <div>{release.siteRating}</div>
           <div>{release.friendRating}</div>
           <div>{release.similarUserRating}</div>
-          <div>whoa</div>
         </div>
         <div>
           <Rating
