@@ -1,3 +1,7 @@
 module.exports = {
-  plugins: [require('postcss-nesting'), require('cssnano')],
+  plugins: [
+    require('postcss-nesting'),
+    require('postcss-color-mod-function'),
+    require('cssnano'),
+  ],
 }

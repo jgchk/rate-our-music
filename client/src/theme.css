@@ -1,7 +1,25 @@
 :root {
   font-size: 16px;
-  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
   --small: 0.8rem;
+  --large: 1.2rem;
+  --larger: 1.6rem;
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 16px;
   --red: #ff6b6b;
+}
+
+.dark {
+  color: var(--foreground-0);
+
+  --background-0: #181818;
+  --background-1: #1d1d1d;
+  --border: #282828;
+  --foreground-0: #ccc;
+  --foreground-1: color-mod(#ccc tint(50%));
 }

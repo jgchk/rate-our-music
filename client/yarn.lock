@@ -734,6 +734,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@csstools/convert-colors@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@csstools/convert-colors@npm:1.4.0"
+  checksum: c8c8e6b5b3c2ae7e2c4a0ff376b79e09c8e350f3a3973eee8d42372f3e49d41c43172087c426e33fefdb9057de8a6f23cabf31e6201adce3f78d4b25e1722b50
+  languageName: node
+  linkType: hard
+
 "@endemolshinegroup/cosmiconfig-typescript-loader@npm:3.0.2":
   version: 3.0.2
   resolution: "@endemolshinegroup/cosmiconfig-typescript-loader@npm:3.0.2"
@@ -4456,6 +4463,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flatten@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "flatten@npm:1.0.3"
+  checksum: 8a382594dc7bb4e4f28739a4abcd9d6f5c74d4be370892c10386a09656722e1a822137dc48c4bff15758e0656f8fee7bb3001133d068431796cf17b1f52a969a
+  languageName: node
+  linkType: hard
+
 "follow-redirects@npm:^1.0.0":
   version: 1.13.3
   resolution: "follow-redirects@npm:1.13.3"
@@ -7934,6 +7948,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-color-mod-function@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "postcss-color-mod-function@npm:3.0.3"
+  dependencies:
+    "@csstools/convert-colors": ^1.4.0
+    postcss: ^7.0.2
+    postcss-values-parser: ^2.0.0
+  checksum: dd484df73c5623bd8cb27d9f465b858f7334ec739e3914fe000b823130c269af105caec81fc0b3280b377954b91ee6606769ebde78833bf9b0b786574baad75e
+  languageName: node
+  linkType: hard
+
 "postcss-colormin@npm:^4.0.3":
   version: 4.0.3
   resolution: "postcss-colormin@npm:4.0.3"
@@ -8452,6 +8477,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-values-parser@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "postcss-values-parser@npm:2.0.1"
+  dependencies:
+    flatten: ^1.0.2
+    indexes-of: ^1.0.1
+    uniq: ^1.0.1
+  checksum: dfc25618bed3ba74da9adb4df9535dc0edd03e4618fb6774d0327934970876f93f565071bce97faa96ef236da2ce43ec2efeae240fc2eedc0e764e379b3e9441
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^6.0.14, postcss@npm:^6.0.2":
   version: 6.0.23
   resolution: "postcss@npm:6.0.23"
@@ -8666,6 +8702,7 @@ __metadata:
     http-proxy: ^1.18.1
     lint-staged: ^10.5.4
     postcss: ^8.2.8
+    postcss-color-mod-function: ^3.0.3
     postcss-nesting: ^7.0.1
     preact: ^10.5.13
     preact-feather: ^4.2.1

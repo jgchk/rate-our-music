@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'preact'
 import { useSelector } from '../../../state/store'
+import { Link } from '../../common/components/Link'
 import { RatingStars } from './RatingStars'
 import classes from './Review.module.css'
 
@@ -16,7 +17,7 @@ export const Review: FunctionComponent<Props> = ({ id }) => {
 
   return (
     <div className={classes.container}>
-      <a href={`/user/${review.user.id}`}>{review.user.username}</a>
+      <Link href={`/user/${review.user.id}`}>{review.user.username}</Link>
       <RatingStars value={review.rating ?? 0} />
     </div>
   )

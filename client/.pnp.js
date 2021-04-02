@@ -126,6 +126,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['postcss', 'npm:8.2.8'],
+                  ['postcss-color-mod-function', 'npm:3.0.3'],
                   ['postcss-nesting', 'npm:7.0.1'],
                   ['preact', 'npm:10.5.13'],
                   [
@@ -1890,6 +1891,22 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageDependencies: [
                   ['@canarise/snowpack-eslint-plugin', 'npm:0.2.0'],
                   ['eslint', 'npm:7.23.0'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@csstools/convert-colors',
+          [
+            [
+              'npm:1.4.0',
+              {
+                packageLocation:
+                  './.yarn/cache/@csstools-convert-colors-npm-1.4.0-43f8302fcb-c8c8e6b5b3.zip/node_modules/@csstools/convert-colors/',
+                packageDependencies: [
+                  ['@csstools/convert-colors', 'npm:1.4.0'],
                 ],
                 linkType: 'HARD',
               },
@@ -9328,6 +9345,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          'flatten',
+          [
+            [
+              'npm:1.0.3',
+              {
+                packageLocation:
+                  './.yarn/cache/flatten-npm-1.0.3-87bf6559dd-8a382594dc.zip/node_modules/flatten/',
+                packageDependencies: [['flatten', 'npm:1.0.3']],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
           'follow-redirects',
           [
             [
@@ -15467,6 +15498,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          'postcss-color-mod-function',
+          [
+            [
+              'npm:3.0.3',
+              {
+                packageLocation:
+                  './.yarn/cache/postcss-color-mod-function-npm-3.0.3-1c53b2ef12-dd484df73c.zip/node_modules/postcss-color-mod-function/',
+                packageDependencies: [
+                  ['postcss-color-mod-function', 'npm:3.0.3'],
+                  ['@csstools/convert-colors', 'npm:1.4.0'],
+                  ['postcss', 'npm:7.0.35'],
+                  ['postcss-values-parser', 'npm:2.0.1'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
           'postcss-colormin',
           [
             [
@@ -16520,6 +16570,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          'postcss-values-parser',
+          [
+            [
+              'npm:2.0.1',
+              {
+                packageLocation:
+                  './.yarn/cache/postcss-values-parser-npm-2.0.1-b7d7dda30d-dfc25618be.zip/node_modules/postcss-values-parser/',
+                packageDependencies: [
+                  ['postcss-values-parser', 'npm:2.0.1'],
+                  ['flatten', 'npm:1.0.3'],
+                  ['indexes-of', 'npm:1.0.1'],
+                  ['uniq', 'npm:1.0.1'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
           'preact',
           [
             [
@@ -16903,6 +16972,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['postcss', 'npm:8.2.8'],
+                  ['postcss-color-mod-function', 'npm:3.0.3'],
                   ['postcss-nesting', 'npm:7.0.1'],
                   ['preact', 'npm:10.5.13'],
                   [

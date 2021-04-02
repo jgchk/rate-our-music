@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'preact'
 import { PartialDate } from '../../../state/slices/release-page'
+import { Link } from '../../common/components/Link'
 
 const formatMonth = (i: number) => {
   switch (i) {
@@ -36,10 +37,10 @@ export const ReleaseDate: FunctionComponent<Props> = ({ releaseDate }) => (
   <div>
     {releaseDate.day && <span>{releaseDate.day}</span>}{' '}
     {releaseDate.month && (
-      <a href={`/chart/${releaseDate.year}/${releaseDate.month}`}>
+      <Link href={`/chart/${releaseDate.year}/${releaseDate.month}`}>
         {formatMonth(releaseDate.month)}
-      </a>
+      </Link>
     )}{' '}
-    <a href={`/chart/${releaseDate.year}`}>{releaseDate.year}</a>
+    <Link href={`/chart/${releaseDate.year}`}>{releaseDate.year}</Link>
   </div>
 )

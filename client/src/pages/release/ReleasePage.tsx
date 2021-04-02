@@ -4,6 +4,7 @@ import { useEffect } from 'preact/hooks'
 import { getRelease, updateReview } from '../../state/slices/release-page'
 import { useDispatch, useSelector } from '../../state/store'
 import { isFailure, isLoading } from '../../utils/remote-data'
+import { Link } from '../common/components/Link'
 import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
 import { Review } from './components/Review'
@@ -41,31 +42,41 @@ export const ReleasePage: FunctionComponent = () => {
           ))}
         </div>
       </div>
+
       <div className={clsx(classes.column, classes.right)}>
-        <div>{release.title}</div>
-        <ol className={classes.commaSeparatedList}>
-          {release.artists.map((artist) => (
-            <li key={artist.id}>
-              <a href={`/artist/${artist.id}`}>{artist.name}</a>
-            </li>
-          ))}
-        </ol>
-        {release.releaseDate && (
-          <ReleaseDate releaseDate={release.releaseDate} />
-        )}
-        <ol className={classes.commaSeparatedList}>
-          {release.genres.map((genre) => (
-            <li key={genre.id}>
-              <a href={`/genre/${genre.id}`}>{genre.name}</a>
-            </li>
-          ))}
-        </ol>
-        <div>
+        <div className={classes.section}>
+          <div className={classes.title}>{release.title}</div>
+          <ol className={clsx(classes.artists, classes.commaSeparatedList)}>
+            {release.artists.map((artist) => (
+              <li key={artist.id}>
+                <Link className={classes.artist} href={`/artist/${artist.id}`}>
+                  {artist.name}
+                </Link>
+              </li>
+            ))}
+          </ol>
+          {release.releaseDate && (
+            <ReleaseDate releaseDate={release.releaseDate} />
+          )}
+        </div>
+
+        <div className={classes.section}>
+          <ol className={classes.commaSeparatedList}>
+            {release.genres.map((genre) => (
+              <li key={genre.id}>
+                <Link href={`/genre/${genre.id}`}>{genre.name}</Link>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div className={classes.section}>
           <div>{release.siteRating}</div>
           <div>{release.friendRating}</div>
           <div>{release.similarUserRating}</div>
         </div>
-        <div>
+
+        <div className={classes.section}>
           <RatingStarsInput
             value={release.userReview.rating ?? 0}
             onChange={(rating) =>
@@ -78,12 +89,14 @@ export const ReleasePage: FunctionComponent = () => {
             >{`I couldn't update your review :(`}</div>
           )}
         </div>
+
         <div>
           {release.reviews.allIdsWithText.map((id) => (
             <ReviewWithText key={id} id={id} />
           ))}
         </div>
-        <div>
+
+        <div className={classes.section}>
           {release.reviews.allIds.map((id) => (
             <Review key={id} id={id} />
           ))}
