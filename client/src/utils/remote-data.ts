@@ -24,3 +24,31 @@ export const isFailure = <E, T>(
 export const isSuccess = <E, T>(
   remoteData: RemoteData<E, T>
 ): remoteData is Success<T> => remoteData._type === 'success'
+
+export const fold = <E, A, B>(
+  onInitial: () => B,
+  onLoading: () => B,
+  onFailure: (error: E) => B,
+  onSuccess: (data: A) => B
+) => (remoteData: RemoteData<E, A>): B => {
+  switch (remoteData._type) {
+    case 'initial':
+      return onInitial()
+    case 'loading':
+      return onLoading()
+    case 'failure':
+      return onFailure(remoteData.error)
+    case 'success':
+      return onSuccess(remoteData.data)
+  }
+}
+
+export const map = <A, B>(fn: (a: A) => B) => <E>(
+  remoteData: RemoteData<E, A>
+): RemoteData<E, B> =>
+  fold<E, A, RemoteData<E, B>>(
+    () => initial,
+    () => loading,
+    (error) => failure(error),
+    (data) => success(fn(data))
+  )(remoteData)

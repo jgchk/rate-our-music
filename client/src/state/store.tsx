@@ -1,29 +1,32 @@
 import { FunctionComponent, createContext } from 'preact'
 import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
 import {
-  GetReleaseAction,
-  ReleaseState,
+  ReleaseActions,
+  ReleasePageState,
   initialReleaseState,
   releaseReducer,
-} from './release'
+} from './slices/release-page'
 
 export type State = {
-  release: ReleaseState
+  releasePage: ReleasePageState
 }
 
-export type Action = GetReleaseAction
+export type Action = ReleaseActions
 
-const isAction = (action: Action | Generator<Action>): action is Action =>
-  '_type' in action
+const isAction = (
+  action: Action | Generator<Action> | AsyncGenerator<Action>
+): action is Action => '_type' in action
 
-export type Dispatch = (action: Action | Generator<Action>) => void
+export type Dispatch = (
+  action: Action | Generator<Action> | AsyncGenerator<Action>
+) => void
 
 const initialState: State = {
-  release: initialReleaseState,
+  releasePage: initialReleaseState,
 }
 
 const reducer = (state: State, action: Action): State => ({
-  release: releaseReducer(state, action),
+  releasePage: releaseReducer(state, action),
 })
 
 const Store = createContext<{ state: State; dispatch: Dispatch }>({
@@ -36,12 +39,14 @@ const Store = createContext<{ state: State; dispatch: Dispatch }>({
 export const StateProvider: FunctionComponent = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const wrappedDispatch: Dispatch = useCallback((action) => {
+  const wrappedDispatch: Dispatch = useCallback(async (action) => {
     if (isAction(action)) {
+      console.log({ action })
       dispatch(action)
     } else {
-      for (const a of action) {
-        dispatch(a)
+      for await (const subAction of action) {
+        console.log({ action: subAction })
+        dispatch(subAction)
       }
     }
   }, [])

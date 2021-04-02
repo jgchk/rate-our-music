@@ -1,33 +1,34 @@
 import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
 import { useEffect } from 'preact/hooks'
-import { getRelease } from '../../state/release'
+import { getRelease, updateReview } from '../../state/slices/release-page'
 import { useDispatch, useSelector } from '../../state/store'
-import { isFailure, isInitial, isLoading } from '../../utils/remote-data'
+import { isFailure, isLoading } from '../../utils/remote-data'
 import { Rating } from './components/Rating'
 import { ReleaseDate } from './components/ReleaseDate'
 import { Track } from './components/Track'
 import classes from './ReleasePage.module.css'
 
 export const ReleasePage: FunctionComponent = () => {
-  const state = useSelector((state) => state.release)
+  const release = useSelector((state) => state.releasePage.release)
+  const getReleaseRequest = useSelector(
+    (state) => state.releasePage.requests.getRelease
+  )
+  const updateReviewRequest = useSelector(
+    (state) => state.releasePage.requests.updateReview
+  )
 
   const dispatch = useDispatch()
   useEffect(() => dispatch(getRelease(0)), [dispatch])
 
-  if (isInitial(state)) {
-    return <div />
-  }
-
-  if (isLoading(state)) {
+  if (isLoading(getReleaseRequest)) {
     return <div>Loading...</div>
   }
 
-  if (isFailure(state)) {
-    return <div>{state.error}</div>
+  if (!release) {
+    return <div />
   }
 
-  const release = state.data
   return (
     <div className={classes.container}>
       <div className={clsx(classes.column, classes.left)}>
@@ -63,14 +64,19 @@ export const ReleasePage: FunctionComponent = () => {
           <div>{release.similarUserRating}</div>
           <div>whoa</div>
         </div>
-        <Rating
-          value={release.userReview?.rating ?? 0}
-          onChange={(value) => {
-            console.log(value)
-            // release.userReview.rating = value === 0 ? undefined : value
-            // TODO
-          }}
-        />
+        <div>
+          <Rating
+            value={release.userReview.rating ?? 0}
+            onChange={(rating) =>
+              dispatch(updateReview({ rating }, release.userReview))
+            }
+          />
+          {isFailure(updateReviewRequest) && (
+            <div
+              className={classes.error}
+            >{`I couldn't update your review :(`}</div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
 import { Star } from 'preact-feather'
-import { useLayoutEffect, useRef, useState } from 'preact/hooks'
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 import classes from './Rating.module.css'
 
 const range = (n: number) => [...Array.from({ length: n }).keys()]
@@ -47,6 +47,8 @@ export const Rating: FunctionComponent<{
   onChange: (value: number) => void
 }> = ({ value, onChange }) => {
   const [displayValue, setDisplayValue] = useState(value)
+
+  useEffect(() => setDisplayValue(value), [value])
 
   return (
     <div

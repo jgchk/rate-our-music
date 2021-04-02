@@ -4,6 +4,7 @@ import { ReleasePage } from './pages/release/ReleasePage'
 import { StateProvider } from './state/store'
 
 import './global.css'
+import './theme.css'
 
 export const App: FunctionComponent = () => (
   <StateProvider>

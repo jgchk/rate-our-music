@@ -1,9 +1,7 @@
-import { Release } from './release'
-
 const getDuration = (minutes: number, seconds: number) =>
   (minutes * 60 + seconds) * 1000
 
-export const tempRelease: Release = {
+export const tempRelease = {
   id: 0,
   title: 'Complex Playground',
   artists: [{ id: 0, name: 'Euglossine' }],

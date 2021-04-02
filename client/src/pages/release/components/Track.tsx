@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact'
-import { Track as TrackModel } from '../../../state/release'
+import { Track as TrackModel } from '../../../state/slices/release-page'
 import classes from './Track.module.css'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
