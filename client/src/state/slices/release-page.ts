@@ -37,7 +37,11 @@ export type Release = {
   friendRating: number
   similarUserRating: number
   userReview: UserReview
-  reviews: Review[]
+  reviews: {
+    byId: { [id: number]: Review }
+    allIds: number[]
+    allIdsWithText: number[]
+  }
 }
 
 export type Artist = {

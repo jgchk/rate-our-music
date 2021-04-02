@@ -4,8 +4,10 @@ import { useEffect } from 'preact/hooks'
 import { getRelease, updateReview } from '../../state/slices/release-page'
 import { useDispatch, useSelector } from '../../state/store'
 import { isFailure, isLoading } from '../../utils/remote-data'
-import { Rating } from './components/Rating'
+import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
+import { Review } from './components/Review'
+import { ReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
 import classes from './ReleasePage.module.css'
 
@@ -64,7 +66,7 @@ export const ReleasePage: FunctionComponent = () => {
           <div>{release.similarUserRating}</div>
         </div>
         <div>
-          <Rating
+          <RatingStarsInput
             value={release.userReview.rating ?? 0}
             onChange={(rating) =>
               dispatch(updateReview({ rating }, release.userReview))
@@ -75,6 +77,16 @@ export const ReleasePage: FunctionComponent = () => {
               className={classes.error}
             >{`I couldn't update your review :(`}</div>
           )}
+        </div>
+        <div>
+          {release.reviews.allIdsWithText.map((id) => (
+            <ReviewWithText key={id} id={id} />
+          ))}
+        </div>
+        <div>
+          {release.reviews.allIds.map((id) => (
+            <Review key={id} id={id} />
+          ))}
         </div>
       </div>
     </div>

@@ -1,12 +1,10 @@
-import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
-import { Star } from 'preact-feather'
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
-import classes from './Rating.module.css'
+import { range } from '../../../utils/array'
+import { RatingStar } from './RatingStars'
+import classes from './RatingStars.module.css'
 
-const range = (n: number) => [...Array.from({ length: n }).keys()]
-
-const RatingStar: FunctionComponent<{
+const RatingStarInput: FunctionComponent<{
   value: number
   onChange: (value: number) => void
 }> = ({ value, onChange }) => {
@@ -29,20 +27,17 @@ const RatingStar: FunctionComponent<{
   }
 
   return (
-    <div ref={ref} onMouseMove={handleMouseMove}>
-      <Star
-        className={clsx(
-          classes.star,
-          value === 0 && classes.empty,
-          value === 0.5 && classes.half,
-          value === 1 && classes.full
-        )}
-      />
+    <div
+      className={classes.interactive}
+      ref={ref}
+      onMouseMove={handleMouseMove}
+    >
+      <RatingStar value={value} />
     </div>
   )
 }
 
-export const Rating: FunctionComponent<{
+export const RatingStarsInput: FunctionComponent<{
   value: number
   onChange: (value: number) => void
 }> = ({ value, onChange }) => {
@@ -57,7 +52,7 @@ export const Rating: FunctionComponent<{
       onMouseLeave={() => setDisplayValue(value)}
     >
       {range(5).map((i) => (
-        <RatingStar
+        <RatingStarInput
           key={i}
           value={Math.max(displayValue - i, 0)}
           onChange={(v) => setDisplayValue(v + i)}
