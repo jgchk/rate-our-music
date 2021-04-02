@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
-import { useEffect } from 'preact/hooks'
+import { useEffect, useMemo } from 'preact/hooks'
 import { getRelease, updateReview } from '../../state/slices/release-page'
 import { useDispatch, useSelector } from '../../state/store'
 import { isFailure, isLoading } from '../../utils/remote-data'
@@ -12,7 +12,15 @@ import { ReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
 import classes from './ReleasePage.module.css'
 
-export const ReleasePage: FunctionComponent = () => {
+export type Props = {
+  releaseId: number
+  trackId?: number
+}
+
+export const ReleasePage: FunctionComponent<Props> = ({
+  releaseId,
+  trackId,
+}) => {
   const release = useSelector((state) => state.releasePage.release)
   const getReleaseRequest = useSelector(
     (state) => state.releasePage.requests.getRelease
@@ -21,8 +29,16 @@ export const ReleasePage: FunctionComponent = () => {
     (state) => state.releasePage.requests.updateReview
   )
 
+  const reviewIds = useMemo(
+    () =>
+      trackId === undefined
+        ? release?.reviews.release
+        : release?.reviews.tracks[trackId],
+    [release?.reviews.release, release?.reviews.tracks, trackId]
+  )
+
   const dispatch = useDispatch()
-  useEffect(() => dispatch(getRelease(0)), [dispatch])
+  useEffect(() => dispatch(getRelease(releaseId)), [dispatch, releaseId])
 
   if (isLoading(getReleaseRequest)) {
     return <div>Loading...</div>
@@ -36,9 +52,14 @@ export const ReleasePage: FunctionComponent = () => {
     <div className={classes.container}>
       <div className={clsx(classes.column, classes.left)}>
         <img className={classes.coverArt} src={release.coverArt} />
-        <div>
+        <div className={classes.tracklist}>
           {release.tracks.map((track, i) => (
-            <Track key={track.id} track={track} index={i} />
+            <Track
+              key={track.id}
+              track={track}
+              index={i}
+              onClick={() => console.log(i)}
+            />
           ))}
         </div>
       </div>
@@ -91,13 +112,13 @@ export const ReleasePage: FunctionComponent = () => {
         </div>
 
         <div>
-          {release.reviews.allIdsWithText.map((id) => (
+          {reviewIds?.allIdsWithText.map((id) => (
             <ReviewWithText key={id} id={id} />
           ))}
         </div>
 
         <div className={classes.section}>
-          {release.reviews.allIds.map((id) => (
+          {reviewIds?.allIds.map((id) => (
             <Review key={id} id={id} />
           ))}
         </div>

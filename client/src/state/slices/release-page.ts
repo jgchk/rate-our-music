@@ -39,8 +39,16 @@ export type Release = {
   userReview: UserReview
   reviews: {
     byId: { [id: number]: Review }
-    allIds: number[]
-    allIdsWithText: number[]
+    release: {
+      allIds: number[]
+      allIdsWithText: number[]
+    }
+    tracks: {
+      [id: number]: {
+        allIds: number[]
+        allIdsWithText: number[]
+      }
+    }
   }
 }
 

@@ -64,7 +64,51 @@ export const tempRelease = {
         text: undefined,
       },
     },
-    allIds: [1, 2, 3, 4],
-    allIdsWithText: [1],
+    release: {
+      allIds: [1, 2, 3, 4],
+      allIdsWithText: [1],
+    },
+    tracks: {
+      0: {
+        allIds: [1],
+        allIdsWithText: [],
+      },
+      1: {
+        allIds: [2],
+        allIdsWithText: [],
+      },
+      2: {
+        allIds: [3],
+        allIdsWithText: [],
+      },
+      3: {
+        allIds: [4],
+        allIdsWithText: [],
+      },
+      4: {
+        allIds: [1],
+        allIdsWithText: [],
+      },
+      5: {
+        allIds: [2],
+        allIdsWithText: [],
+      },
+      6: {
+        allIds: [3],
+        allIdsWithText: [],
+      },
+      7: {
+        allIds: [4],
+        allIdsWithText: [],
+      },
+      8: {
+        allIds: [1],
+        allIdsWithText: [],
+      },
+      9: {
+        allIds: [2],
+        allIdsWithText: [],
+      },
+    },
   },
 }

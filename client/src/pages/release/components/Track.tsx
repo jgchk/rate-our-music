@@ -20,10 +20,11 @@ const formatTime = (ms: number) => {
 export type Props = {
   track: TrackModel
   index: number
+  onClick: () => void
 }
 
-export const Track: FunctionComponent<Props> = ({ track, index }) => (
-  <div className={classes.container}>
+export const Track: FunctionComponent<Props> = ({ track, index, onClick }) => (
+  <div className={classes.container} onClick={() => onClick()}>
     <div className={classes.num}>{index + 1}</div>
     <div className={classes.title}>{track.title}</div>
     <div className={classes.duration}>

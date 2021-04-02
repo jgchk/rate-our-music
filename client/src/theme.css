@@ -15,11 +15,13 @@
 }
 
 .dark {
-  color: var(--foreground-0);
+  color: var(--foreground);
 
-  --background-0: #181818;
-  --background-1: #1d1d1d;
+  --background: #181818;
+  --background-light: color-mod(#181818 tint(2%));
+  --background-lighter: color-mod(#181818 tint(4%));
   --border: #282828;
-  --foreground-0: #ccc;
-  --foreground-1: color-mod(#ccc tint(50%));
+  --foreground-dark: color-mod(#ccc shade(50%));
+  --foreground: #ccc;
+  --foreground-light: color-mod(#ccc tint(50%));
 }

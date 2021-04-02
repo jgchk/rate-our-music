@@ -9,7 +9,7 @@ import './theme.css'
 export const App: FunctionComponent = () => (
   <StateProvider>
     <Layout>
-      <ReleasePage />
+      <ReleasePage releaseId={0} trackId={undefined} />
     </Layout>
   </StateProvider>
 )

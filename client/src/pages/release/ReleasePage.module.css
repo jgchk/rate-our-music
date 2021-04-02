@@ -24,9 +24,16 @@
   object-fit: contain;
 }
 
+.tracklist {
+  display: flex;
+  flex-direction: column;
+  background: var(--background-light);
+  border: 1px solid var(--border);
+}
+
 .section {
   padding: var(--space-4);
-  background: var(--background-1);
+  background: var(--background-light);
   border: 1px solid var(--border);
 }
 
