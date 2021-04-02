@@ -134,7 +134,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
                   ],
                   ['prettier', 'npm:2.2.1'],
-                  ['redux', 'npm:4.0.5'],
                   ['simple-git-hooks', 'npm:2.2.0'],
                   ['snowpack', 'npm:3.1.2'],
                   ['stylelint', 'npm:13.12.0'],
@@ -16980,7 +16979,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
                   ],
                   ['prettier', 'npm:2.2.1'],
-                  ['redux', 'npm:4.0.5'],
                   ['simple-git-hooks', 'npm:2.2.0'],
                   ['snowpack', 'npm:3.1.2'],
                   ['stylelint', 'npm:13.12.0'],
@@ -17214,24 +17212,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['redent', 'npm:3.0.0'],
                   ['indent-string', 'npm:4.0.0'],
                   ['strip-indent', 'npm:3.0.0'],
-                ],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'redux',
-          [
-            [
-              'npm:4.0.5',
-              {
-                packageLocation:
-                  './.yarn/cache/redux-npm-4.0.5-aca53e621f-112739c2fb.zip/node_modules/redux/',
-                packageDependencies: [
-                  ['redux', 'npm:4.0.5'],
-                  ['loose-envify', 'npm:1.4.0'],
-                  ['symbol-observable', 'npm:1.2.0'],
                 ],
                 linkType: 'HARD',
               },

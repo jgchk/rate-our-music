@@ -11,8 +11,7 @@
     "clsx": "^1.1.1",
     "fp-ts": "^2.9.5",
     "preact": "^10.5.13",
-    "preact-feather": "^4.2.1",
-    "redux": "^4.0.5"
+    "preact-feather": "^4.2.1"
   },
   "devDependencies": {
     "@canarise/snowpack-eslint-plugin": "^0.2.0",
