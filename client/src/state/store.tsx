@@ -32,7 +32,7 @@ const reducer = (state: State, action: Action): State => ({
 const Store = createContext<{ state: State; dispatch: Dispatch }>({
   state: initialState,
   dispatch: () => {
-    throw new Error('dispatch is not available yet!')
+    throw new Error('Store must be used inside StateProvider')
   },
 })
 

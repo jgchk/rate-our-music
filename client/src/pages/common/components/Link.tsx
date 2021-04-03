@@ -1,8 +1,12 @@
 import clsx from 'clsx'
-import { FunctionComponent, JSX } from 'preact'
+import { FunctionComponent } from 'preact'
+import {
+  Link as RouterLink,
+  Props as RouterLinkProps,
+} from '../../../router/Link'
 import theme from '../../../theme.module.css'
 
-export const Link: FunctionComponent<JSX.HTMLAttributes<HTMLAnchorElement>> = ({
+export const Link: FunctionComponent<RouterLinkProps> = ({
   className,
   ...props
-}) => <a className={clsx(theme.link, className)} {...props} />
+}) => <RouterLink className={clsx(theme.link, className)} {...props} />

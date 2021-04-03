@@ -12,6 +12,11 @@ module.exports = {
       src: '/graphql',
       dest: (req, res) => proxy.web(req, res),
     },
+    {
+      match: 'routes',
+      src: '.*',
+      dest: 'index.html',
+    },
   ],
   alias: {
     react: 'preact/compat',

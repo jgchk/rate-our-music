@@ -37,6 +37,8 @@ module.exports = {
     ],
     'sort-imports': ['warn', { ignoreDeclarationSort: true }],
 
+    '@typescript-eslint/ban-ts-comment': 'off',
+
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
 

@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'preact'
+import { Link } from '../../../router/Link'
 import { Track as TrackModel } from '../../../state/slices/release-page'
 import classes from './Track.module.css'
 
@@ -20,15 +21,15 @@ const formatTime = (ms: number) => {
 export type Props = {
   track: TrackModel
   index: number
-  onClick: () => void
+  href: string
 }
 
-export const Track: FunctionComponent<Props> = ({ track, index, onClick }) => (
-  <div className={classes.container} onClick={() => onClick()}>
+export const Track: FunctionComponent<Props> = ({ track, index, href }) => (
+  <Link className={classes.container} href={href}>
     <div className={classes.num}>{index + 1}</div>
     <div className={classes.title}>{track.title}</div>
     <div className={classes.duration}>
       {track.durationMs && formatTime(track.durationMs)}
     </div>
-  </div>
+  </Link>
 )

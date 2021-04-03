@@ -38,7 +38,11 @@ export const ReleasePage: FunctionComponent<Props> = ({
   )
 
   const dispatch = useDispatch()
-  useEffect(() => dispatch(getRelease(releaseId)), [dispatch, releaseId])
+  useEffect(() => {
+    if (releaseId !== release?.id) {
+      dispatch(getRelease(releaseId))
+    }
+  }, [dispatch, release?.id, releaseId])
 
   if (isLoading(getReleaseRequest)) {
     return <div>Loading...</div>
@@ -58,7 +62,7 @@ export const ReleasePage: FunctionComponent<Props> = ({
               key={track.id}
               track={track}
               index={i}
-              onClick={() => console.log(i)}
+              href={`/release/${release.id}/track/${track.id}`}
             />
           ))}
         </div>
