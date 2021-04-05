@@ -128,20 +128,6 @@ export type Genre = {
   description?: Maybe<Scalars['String']>
 }
 
-export type GenreVote = {
-  __typename?: 'GenreVote'
-  account: Account
-  release: Release
-  genre: Genre
-  value: Scalars['Int']
-  voteType: GenreVoteType
-}
-
-export enum GenreVoteType {
-  Primary = 'PRIMARY',
-  Secondary = 'SECONDARY',
-}
-
 export type Log = {
   __typename?: 'Log'
   id: Scalars['Int']
@@ -181,6 +167,7 @@ export type Mutation = {
   account: AccountMutation
   artist: ArtistMutation
   release: ReleaseMutation
+  releaseReview: ReleaseReviewMutation
   logging: LoggingMutation
 }
 
@@ -197,16 +184,16 @@ export type Release = {
   title: Scalars['String']
   releaseDate?: Maybe<ReleaseDate>
   releaseType: ReleaseType
+  coverArt?: Maybe<Scalars['String']>
   artists: Array<Artist>
   tracks: Array<Track>
-  genres: Array<Genre>
-  genreVotes: Array<GenreVote>
+  genres: Array<ReleaseGenre>
+  siteRating: Scalars['Int']
+  friendRating: Scalars['Int']
+  similarUserRating: Scalars['Int']
+  reviews: Array<ReleaseReview>
   descriptorVotes: Array<DescriptorVote>
   tags: Array<Tag>
-}
-
-export type ReleaseGenresArgs = {
-  voteType: GenreVoteType
 }
 
 export type ReleaseDate = {
@@ -214,6 +201,15 @@ export type ReleaseDate = {
   year: Scalars['Int']
   month?: Maybe<Scalars['Int']>
   day?: Maybe<Scalars['Int']>
+}
+
+export type ReleaseGenre = {
+  __typename?: 'ReleaseGenre'
+  id: Scalars['Int']
+  parent?: Maybe<Genre>
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
+  weight: Scalars['Float']
 }
 
 export type ReleaseMutation = {
@@ -234,6 +230,33 @@ export type ReleaseQuery = {
 
 export type ReleaseQueryGetOneArgs = {
   id: Scalars['Int']
+}
+
+export type ReleaseReview = {
+  __typename?: 'ReleaseReview'
+  id: Scalars['Int']
+  release: Release
+  account: Account
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}
+
+export type ReleaseReviewMutation = {
+  __typename?: 'ReleaseReviewMutation'
+  create: ReleaseReview
+  updateRating: ReleaseReview
+}
+
+export type ReleaseReviewMutationCreateArgs = {
+  releaseId: Scalars['Int']
+  accountId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}
+
+export type ReleaseReviewMutationUpdateRatingArgs = {
+  reviewId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
 }
 
 export enum ReleaseType {
@@ -263,6 +286,29 @@ export type Track = {
   num: Scalars['Int']
   durationMs?: Maybe<Scalars['Int']>
   artists: Array<Artist>
+  reviews: Array<TrackReview>
+}
+
+export type TrackReview = {
+  __typename?: 'TrackReview'
+  id: Scalars['Int']
+  track: Track
+  account: Account
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String']
+  password: Scalars['String']
+}>
+
+export type LoginMutation = { __typename?: 'Mutation' } & {
+  account: { __typename?: 'AccountMutation' } & {
+    login: { __typename?: 'Auth' } & Pick<Auth, 'token' | 'exp'> & {
+        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+      }
+  }
 }
 
 export type GetReleaseQueryVariables = Exact<{
@@ -271,7 +317,15 @@ export type GetReleaseQueryVariables = Exact<{
 
 export type GetReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
-    getOne: { __typename?: 'Release' } & Pick<Release, 'id' | 'title'> & {
+    getOne: { __typename?: 'Release' } & Pick<
+      Release,
+      | 'id'
+      | 'title'
+      | 'coverArt'
+      | 'siteRating'
+      | 'friendRating'
+      | 'similarUserRating'
+    > & {
         artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>>
         releaseDate?: Maybe<
           { __typename?: 'ReleaseDate' } & Pick<
@@ -280,13 +334,92 @@ export type GetReleaseQuery = { __typename?: 'Query' } & {
           >
         >
         tracks: Array<
-          { __typename?: 'Track' } & Pick<Track, 'id' | 'title' | 'durationMs'>
+          { __typename?: 'Track' } & Pick<
+            Track,
+            'id' | 'title' | 'durationMs'
+          > & {
+              reviews: Array<
+                { __typename?: 'TrackReview' } & Pick<
+                  TrackReview,
+                  'id' | 'rating' | 'text'
+                > & {
+                    account: { __typename?: 'Account' } & Pick<
+                      Account,
+                      'id' | 'username'
+                    >
+                  }
+              >
+            }
         >
-        genres: Array<{ __typename?: 'Genre' } & Pick<Genre, 'id' | 'name'>>
+        genres: Array<
+          { __typename?: 'ReleaseGenre' } & Pick<
+            ReleaseGenre,
+            'id' | 'name' | 'weight'
+          >
+        >
+        reviews: Array<
+          { __typename?: 'ReleaseReview' } & Pick<
+            ReleaseReview,
+            'id' | 'rating' | 'text'
+          > & {
+              account: { __typename?: 'Account' } & Pick<
+                Account,
+                'id' | 'username'
+              >
+            }
+        >
       }
   }
 }
 
+export type CreateReleaseReviewMutationVariables = Exact<{
+  releaseId: Scalars['Int']
+  accountId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}>
+
+export type CreateReleaseReviewMutation = { __typename?: 'Mutation' } & {
+  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
+    create: { __typename?: 'ReleaseReview' } & Pick<
+      ReleaseReview,
+      'id' | 'rating' | 'text'
+    > & {
+        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+      }
+  }
+}
+
+export type UpdateReleaseReviewRatingMutationVariables = Exact<{
+  reviewId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+}>
+
+export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
+  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
+    updateRating: { __typename?: 'ReleaseReview' } & Pick<
+      ReleaseReview,
+      'id' | 'rating' | 'text'
+    > & {
+        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+      }
+  }
+}
+
+export const LoginDocument = `
+    mutation Login($username: String!, $password: String!) {
+  account {
+    login(username: $username, password: $password) {
+      token
+      exp
+      account {
+        id
+        username
+      }
+    }
+  }
+}
+    `
 export const GetReleaseDocument = `
     query GetRelease($id: Int!) {
   release {
@@ -302,15 +435,73 @@ export const GetReleaseDocument = `
         month
         year
       }
+      coverArt
       tracks {
         id
         title
         durationMs
+        reviews {
+          id
+          account {
+            id
+            username
+          }
+          rating
+          text
+        }
       }
-      genres(voteType: PRIMARY) {
+      genres {
         id
         name
+        weight
       }
+      siteRating
+      friendRating
+      similarUserRating
+      reviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+      }
+    }
+  }
+}
+    `
+export const CreateReleaseReviewDocument = `
+    mutation CreateReleaseReview($releaseId: Int!, $accountId: Int!, $rating: Int, $text: String) {
+  releaseReview {
+    create(
+      releaseId: $releaseId
+      accountId: $accountId
+      rating: $rating
+      text: $text
+    ) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
+    }
+  }
+}
+    `
+export const UpdateReleaseReviewRatingDocument = `
+    mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
+  releaseReview {
+    updateRating(reviewId: $reviewId, rating: $rating) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
     }
   }
 }
@@ -367,6 +558,17 @@ export type Requester<O = Record<string, never>> = <R, V>(
 
 export function getSdk<O>(requester: Requester<O>) {
   return {
+    Login(
+      variables: LoginMutationVariables,
+      options?: O
+    ): TaskEither<HttpError | GraphqlError, LoginMutation> {
+      return requester<LoginMutation, LoginMutationVariables>(
+        LoginDocument,
+        variables,
+        options
+      )
+    },
+
     GetRelease(
       variables: GetReleaseQueryVariables,
       options?: O
@@ -376,6 +578,26 @@ export function getSdk<O>(requester: Requester<O>) {
         variables,
         options
       )
+    },
+
+    CreateReleaseReview(
+      variables: CreateReleaseReviewMutationVariables,
+      options?: O
+    ): TaskEither<HttpError | GraphqlError, CreateReleaseReviewMutation> {
+      return requester<
+        CreateReleaseReviewMutation,
+        CreateReleaseReviewMutationVariables
+      >(CreateReleaseReviewDocument, variables, options)
+    },
+
+    UpdateReleaseReviewRating(
+      variables: UpdateReleaseReviewRatingMutationVariables,
+      options?: O
+    ): TaskEither<HttpError | GraphqlError, UpdateReleaseReviewRatingMutation> {
+      return requester<
+        UpdateReleaseReviewRatingMutation,
+        UpdateReleaseReviewRatingMutationVariables
+      >(UpdateReleaseReviewRatingDocument, variables, options)
     },
   }
 }

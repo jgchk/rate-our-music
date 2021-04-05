@@ -1,35 +1,44 @@
+import odiff from 'odiff'
 import { FunctionComponent, createContext } from 'preact'
 import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
-import {
-  ReleaseActions,
-  ReleasePageState,
-  initialReleaseState,
-  releaseReducer,
-} from './slices/release-page'
+import { AppState, appReducer } from './app'
+import { AuthActions } from './slices/auth'
+import { ReleaseActions } from './slices/releases'
+import { ReviewActions } from './slices/reviews'
 
-export type State = {
-  releasePage: ReleasePageState
-}
+export type RootState = AppState
 
-export type Action = ReleaseActions
+export type RawAction =
+  | InitAction
+  | AuthActions
+  | ReleaseActions
+  | ReviewActions
+
+export type Action = RawAction & { id: number }
+
+export type Reducer<S> = (state: S | undefined, action: Action) => S
 
 const isAction = (
-  action: Action | Generator<Action> | AsyncGenerator<Action>
-): action is Action => '_type' in action
+  action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>
+): action is RawAction => '_type' in action
 
 export type Dispatch = (
-  action: Action | Generator<Action> | AsyncGenerator<Action>
-) => void
+  action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>
+) => number
 
-const initialState: State = {
-  releasePage: initialReleaseState,
+export const reducer: Reducer<RootState> = (state, action) => {
+  const newState = appReducer(state, action)
+  console.log({ action, state: newState, diff: odiff(state, newState) })
+  return newState
 }
 
-const reducer = (state: State, action: Action): State => ({
-  releasePage: releaseReducer(state, action),
-})
+let currActionId = 0
 
-const Store = createContext<{ state: State; dispatch: Dispatch }>({
+export type InitAction = { _type: 'init' }
+const initAction: InitAction = { _type: 'init' }
+const initialState = reducer(undefined, { ...initAction, id: currActionId++ })
+
+const Store = createContext<{ state: RootState; dispatch: Dispatch }>({
   state: initialState,
   dispatch: () => {
     throw new Error('Store must be used inside StateProvider')
@@ -39,26 +48,39 @@ const Store = createContext<{ state: State; dispatch: Dispatch }>({
 export const StateProvider: FunctionComponent = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const wrappedDispatch: Dispatch = useCallback(async (action) => {
-    if (isAction(action)) {
-      console.log({ action })
-      dispatch(action)
-    } else {
-      for await (const subAction of action) {
-        console.log({ action: subAction })
-        dispatch(subAction)
+  const dispatcher = useCallback(
+    async (
+      action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>,
+      id: number
+    ) => {
+      if (isAction(action)) {
+        dispatch({ ...action, id })
+      } else {
+        for await (const subAction of action) {
+          dispatch({ ...subAction, id })
+        }
       }
-    }
-  }, [])
+    },
+    []
+  )
+
+  const dispatchWithId: Dispatch = useCallback(
+    (action) => {
+      const id = currActionId++
+      void dispatcher(action, id)
+      return id
+    },
+    [dispatcher]
+  )
 
   return (
-    <Store.Provider value={{ state, dispatch: wrappedDispatch }}>
+    <Store.Provider value={{ state, dispatch: dispatchWithId }}>
       {children}
     </Store.Provider>
   )
 }
 
-export const useSelector = <T,>(selector: (state: State) => T): T => {
+export const useSelector = <T,>(selector: (state: RootState) => T): T => {
   const { state } = useContext(Store)
   const value = useMemo(() => selector(state), [selector, state])
   return value

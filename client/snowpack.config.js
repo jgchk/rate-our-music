@@ -29,13 +29,15 @@ module.exports = {
     ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
     [
       '@canarise/snowpack-eslint-plugin',
-      { globs: ['src/**/*.ts', 'src/**/*.tsx'] },
+      {
+        globs: ['src/**/*.ts', 'src/**/*.tsx'],
+        options: { cacheStrategy: 'content' },
+      },
     ],
     '@snowpack/plugin-postcss',
     '@prefresh/snowpack',
   ],
   optimize: {
     minify: true,
-    target: 'es2017',
   },
 }

@@ -20,9 +20,9 @@ const RatingStarInput: FunctionComponent<{
     if (e.offsetX < width * 0.25) {
       onChange(0)
     } else if (e.offsetX < width * 0.75) {
-      onChange(0.5)
-    } else {
       onChange(1)
+    } else {
+      onChange(2)
     }
   }
 
@@ -54,8 +54,8 @@ export const RatingStarsInput: FunctionComponent<{
       {range(5).map((i) => (
         <RatingStarInput
           key={i}
-          value={Math.max(displayValue - i, 0)}
-          onChange={(v) => setDisplayValue(v + i)}
+          value={Math.max(displayValue - i * 2, 0)}
+          onChange={(v) => setDisplayValue(v + i * 2)}
         />
       ))}
     </div>

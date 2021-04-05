@@ -49,6 +49,7 @@ module.exports = {
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-array-callback-reference': 'off',
     'unicorn/no-array-reduce': 'off',
+    'unicorn/no-useless-undefined': 'off',
   },
   env: {
     browser: true,

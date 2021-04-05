@@ -45,10 +45,6 @@
   padding-bottom: var(--space-2);
 }
 
-.artist {
-  font-size: var(--large);
-}
-
 .error {
   color: var(--red);
   font-size: var(--small);

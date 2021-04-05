@@ -1,6 +1,5 @@
 use crate::errors::Error;
 use crate::model::genre_vote::GenreVote;
-use crate::model::genre_vote::GenreVoteType;
 use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
@@ -11,18 +10,18 @@ impl<'a> GenreVoteDatabase<'a> {
         Self(pool)
     }
 
-    pub async fn get_by_release(&self, release_id: i32) -> Result<Vec<GenreVote>, Error> {
+    pub async fn get_by_release_genre(
+        &self,
+        release_id: i32,
+        genre_id: i32,
+    ) -> Result<Vec<GenreVote>, Error> {
         sqlx::query_as!(
             GenreVote,
-            r#"SELECT
-                account_id,
-                release_id,
-                genre_id,
-                release_genre_vote_value,
-                release_genre_vote_type as "release_genre_vote_type: GenreVoteType"
+            r#"SELECT *
             FROM release_genre_vote
-            WHERE release_id = $1"#,
-            release_id
+            WHERE release_id = $1 AND genre_id = $2"#,
+            release_id,
+            genre_id
         )
         .fetch_all(self.0)
         .await

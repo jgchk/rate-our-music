@@ -1,10 +1,14 @@
 import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
-import { useEffect, useMemo } from 'preact/hooks'
-import { getRelease, updateReview } from '../../state/slices/release-page'
+import { useEffect, useState } from 'preact/hooks'
+import { login } from '../../state/slices/auth'
+import { getRelease } from '../../state/slices/releases'
+import { createReview, updateReview } from '../../state/slices/reviews'
 import { useDispatch, useSelector } from '../../state/store'
-import { isFailure, isLoading } from '../../utils/remote-data'
-import { Link } from '../common/components/Link'
+import { findMap } from '../../utils/array'
+import { isLoading } from '../../utils/remote-data'
+import { Artist } from './components/Artist'
+import { Genre } from './components/Genre'
 import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
 import { Review } from './components/Review'
@@ -21,30 +25,52 @@ export const ReleasePage: FunctionComponent<Props> = ({
   releaseId,
   trackId,
 }) => {
-  const release = useSelector((state) => state.releasePage.release)
-  const getReleaseRequest = useSelector(
-    (state) => state.releasePage.requests.getRelease
-  )
-  const updateReviewRequest = useSelector(
-    (state) => state.releasePage.requests.updateReview
+  const release = useSelector((state) => state.releases[releaseId])
+
+  const reviewIds = useSelector((state) =>
+    trackId === undefined
+      ? state.releases[releaseId]?.reviews
+      : state.tracks[trackId]?.reviews
   )
 
-  const reviewIds = useMemo(
-    () =>
-      trackId === undefined
-        ? release?.reviews.release
-        : release?.reviews.tracks[trackId],
-    [release?.reviews.release, release?.reviews.tracks, trackId]
+  const user = useSelector((state) => {
+    const id = state.auth.auth?.user
+    if (id !== undefined) {
+      return state.users[id]
+    }
+  })
+  const userReview = useSelector(
+    (state) =>
+      user &&
+      reviewIds &&
+      findMap([...reviewIds], (id) => {
+        const review = state.reviews[id]
+        if (review && review.user === user.id) {
+          return review
+        }
+      })
   )
 
   const dispatch = useDispatch()
-  useEffect(() => {
-    if (releaseId !== release?.id) {
-      dispatch(getRelease(releaseId))
-    }
-  }, [dispatch, release?.id, releaseId])
 
-  if (isLoading(getReleaseRequest)) {
+  const [getReleaseActionId, setGetReleaseActionId] = useState<
+    number | undefined
+  >(undefined)
+  const getReleaseAction = useSelector((state) => {
+    if (getReleaseActionId === undefined) return undefined
+    const action = state.actions[getReleaseActionId]
+    if (action?._type !== 'release/get') return undefined
+    return action
+  })
+  useEffect(() => {
+    if (release === undefined || release.id !== releaseId) {
+      setGetReleaseActionId(dispatch(getRelease(releaseId)))
+    }
+  }, [dispatch, release, releaseId])
+
+  useEffect(() => void dispatch(login('admin', 'admin')), [dispatch])
+
+  if (getReleaseAction && isLoading(getReleaseAction.request)) {
     return <div>Loading...</div>
   }
 
@@ -56,27 +82,27 @@ export const ReleasePage: FunctionComponent<Props> = ({
     <div className={classes.container}>
       <div className={clsx(classes.column, classes.left)}>
         <img className={classes.coverArt} src={release.coverArt} />
-        <div className={classes.tracklist}>
-          {release.tracks.map((track, i) => (
-            <Track
-              key={track.id}
-              track={track}
-              index={i}
-              href={`/release/${release.id}/track/${track.id}`}
-            />
-          ))}
-        </div>
+        {release.tracks.size > 0 && (
+          <div className={classes.tracklist}>
+            {[...release.tracks].map((id, i) => (
+              <Track
+                key={id}
+                id={id}
+                index={i}
+                href={`/release/${release.id}/track/${id}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className={clsx(classes.column, classes.right)}>
         <div className={classes.section}>
           <div className={classes.title}>{release.title}</div>
           <ol className={clsx(classes.artists, classes.commaSeparatedList)}>
-            {release.artists.map((artist) => (
-              <li key={artist.id}>
-                <Link className={classes.artist} href={`/artist/${artist.id}`}>
-                  {artist.name}
-                </Link>
+            {[...release.artists].map((id) => (
+              <li key={id}>
+                <Artist id={id} />
               </li>
             ))}
           </ol>
@@ -87,9 +113,9 @@ export const ReleasePage: FunctionComponent<Props> = ({
 
         <div className={classes.section}>
           <ol className={classes.commaSeparatedList}>
-            {release.genres.map((genre) => (
-              <li key={genre.id}>
-                <Link href={`/genre/${genre.id}`}>{genre.name}</Link>
+            {[...release.genres].map((id) => (
+              <li key={id}>
+                <Genre id={id} />
               </li>
             ))}
           </ol>
@@ -101,31 +127,36 @@ export const ReleasePage: FunctionComponent<Props> = ({
           <div>{release.similarUserRating}</div>
         </div>
 
-        <div className={classes.section}>
-          <RatingStarsInput
-            value={release.userReview.rating ?? 0}
-            onChange={(rating) =>
-              dispatch(updateReview({ rating }, release.userReview))
-            }
-          />
-          {isFailure(updateReviewRequest) && (
-            <div
-              className={classes.error}
-            >{`I couldn't update your review :(`}</div>
-          )}
-        </div>
+        {user && (
+          <div className={classes.section}>
+            <RatingStarsInput
+              value={userReview?.rating ?? 0}
+              onChange={(rating) => {
+                dispatch(
+                  userReview
+                    ? updateReview(userReview.id, rating)
+                    : createReview(releaseId, trackId, user.id, { rating })
+                )
+              }}
+            />
+          </div>
+        )}
 
-        <div>
-          {reviewIds?.allIdsWithText.map((id) => (
-            <ReviewWithText key={id} id={id} />
-          ))}
-        </div>
+        {reviewIds && reviewIds.size > 0 && (
+          <div>
+            {[...reviewIds].map((id) => (
+              <ReviewWithText key={id} id={id} />
+            ))}
+          </div>
+        )}
 
-        <div className={classes.section}>
-          {reviewIds?.allIds.map((id) => (
-            <Review key={id} id={id} />
-          ))}
-        </div>
+        {reviewIds && reviewIds.size > 0 && (
+          <div className={classes.section}>
+            {[...reviewIds].map((id) => (
+              <Review key={id} id={id} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

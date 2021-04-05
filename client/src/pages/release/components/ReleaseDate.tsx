@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact'
-import { PartialDate } from '../../../state/slices/release-page'
+import { PartialDate } from '../../../state/slices/releases'
 import { Link } from '../../common/components/Link'
 
 const formatMonth = (i: number) => {

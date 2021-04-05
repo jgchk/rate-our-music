@@ -5,21 +5,25 @@ import pageClasses from '../ReleasePage.module.css'
 import { RatingStars } from './RatingStars'
 import classes from './ReviewWithText.module.css'
 
-export type Props = { id: number }
+type UserProps = { id: number }
 
-export const ReviewWithText: FunctionComponent<Props> = ({ id }) => {
-  const review = useSelector(
-    (state) => state.releasePage.release?.reviews.byId[id]
-  )
+const User: FunctionComponent<UserProps> = ({ id }) => {
+  const user = useSelector((state) => state.users[id])
+  if (!user) return <div>No user found with id: {id}</div>
+  return <Link href={`/user/${user.id}`}>{user.username}</Link>
+}
 
-  if (!review) {
-    return <></>
-  }
+export type ReviewWithTextProps = { id: number }
 
+export const ReviewWithText: FunctionComponent<ReviewWithTextProps> = ({
+  id,
+}) => {
+  const review = useSelector((state) => state.reviews[id])
+  if (!review) return <div>No review found with id: {id}</div>
   return (
     <div className={pageClasses.section}>
       <div className={classes.header}>
-        <Link href={`/user/${review.user.id}`}>{review.user.username}</Link>
+        <User id={review.user} />
         <RatingStars value={review.rating ?? 0} />
       </div>
       <div>{review.text ?? ''}</div>

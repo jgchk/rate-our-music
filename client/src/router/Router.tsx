@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { useCallback, useEffect, useState } from 'preact/hooks'
 import { findMap } from '../utils/array'
 import { RouterContext } from './RouterContext'
 import { routes } from './routes'
@@ -7,10 +7,10 @@ import { routes } from './routes'
 export const Router: FunctionComponent = () => {
   const [location, setLocation] = useState(window.location.pathname)
 
-  const push = (newLocation: string) => {
+  const push = useCallback((newLocation: string) => {
     window.history.pushState({}, '', newLocation)
     setLocation(newLocation)
-  }
+  }, [])
 
   useEffect(() => {
     const handler = () => setLocation(window.location.pathname)

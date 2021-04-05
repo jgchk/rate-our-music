@@ -4,20 +4,22 @@ import { Link } from '../../common/components/Link'
 import { RatingStars } from './RatingStars'
 import classes from './Review.module.css'
 
-export type Props = { id: number }
+type UserProps = { id: number }
 
-export const Review: FunctionComponent<Props> = ({ id }) => {
-  const review = useSelector(
-    (state) => state.releasePage.release?.reviews.byId[id]
-  )
+const User: FunctionComponent<UserProps> = ({ id }) => {
+  const user = useSelector((state) => state.users[id])
+  if (!user) return <div>No user found with id: {id}</div>
+  return <Link href={`/user/${user.id}`}>{user.username}</Link>
+}
 
-  if (!review) {
-    return <></>
-  }
+export type ReviewProps = { id: number }
 
+export const Review: FunctionComponent<ReviewProps> = ({ id }) => {
+  const review = useSelector((state) => state.reviews[id])
+  if (!review) return <div>No review found with id: {id}</div>
   return (
     <div className={classes.container}>
-      <Link href={`/user/${review.user.id}`}>{review.user.username}</Link>
+      <User id={review.user} />
       <RatingStars value={review.rating ?? 0} />
     </div>
   )

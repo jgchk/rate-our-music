@@ -1,0 +1,49 @@
+query GetRelease($id: Int!) {
+  release {
+    getOne(id: $id) {
+      id
+      title
+      artists {
+        id
+        name
+      }
+      releaseDate {
+        day
+        month
+        year
+      }
+      coverArt
+      tracks {
+        id
+        title
+        durationMs
+        reviews {
+          id
+          account {
+            id
+            username
+          }
+          rating
+          text
+        }
+      }
+      genres {
+        id
+        name
+        weight
+      }
+      siteRating
+      friendRating
+      similarUserRating
+      reviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+      }
+    }
+  }
+}

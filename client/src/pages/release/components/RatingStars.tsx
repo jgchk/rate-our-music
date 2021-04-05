@@ -9,8 +9,8 @@ export const RatingStar: FunctionComponent<{ value: number }> = ({ value }) => (
     className={clsx(
       classes.star,
       value === 0 && classes.empty,
-      value === 0.5 && classes.half,
-      value === 1 && classes.full
+      value === 1 && classes.half,
+      value === 2 && classes.full
     )}
   />
 )
@@ -20,7 +20,7 @@ export const RatingStars: FunctionComponent<{ value: number }> = ({
 }) => (
   <div className={classes.container}>
     {range(5).map((i) => (
-      <RatingStar key={i} value={Math.max(value - i, 0)} />
+      <RatingStar key={i} value={Math.max(value - i * 2, 0)} />
     ))}
   </div>
 )

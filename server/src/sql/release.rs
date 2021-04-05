@@ -27,6 +27,7 @@ impl<'a> ReleaseDatabase<'a> {
             release_title: title.to_string(),
             release_date: None,
             release_type,
+            release_cover_art: None,
         })
     }
 
@@ -39,7 +40,8 @@ impl<'a> ReleaseDatabase<'a> {
                 release_date_year,
                 release_date_month,
                 release_date_day,
-                release_type as "release_type: ReleaseType"
+                release_type as "release_type: ReleaseType",
+                release_cover_art
             FROM release
             WHERE release_id = $1"#,
             id,
@@ -59,7 +61,8 @@ impl<'a> ReleaseDatabase<'a> {
                 r.release_date_year,
                 r.release_date_month,
                 r.release_date_day,
-                r.release_type as "release_type: _"
+                r.release_type as "release_type: _",
+                r.release_cover_art
             FROM release_artist ra
             JOIN release r ON r.release_id = ra.release_id
             WHERE ra.artist_id = $1"#,
@@ -85,7 +88,8 @@ impl<'a> ReleaseDatabase<'a> {
                 r.release_date_year,
                 r.release_date_month,
                 r.release_date_day,
-                r.release_type as "release_type: _"
+                r.release_type as "release_type: _",
+                r.release_cover_art
             FROM release r
             LEFT JOIN track t ON r.release_id = t.release_id
             WHERE t.track_id = $1"#,

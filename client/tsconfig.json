@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["DOM"],
+    "lib": ["DOM", "ES2017", "ES2019.Array"],
     "target": "ES2017",
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
 
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
 
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "downlevelIteration": true,
     "noUncheckedIndexedAccess": true
