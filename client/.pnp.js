@@ -117,7 +117,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'eslint-plugin-unicorn',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:29.0.0',
                   ],
-                  ['fp-ts', 'npm:2.9.5'],
                   ['graphql', 'npm:15.5.0'],
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],
@@ -9442,20 +9441,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
-          'fp-ts',
-          [
-            [
-              'npm:2.9.5',
-              {
-                packageLocation:
-                  './.yarn/cache/fp-ts-npm-2.9.5-2058b93e83-de7dfc2106.zip/node_modules/fp-ts/',
-                packageDependencies: [['fp-ts', 'npm:2.9.5']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
           'fragment-cache',
           [
             [
@@ -16955,7 +16940,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'eslint-plugin-unicorn',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:29.0.0',
                   ],
-                  ['fp-ts', 'npm:2.9.5'],
                   ['graphql', 'npm:15.5.0'],
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],

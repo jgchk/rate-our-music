@@ -1,6 +1,6 @@
-import { pipe } from 'fp-ts/function'
 import { VNode } from 'preact'
 import { ReleasePage } from '../pages/release/ReleasePage'
+import { pipe } from '../utils/pipe'
 import { Matcher, extend, int, match, param, route } from './parser'
 
 const releaseRoute = pipe(route(), extend('release'), param('releaseId', int))

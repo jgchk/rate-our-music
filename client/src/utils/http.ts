@@ -1,4 +1,4 @@
-import { Either, left, right } from 'fp-ts/Either'
+import { Result, err, ok } from './result'
 
 export type Options = {
   method?: HttpMethod
@@ -40,7 +40,7 @@ const isHttpError = (error: any): error is HttpError =>
 const send = async (
   url: string,
   options: Options = {}
-): Promise<Either<HttpError, Response & ResponseAugment>> => {
+): Promise<Result<HttpError, Response & ResponseAugment>> => {
   const headers =
     options.json !== undefined
       ? { 'Content-Type': 'application/json' }
@@ -59,12 +59,12 @@ const send = async (
       return r
     })
 
-    return right({
+    return ok({
       ...response.clone(),
       json: async () => (response.status === 204 ? '' : response.json()),
     })
   } catch (error: unknown) {
-    if (isHttpError(error)) return left(error)
+    if (isHttpError(error)) return err(error)
     throw error
   }
 }
@@ -72,5 +72,5 @@ const send = async (
 export const post = (
   url: string,
   options: Omit<Options, 'method'> = {}
-): Promise<Either<HttpError, Response & ResponseAugment>> =>
+): Promise<Result<HttpError, Response & ResponseAugment>> =>
   send(url, { method: 'POST', ...options })

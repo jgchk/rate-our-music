@@ -1,4 +1,3 @@
-import { Either, isLeft, left, right } from 'fp-ts/Either'
 import {
   GraphqlError,
   GraphqlResponse,
@@ -7,22 +6,23 @@ import {
   isErrorResponse,
 } from '../generated/graphql'
 import { HttpError, post } from './http'
+import { Result, err, isErr, ok } from './result'
 
 const requester = async <R, V>(
   doc: string,
   vars: V
-): Promise<Either<HttpError | GraphqlError, R>> => {
+): Promise<Result<HttpError | GraphqlError, R>> => {
   const response = await post('/graphql', {
     json: { query: doc, variables: vars },
   })
 
-  if (isLeft(response)) return left(response.left)
+  if (isErr(response)) return err(response.error)
 
-  const responseData = await response.right.json<GraphqlResponse<R>>()
+  const responseData = await response.data.json<GraphqlResponse<R>>()
   if (isErrorResponse(responseData))
-    return left(graphqlError(responseData.errors))
+    return err(graphqlError(responseData.errors))
 
-  return right(responseData.data)
+  return ok(responseData.data)
 }
 
 export const gql = getSdk(requester)

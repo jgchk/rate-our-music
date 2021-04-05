@@ -1,13 +1,11 @@
-import { isLeft } from 'fp-ts/Either'
 import { GetReleaseQuery, GraphqlError } from '../../generated/graphql'
 import { gql } from '../../utils/gql'
 import { HttpError } from '../../utils/http'
 import {
   RemoteData,
-  failure,
+  fromResult,
   isSuccess,
   loading,
-  success,
 } from '../../utils/remote-data'
 import { Reducer } from '../store'
 import { ids } from './utils'
@@ -118,13 +116,5 @@ export const getRelease = async function* (
   }
 
   const response = await gql.GetRelease({ id })
-  yield isLeft(response)
-    ? {
-        _type: 'release/get',
-        request: failure(response.left),
-      }
-    : {
-        _type: 'release/get',
-        request: success(response.right),
-      }
+  yield { _type: 'release/get', request: fromResult(response) }
 }

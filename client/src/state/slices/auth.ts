@@ -1,14 +1,12 @@
-import { isLeft } from 'fp-ts/Either'
 import { GraphqlError, LoginMutation } from '../../generated/graphql'
 import { gql } from '../../utils/gql'
 import { HttpError } from '../../utils/http'
 import {
   RemoteData,
-  failure,
+  fromResult,
   initial,
   isSuccess,
   loading,
-  success,
 } from '../../utils/remote-data'
 import { Reducer } from '../store'
 
@@ -86,13 +84,5 @@ export const login = async function* (
 ): AsyncGenerator<LoginAction> {
   yield { _type: 'auth/login', request: loading }
   const response = await gql.Login({ username, password })
-  yield isLeft(response)
-    ? {
-        _type: 'auth/login',
-        request: failure(response.left),
-      }
-    : {
-        _type: 'auth/login',
-        request: success(response.right),
-      }
+  yield { _type: 'auth/login', request: fromResult(response) }
 }

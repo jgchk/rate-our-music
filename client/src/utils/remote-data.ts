@@ -1,3 +1,5 @@
+import { Result, isErr } from './result'
+
 export type RemoteData<E, T> = Initial | Loading | Failure<E> | Success<T>
 export type Initial = { _type: 'initial' }
 export type Loading = { _type: 'loading' }
@@ -11,6 +13,9 @@ export const failure = <E>(error: E): Failure<E> => ({
   error,
 })
 export const success = <T>(data: T): Success<T> => ({ _type: 'success', data })
+
+export const fromResult = <E, T>(result: Result<E, T>): RemoteData<E, T> =>
+  isErr(result) ? failure(result.error) : success(result.data)
 
 export const isInitial = <E, T>(
   remoteData: RemoteData<E, T>

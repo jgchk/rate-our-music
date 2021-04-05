@@ -1,4 +1,3 @@
-import { isLeft } from 'fp-ts/Either'
 import {
   CreateReleaseReviewMutation,
   GraphqlError,
@@ -8,11 +7,11 @@ import { gql } from '../../utils/gql'
 import { HttpError } from '../../utils/http'
 import {
   RemoteData,
-  failure,
+  fromResult,
   isSuccess,
   loading,
-  success,
 } from '../../utils/remote-data'
+import { isErr } from '../../utils/result'
 import { Reducer } from '../store'
 
 //
@@ -132,9 +131,7 @@ export const createReview = async function* (
     accountId: userId,
     ...review,
   })
-  yield isLeft(response)
-    ? { ...base, request: failure(response.left) }
-    : { ...base, request: success(response.right) }
+  yield { ...base, request: fromResult(response) }
 }
 
 export type UpdateReviewRatingAction = {
@@ -165,7 +162,5 @@ export const updateReview = async function* (
     reviewId,
     rating: rating > 0 ? rating : undefined,
   })
-  yield isLeft(response)
-    ? { ...base, request: failure(response.left) }
-    : { ...base, request: success(response.right) }
+  yield { ...base, request: fromResult(response) }
 }

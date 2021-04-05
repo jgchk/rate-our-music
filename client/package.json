@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
-    "fp-ts": "^2.9.5",
     "odiff": "^1.4.3",
     "preact": "^10.5.13",
     "preact-feather": "^4.2.1"
