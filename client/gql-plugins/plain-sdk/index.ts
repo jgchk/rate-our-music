@@ -61,7 +61,7 @@ export const validate: PluginValidateFn<any> = async (
 ) => {
   if (path.extname(outputFile) !== '.ts') {
     throw new Error(
-      `Plugin "typescript-generic-sdk" requires extension to be ".ts"!`
+      `Plugin "typescript-plain-sdk" requires extension to be ".ts"!`
     )
   }
 }

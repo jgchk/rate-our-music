@@ -59,10 +59,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.1',
                   ],
                   [
-                    '@graphql-codegen/typescript-generic-sdk',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.17.9',
-                  ],
-                  [
                     '@graphql-codegen/typescript-operations',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.17.15',
                   ],
@@ -2258,56 +2254,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['tslib', 'npm:2.1.0'],
                 ],
                 packagePeers: ['@types/graphql', 'graphql'],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          '@graphql-codegen/typescript-generic-sdk',
-          [
-            [
-              'npm:1.17.9',
-              {
-                packageLocation:
-                  './.yarn/cache/@graphql-codegen-typescript-generic-sdk-npm-1.17.9-d878fe33df-84d050252b.zip/node_modules/@graphql-codegen/typescript-generic-sdk/',
-                packageDependencies: [
-                  ['@graphql-codegen/typescript-generic-sdk', 'npm:1.17.9'],
-                ],
-                linkType: 'SOFT',
-              },
-            ],
-            [
-              'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.17.9',
-              {
-                packageLocation:
-                  './.yarn/$$virtual/@graphql-codegen-typescript-generic-sdk-virtual-60ec179c34/0/cache/@graphql-codegen-typescript-generic-sdk-npm-1.17.9-d878fe33df-84d050252b.zip/node_modules/@graphql-codegen/typescript-generic-sdk/',
-                packageDependencies: [
-                  [
-                    '@graphql-codegen/typescript-generic-sdk',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.17.9',
-                  ],
-                  [
-                    '@graphql-codegen/plugin-helpers',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.4',
-                  ],
-                  [
-                    '@graphql-codegen/visitor-plugin-common',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.19.1',
-                  ],
-                  ['@types/graphql', null],
-                  ['@types/graphql-tag', null],
-                  ['auto-bind', 'npm:4.0.0'],
-                  ['graphql', 'npm:15.5.0'],
-                  ['graphql-tag', null],
-                  ['tslib', 'npm:2.0.3'],
-                ],
-                packagePeers: [
-                  '@types/graphql-tag',
-                  '@types/graphql',
-                  'graphql-tag',
-                  'graphql',
-                ],
                 linkType: 'HARD',
               },
             ],
@@ -16917,10 +16863,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     '@graphql-codegen/typescript',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.1',
-                  ],
-                  [
-                    '@graphql-codegen/typescript-generic-sdk',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.17.9',
                   ],
                   [
                     '@graphql-codegen/typescript-operations',

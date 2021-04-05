@@ -867,21 +867,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/typescript-generic-sdk@npm:^1.17.9":
-  version: 1.17.9
-  resolution: "@graphql-codegen/typescript-generic-sdk@npm:1.17.9"
-  dependencies:
-    "@graphql-codegen/plugin-helpers": ^1.18.2
-    "@graphql-codegen/visitor-plugin-common": ^1.17.20
-    auto-bind: ~4.0.0
-    tslib: ~2.0.1
-  peerDependencies:
-    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    graphql-tag: ^2.0.0
-  checksum: 84d050252b1095dba054f3c9b2e7024323e166293092843d869e36ac96066e2ae307138eec38d933a505a3a619cde4da6d476ae2e4947d7bc0a53aab8a2f2f8a
-  languageName: node
-  linkType: hard
-
 "@graphql-codegen/typescript-operations@npm:1.17.15":
   version: 1.17.15
   resolution: "@graphql-codegen/typescript-operations@npm:1.17.15"
@@ -911,7 +896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/visitor-plugin-common@npm:^1.17.20, @graphql-codegen/visitor-plugin-common@npm:^1.19.0, @graphql-codegen/visitor-plugin-common@npm:^1.19.1":
+"@graphql-codegen/visitor-plugin-common@npm:^1.19.0, @graphql-codegen/visitor-plugin-common@npm:^1.19.1":
   version: 1.19.1
   resolution: "@graphql-codegen/visitor-plugin-common@npm:1.19.1"
   dependencies:
@@ -8683,7 +8668,6 @@ __metadata:
     "@graphql-codegen/introspection": 1.18.1
     "@graphql-codegen/plugin-helpers": ^1.18.4
     "@graphql-codegen/typescript": 1.21.1
-    "@graphql-codegen/typescript-generic-sdk": ^1.17.9
     "@graphql-codegen/typescript-operations": 1.17.15
     "@graphql-codegen/visitor-plugin-common": ^1.19.1
     "@prefresh/snowpack": ^3.1.2
