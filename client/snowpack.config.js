@@ -1,6 +1,8 @@
 const httpProxy = require('http-proxy')
 const proxy = httpProxy.createServer({ target: 'http://localhost:3030' })
 
+const development = process.env.NODE_ENV === 'development'
+
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
   mount: {
@@ -27,15 +29,19 @@ module.exports = {
   },
   plugins: [
     ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
-    [
-      '@canarise/snowpack-eslint-plugin',
-      {
-        globs: ['src/**/*.ts', 'src/**/*.tsx'],
-        options: { cacheStrategy: 'content' },
-      },
-    ],
     '@snowpack/plugin-postcss',
-    '@prefresh/snowpack',
+    ...(development
+      ? [
+          [
+            '@canarise/snowpack-eslint-plugin',
+            {
+              globs: ['src/**/*.ts', 'src/**/*.tsx'],
+              options: { cacheStrategy: 'content' },
+            },
+          ],
+          '@prefresh/snowpack',
+        ]
+      : []),
   ],
   optimize: {
     minify: true,
