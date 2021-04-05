@@ -11,7 +11,6 @@ import {
   isSuccess,
   loading,
 } from '../../utils/remote-data'
-import { isErr } from '../../utils/result'
 import { Reducer } from '../store'
 
 //
