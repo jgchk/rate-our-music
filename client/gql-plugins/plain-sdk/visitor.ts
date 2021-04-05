@@ -35,7 +35,7 @@ export class GenericSdkVisitor extends ClientSideBaseVisitor<
     autoBind(this)
 
     this._additionalImports.push(
-      `import { TaskEither } from 'fp-ts/TaskEither'`,
+      `import { Either } from 'fp-ts/Either'`,
       `import { HttpError } from '../utils/http'`
     )
   }
@@ -79,7 +79,7 @@ export class GenericSdkVisitor extends ClientSideBaseVisitor<
         }`
 
         return `
-          ${name}(${variablesArg}, options?: O): TaskEither<HttpError | GraphqlError, ${o.operationResultType}> {
+          ${name}(${variablesArg}, options?: O): Promise<Either<HttpError | GraphqlError, ${o.operationResultType}>> {
             return requester<${o.operationResultType}, ${o.operationVariablesTypes}>(${o.documentVariableName}, variables, options);
           }`
       })
@@ -130,7 +130,7 @@ export class GenericSdkVisitor extends ClientSideBaseVisitor<
       export const isGraphqlError = (error: any): error is GraphqlError =>
         typeof error === 'object' && error.name === 'GraphqlError'
 
-      export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => TaskEither<HttpError | GraphqlError, R>
+      export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => Promise<Either<HttpError | GraphqlError, R>>
 
       export function getSdk<O>(requester: Requester<O>) {
         return {

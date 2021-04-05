@@ -17,7 +17,7 @@ class GenericSdkVisitor extends visitor_plugin_common_1.ClientSideBaseVisitor {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     auto_bind_1.default(this)
     this._additionalImports.push(
-      `import { TaskEither } from 'fp-ts/TaskEither'`,
+      `import { Either } from 'fp-ts/Either'`,
       `import { HttpError } from '../utils/http'`
     )
   }
@@ -58,7 +58,7 @@ class GenericSdkVisitor extends visitor_plugin_common_1.ClientSideBaseVisitor {
           o.operationVariablesTypes
         }`
         return `
-          ${name}(${variablesArg}, options?: O): TaskEither<HttpError | GraphqlError, ${o.operationResultType}> {
+          ${name}(${variablesArg}, options?: O): Promise<Either<HttpError | GraphqlError, ${o.operationResultType}>> {
             return requester<${o.operationResultType}, ${o.operationVariablesTypes}>(${o.documentVariableName}, variables, options);
           }`
       })
@@ -108,7 +108,7 @@ class GenericSdkVisitor extends visitor_plugin_common_1.ClientSideBaseVisitor {
       export const isGraphqlError = (error: any): error is GraphqlError =>
         typeof error === 'object' && error.name === 'GraphqlError'
 
-      export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => TaskEither<HttpError | GraphqlError, R>
+      export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => Promise<Either<HttpError | GraphqlError, R>>
 
       export function getSdk<O>(requester: Requester<O>) {
         return {

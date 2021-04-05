@@ -131,7 +131,7 @@ export const createReview = async function* (
     releaseId,
     accountId: userId,
     ...review,
-  })()
+  })
   yield isLeft(response)
     ? { ...base, request: failure(response.left) }
     : { ...base, request: success(response.right) }
@@ -164,7 +164,7 @@ export const updateReview = async function* (
   const response = await gql.UpdateReleaseReviewRating({
     reviewId,
     rating: rating > 0 ? rating : undefined,
-  })()
+  })
   yield isLeft(response)
     ? { ...base, request: failure(response.left) }
     : { ...base, request: success(response.right) }

@@ -1,4 +1,4 @@
-import { TaskEither } from 'fp-ts/TaskEither'
+import { Either } from 'fp-ts/Either'
 import { HttpError } from '../utils/http'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -554,14 +554,14 @@ export type Requester<O = Record<string, never>> = <R, V>(
   doc: string,
   vars?: V,
   options?: O
-) => TaskEither<HttpError | GraphqlError, R>
+) => Promise<Either<HttpError | GraphqlError, R>>
 
 export function getSdk<O>(requester: Requester<O>) {
   return {
     Login(
       variables: LoginMutationVariables,
       options?: O
-    ): TaskEither<HttpError | GraphqlError, LoginMutation> {
+    ): Promise<Either<HttpError | GraphqlError, LoginMutation>> {
       return requester<LoginMutation, LoginMutationVariables>(
         LoginDocument,
         variables,
@@ -572,7 +572,7 @@ export function getSdk<O>(requester: Requester<O>) {
     GetRelease(
       variables: GetReleaseQueryVariables,
       options?: O
-    ): TaskEither<HttpError | GraphqlError, GetReleaseQuery> {
+    ): Promise<Either<HttpError | GraphqlError, GetReleaseQuery>> {
       return requester<GetReleaseQuery, GetReleaseQueryVariables>(
         GetReleaseDocument,
         variables,
@@ -583,7 +583,7 @@ export function getSdk<O>(requester: Requester<O>) {
     CreateReleaseReview(
       variables: CreateReleaseReviewMutationVariables,
       options?: O
-    ): TaskEither<HttpError | GraphqlError, CreateReleaseReviewMutation> {
+    ): Promise<Either<HttpError | GraphqlError, CreateReleaseReviewMutation>> {
       return requester<
         CreateReleaseReviewMutation,
         CreateReleaseReviewMutationVariables
@@ -593,7 +593,9 @@ export function getSdk<O>(requester: Requester<O>) {
     UpdateReleaseReviewRating(
       variables: UpdateReleaseReviewRatingMutationVariables,
       options?: O
-    ): TaskEither<HttpError | GraphqlError, UpdateReleaseReviewRatingMutation> {
+    ): Promise<
+      Either<HttpError | GraphqlError, UpdateReleaseReviewRatingMutation>
+    > {
       return requester<
         UpdateReleaseReviewRatingMutation,
         UpdateReleaseReviewRatingMutationVariables

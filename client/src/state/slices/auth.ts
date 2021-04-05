@@ -85,7 +85,7 @@ export const login = async function* (
   password: string
 ): AsyncGenerator<LoginAction> {
   yield { _type: 'auth/login', request: loading }
-  const response = await gql.Login({ username, password })()
+  const response = await gql.Login({ username, password })
   yield isLeft(response)
     ? {
         _type: 'auth/login',

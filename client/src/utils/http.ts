@@ -1,5 +1,4 @@
-import { left, right } from 'fp-ts/Either'
-import { TaskEither } from 'fp-ts/lib/TaskEither'
+import { Either, left, right } from 'fp-ts/Either'
 
 export type Options = {
   method?: HttpMethod
@@ -38,10 +37,10 @@ const isHttpError = (error: any): error is HttpError =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   typeof error === 'object' && error.name === 'HttpError'
 
-const send = (
+const send = async (
   url: string,
   options: Options = {}
-): TaskEither<HttpError, Response & ResponseAugment> => async () => {
+): Promise<Either<HttpError, Response & ResponseAugment>> => {
   const headers =
     options.json !== undefined
       ? { 'Content-Type': 'application/json' }
@@ -73,5 +72,5 @@ const send = (
 export const post = (
   url: string,
   options: Omit<Options, 'method'> = {}
-): TaskEither<HttpError, Response & ResponseAugment> =>
+): Promise<Either<HttpError, Response & ResponseAugment>> =>
   send(url, { method: 'POST', ...options })

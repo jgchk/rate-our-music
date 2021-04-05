@@ -117,7 +117,7 @@ export const getRelease = async function* (
     request: loading,
   }
 
-  const response = await gql.GetRelease({ id })()
+  const response = await gql.GetRelease({ id })
   yield isLeft(response)
     ? {
         _type: 'release/get',
