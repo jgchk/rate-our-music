@@ -2,6 +2,8 @@ use crate::model::artist::Artist;
 use crate::model::release::Release;
 use async_graphql::{Context, Object, Result};
 
+use super::track_review::TrackReview;
+
 pub struct Track {
     pub track_id: i32,
     pub release_id: i32,
@@ -38,5 +40,11 @@ impl Track {
         let env = ctx.data::<crate::graphql::Context>()?;
         let artists = env.db().artist().get_by_release(self.release_id).await?;
         Ok(artists)
+    }
+
+    async fn reviews(&self, ctx: &Context<'_>) -> Result<Vec<TrackReview>> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let reviews = env.db().track_review().get_by_track(self.track_id).await?;
+        Ok(reviews)
     }
 }

@@ -1,12 +1,12 @@
 use crate::errors::Error;
 use crate::model::artist::Artist;
 use crate::model::descriptor_vote::DescriptorVote;
-use crate::model::genre::Genre;
-use crate::model::genre_vote::GenreVote;
-use crate::model::genre_vote::GenreVoteType;
+use crate::model::genre::ReleaseGenre;
 use crate::model::tag::Tag;
 use crate::model::track::Track;
 use async_graphql::{Context, Enum, InputObject, Object, Result, SimpleObject};
+
+use super::release_review::ReleaseReview;
 
 pub struct RawRelease {
     pub release_id: i32,
@@ -15,6 +15,7 @@ pub struct RawRelease {
     pub release_date_month: Option<i16>,
     pub release_date_day: Option<i16>,
     pub release_type: ReleaseType,
+    pub release_cover_art: Option<String>,
 }
 
 impl Into<std::result::Result<Release, Error>> for &RawRelease {
@@ -28,6 +29,7 @@ impl Into<std::result::Result<Release, Error>> for &RawRelease {
                 self.release_date_day,
             )?,
             release_type: self.release_type,
+            release_cover_art: self.release_cover_art.as_ref().map(String::from),
         })
     }
 }
@@ -43,6 +45,7 @@ pub struct Release {
     pub release_title: String,
     pub release_date: Option<InternalReleaseDate>,
     pub release_type: ReleaseType,
+    pub release_cover_art: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -161,6 +164,10 @@ impl Release {
         self.release_type
     }
 
+    async fn cover_art(&self) -> Option<String> {
+        self.release_cover_art.as_ref().map(String::from)
+    }
+
     async fn artists(&self, ctx: &Context<'_>) -> Result<Vec<Artist>> {
         let env = ctx.data::<crate::graphql::Context>()?;
         let artists = env.db().artist().get_by_release(self.release_id).await?;
@@ -173,24 +180,39 @@ impl Release {
         Ok(tracks)
     }
 
-    async fn genres(&self, ctx: &Context<'_>, vote_type: GenreVoteType) -> Result<Vec<Genre>> {
+    async fn genres(&self, ctx: &Context<'_>) -> Result<Vec<ReleaseGenre>> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let genres = env
-            .db()
-            .genre()
-            .get_by_release_and_vote_type(self.release_id, vote_type)
-            .await?;
-        Ok(genres)
+        let genres = env.db().genre().get_by_release(self.release_id).await?;
+        let release_genres = genres
+            .iter()
+            .map(|genre| ReleaseGenre::new(self.release_id, genre))
+            .collect();
+        Ok(release_genres)
     }
 
-    async fn genre_votes(&self, ctx: &Context<'_>) -> Result<Vec<GenreVote>> {
+    async fn site_rating(&self) -> i16 {
+        // TODO
+        7
+    }
+
+    async fn friend_rating(&self) -> i16 {
+        // TODO
+        7
+    }
+
+    async fn similar_user_rating(&self) -> i16 {
+        // TODO
+        7
+    }
+
+    async fn reviews(&self, ctx: &Context<'_>) -> Result<Vec<ReleaseReview>> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let genre_votes = env
+        let reviews = env
             .db()
-            .genre_vote()
+            .release_review()
             .get_by_release(self.release_id)
             .await?;
-        Ok(genre_votes)
+        Ok(reviews)
     }
 
     async fn descriptor_votes(&self, ctx: &Context<'_>) -> Result<Vec<DescriptorVote>> {

@@ -32,7 +32,7 @@ jobs:
           script: |
             cd ~/rom/client
             yarn
-            yarn build
+            yarn prod
       - name: build backend
         uses: appleboy/ssh-action@master
         env:

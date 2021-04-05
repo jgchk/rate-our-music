@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--background-lighter);
+  }
+}
+
+.num {
+  flex: 1;
+  color: var(--foreground-dark);
+}
+
+.title {
+  flex: 15;
+}
+
+.duration {
+  flex: 1;
+  text-align: right;
+}

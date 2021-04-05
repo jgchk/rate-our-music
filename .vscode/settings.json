@@ -1,4 +1,15 @@
 {
-    "editor.formatOnSave": true,
-    "rust-analyzer.procMacro.enable": true
+  "editor.formatOnSave": true,
+
+  "rust-analyzer.procMacro.enable": true,
+
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "typescript.tsdk": "client/.yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "stylelint.stylelintPath": "client/.yarn/sdks/stylelint/lib/index.js",
+  "eslint.nodePath": "client/.yarn/sdks",
+  "prettier.prettierPath": "client/.yarn/sdks/prettier/index.js"
 }

@@ -1,0 +1,37 @@
+mutation CreateReleaseReview(
+  $releaseId: Int!
+  $accountId: Int!
+  $rating: Int
+  $text: String
+) {
+  releaseReview {
+    create(
+      releaseId: $releaseId
+      accountId: $accountId
+      rating: $rating
+      text: $text
+    ) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
+    }
+  }
+}
+
+mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
+  releaseReview {
+    updateRating(reviewId: $reviewId, rating: $rating) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
+    }
+  }
+}
