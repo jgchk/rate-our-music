@@ -1927,6 +1927,34 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
+              'virtual:c6f28d0bf3e5d75f3c841d35bcc9d90c1db8e32f07ec7b43514b2daf9fac2d2674bfece4d5f23f97465c4578070c05ac84943af6fe22174312822402e7f2d5c0#npm:3.0.2',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@endemolshinegroup-cosmiconfig-typescript-loader-virtual-8139c27530/0/cache/@endemolshinegroup-cosmiconfig-typescript-loader-npm-3.0.2-97436e68fc-f7f932c3f5.zip/node_modules/@endemolshinegroup/cosmiconfig-typescript-loader/',
+                packageDependencies: [
+                  [
+                    '@endemolshinegroup/cosmiconfig-typescript-loader',
+                    'virtual:c6f28d0bf3e5d75f3c841d35bcc9d90c1db8e32f07ec7b43514b2daf9fac2d2674bfece4d5f23f97465c4578070c05ac84943af6fe22174312822402e7f2d5c0#npm:3.0.2',
+                  ],
+                  ['@types/cosmiconfig', null],
+                  ['cosmiconfig', 'npm:7.0.0'],
+                  ['lodash.get', 'npm:4.4.2'],
+                  ['make-error', 'npm:1.3.6'],
+                  [
+                    'ts-node',
+                    'virtual:c11414eadb2df43a931e46fbabf6577a1f3f27ece5905577aff7438bad92eb4b1df69566a29c813c357da804e10e8bd5c44e35d73ed185e9e01bf87e3346deae#npm:9.1.1',
+                  ],
+                  ['tslib', 'npm:2.1.0'],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.3#builtin<compat/typescript>::version=4.2.3&hash=a45b0e',
+                  ],
+                ],
+                packagePeers: ['@types/cosmiconfig'],
+                linkType: 'HARD',
+              },
+            ],
+            [
               'virtual:dd36d8dcd05a746110c10d66cc65a2be525a2601174ec350c75bfddb48bd21de71d87439a5c0ff1c8347f1b3f8b4444654e291c7f1caaf34433fdaf4b950279c#npm:3.0.2',
               {
                 packageLocation:
@@ -1945,6 +1973,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:c11414eadb2df43a931e46fbabf6577a1f3f27ece5905577aff7438bad92eb4b1df69566a29c813c357da804e10e8bd5c44e35d73ed185e9e01bf87e3346deae#npm:9.1.1',
                   ],
                   ['tslib', 'npm:2.1.0'],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.3#builtin<compat/typescript>::version=4.2.3&hash=a45b0e',
+                  ],
                 ],
                 packagePeers: ['@types/cosmiconfig', 'cosmiconfig'],
                 linkType: 'HARD',
@@ -20118,13 +20150,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'ts-node',
                     'virtual:c11414eadb2df43a931e46fbabf6577a1f3f27ece5905577aff7438bad92eb4b1df69566a29c813c357da804e10e8bd5c44e35d73ed185e9e01bf87e3346deae#npm:9.1.1',
                   ],
+                  [
+                    '@endemolshinegroup/cosmiconfig-typescript-loader',
+                    'virtual:c6f28d0bf3e5d75f3c841d35bcc9d90c1db8e32f07ec7b43514b2daf9fac2d2674bfece4d5f23f97465c4578070c05ac84943af6fe22174312822402e7f2d5c0#npm:3.0.2',
+                  ],
                   ['@types/typescript', null],
                   ['arg', 'npm:4.1.3'],
                   ['create-require', 'npm:1.1.1'],
                   ['diff', 'npm:4.0.2'],
                   ['make-error', 'npm:1.3.6'],
                   ['source-map-support', 'npm:0.5.19'],
-                  ['typescript', null],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.3#builtin<compat/typescript>::version=4.2.3&hash=a45b0e',
+                  ],
                   ['yn', 'npm:3.1.1'],
                 ],
                 packagePeers: ['@types/typescript', 'typescript'],
