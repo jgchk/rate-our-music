@@ -1,9 +1,7 @@
 use crate::errors::Error;
 use crate::model::artist::Artist;
 use crate::model::descriptor_vote::DescriptorVote;
-use crate::model::genre::Genre;
 use crate::model::genre::ReleaseGenre;
-use crate::model::genre_vote::GenreVote;
 use crate::model::tag::Tag;
 use crate::model::track::Track;
 use async_graphql::{Context, Enum, InputObject, Object, Result, SimpleObject};
