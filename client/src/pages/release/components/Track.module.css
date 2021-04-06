@@ -11,6 +11,7 @@
 
 .duration {
   flex: 1;
+  color: var(--foreground-darker);
   text-align: right;
   transition: color var(--speed-1);
 }
@@ -28,12 +29,12 @@
   &:hover {
     background: var(--background-lighter);
 
-    & .num {
+    & .num,
+    & .duration {
       color: var(--foreground-dark);
     }
 
-    & .title,
-    & .duration {
+    & .title {
       color: var(--foreground-light);
     }
   }
