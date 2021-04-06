@@ -19,6 +19,7 @@ import { ReleaseDate } from './components/ReleaseDate'
 import { Review } from './components/Review'
 import { ReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
+import { ReleaseViewLink } from './components/TracklistReleaseViewLink'
 import classes from './ReleasePage.module.css'
 
 export type Props = {
@@ -89,6 +90,9 @@ export const ReleasePage: FunctionComponent<Props> = ({
         <img className={classes.coverArt} src={release.coverArt} />
         {release.tracks.size > 0 && (
           <div className={classes.tracklist}>
+            {trackId !== undefined && (
+              <ReleaseViewLink href={`/release/${release.id}`} />
+            )}
             {[...release.tracks].map((id, i) => (
               <Track
                 key={id}

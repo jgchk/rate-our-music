@@ -1,0 +1,17 @@
+.icon {
+  flex: 1;
+  height: 1em;
+  color: var(--foreground-dark);
+  text-align: left;
+
+  & > svg {
+    width: 1em;
+    height: 1em;
+    margin-left: calc(-1 * var(--space-2));
+  }
+}
+
+.text {
+  flex: 16;
+  font-weight: 500;
+}
