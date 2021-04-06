@@ -1,33 +1,28 @@
+fragment trackData on Track {
+  id
+  title
+  durationMs
+  release {
+    id
+  }
+  artists {
+    ...artistData
+  }
+  genres {
+    ...trackGenreData
+  }
+  siteRating
+  friendRating
+  similarUserRating
+  reviews {
+    ...trackReviewData
+  }
+}
+
 query GetTrack($id: Int!) {
   track {
     get(id: $id) {
-      id
-      title
-      durationMs
-      release {
-        id
-      }
-      artists {
-        id
-        name
-      }
-      genres {
-        id
-        name
-        weight
-      }
-      siteRating
-      friendRating
-      similarUserRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-      }
+      ...trackData
     }
   }
 }

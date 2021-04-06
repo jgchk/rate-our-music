@@ -1,0 +1,11 @@
+fragment releaseGenreData on ReleaseGenre {
+  id
+  name
+  weight
+}
+
+fragment trackGenreData on TrackGenre {
+  id
+  name
+  weight
+}

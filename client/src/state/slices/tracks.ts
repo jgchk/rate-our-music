@@ -1,4 +1,8 @@
-import { GetTrackQuery, GraphqlError } from '../../generated/graphql'
+import {
+  GetTrackQuery,
+  GraphqlError,
+  TrackDataFragment,
+} from '../../generated/graphql'
 import { gql } from '../../utils/gql'
 import { HttpError } from '../../utils/http'
 import {
@@ -8,7 +12,7 @@ import {
   loading,
 } from '../../utils/remote-data'
 import { Reducer } from '../store'
-import { ids } from './utils'
+import { ids, mergeIds } from './utils'
 
 //
 // Types
@@ -35,7 +39,7 @@ export type Track = {
 // Mappers
 //
 
-const mapTrack = (track: GetTrackQuery['track']['get']): Track => ({
+const mapTrack = (track: TrackDataFragment): Track => ({
   id: track.id,
   title: track.title,
   durationMs: track.durationMs ?? undefined,
@@ -63,6 +67,12 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
       if (!isSuccess(action.request)) return state
       const track = mapTrack(action.request.data.track.get)
       return { ...state, [track.id]: track }
+    }
+
+    case 'release/get': {
+      if (!isSuccess(action.request)) return state
+      const tracks = action.request.data.release.get.tracks.map(mapTrack)
+      return mergeIds(state, tracks)
     }
 
     case 'review/track/create': {

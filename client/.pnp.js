@@ -118,6 +118,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:29.0.0',
                   ],
                   ['graphql', 'npm:15.5.0'],
+                  [
+                    'graphql-tag',
+                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.12.3',
+                  ],
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['odiff', 'npm:1.4.3'],
@@ -2381,7 +2385,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['graphql', 'npm:15.5.0'],
                   [
                     'graphql-tag',
-                    'virtual:5e2a4c5cc1f6cdb8027be772f1c3d9881fdff3105980bfd4db8b906c3bbaae146a22981fca4e316f82eebdb5aed6ca19345e32ff584410ce1a10a1784b81752d#npm:2.12.3',
+                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.12.3',
                   ],
                   ['parse-filepath', 'npm:1.0.2'],
                   ['tslib', 'npm:2.1.0'],
@@ -10145,14 +10149,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:5e2a4c5cc1f6cdb8027be772f1c3d9881fdff3105980bfd4db8b906c3bbaae146a22981fca4e316f82eebdb5aed6ca19345e32ff584410ce1a10a1784b81752d#npm:2.12.3',
+              'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.12.3',
               {
                 packageLocation:
-                  './.yarn/$$virtual/graphql-tag-virtual-4987d1eb0e/0/cache/graphql-tag-npm-2.12.3-6684a54cc6-ab3a7cdf57.zip/node_modules/graphql-tag/',
+                  './.yarn/$$virtual/graphql-tag-virtual-0723b38c2f/0/cache/graphql-tag-npm-2.12.3-6684a54cc6-ab3a7cdf57.zip/node_modules/graphql-tag/',
                 packageDependencies: [
                   [
                     'graphql-tag',
-                    'virtual:5e2a4c5cc1f6cdb8027be772f1c3d9881fdff3105980bfd4db8b906c3bbaae146a22981fca4e316f82eebdb5aed6ca19345e32ff584410ce1a10a1784b81752d#npm:2.12.3',
+                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.12.3',
                   ],
                   ['@types/graphql', null],
                   ['graphql', 'npm:15.5.0'],
@@ -16941,6 +16945,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:29.0.0',
                   ],
                   ['graphql', 'npm:15.5.0'],
+                  [
+                    'graphql-tag',
+                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:2.12.3',
+                  ],
                   ['http-proxy', 'npm:1.18.1'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['odiff', 'npm:1.4.3'],

@@ -7,8 +7,6 @@ generates:
       - 'typescript'
       - 'typescript-operations'
       - 'gql-plugins/plain-sdk/index.js'
-    config:
-      documentMode: string
   ./graphql.schema.json:
     plugins:
       - 'introspection'

@@ -1,38 +1,33 @@
+fragment releaseData on Release {
+  id
+  title
+  artists {
+    ...artistData
+  }
+  releaseDate {
+    day
+    month
+    year
+  }
+  coverArt
+  tracks {
+    ...trackData
+  }
+  genres {
+    ...releaseGenreData
+  }
+  siteRating
+  friendRating
+  similarUserRating
+  reviews {
+    ...releaseReviewData
+  }
+}
+
 query GetRelease($id: Int!) {
   release {
     get(id: $id) {
-      id
-      title
-      artists {
-        id
-        name
-      }
-      releaseDate {
-        day
-        month
-        year
-      }
-      coverArt
-      tracks {
-        id
-      }
-      genres {
-        id
-        name
-        weight
-      }
-      siteRating
-      friendRating
-      similarUserRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-      }
+      ...releaseData
     }
   }
 }

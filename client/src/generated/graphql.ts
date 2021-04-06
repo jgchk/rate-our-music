@@ -1,5 +1,7 @@
 import { HttpError } from '../utils/http'
 import { Result } from '../utils/result'
+import { DocumentNode } from 'graphql/language/ast'
+import gql from 'graphql-tag'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
@@ -340,6 +342,16 @@ export type TrackReviewMutationUpdateRatingArgs = {
   rating?: Maybe<Scalars['Int']>
 }
 
+export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
+  Artist,
+  'id' | 'name'
+>
+
+export type AuthDataFragment = { __typename?: 'Auth' } & Pick<
+  Auth,
+  'token' | 'exp'
+> & { account: { __typename?: 'Account' } & AccountDataFragment }
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']
   password: Scalars['String']
@@ -347,11 +359,40 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation' } & {
   account: { __typename?: 'AccountMutation' } & {
-    login: { __typename?: 'Auth' } & Pick<Auth, 'token' | 'exp'> & {
-        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
-      }
+    login: { __typename?: 'Auth' } & AuthDataFragment
   }
 }
+
+export type ReleaseGenreDataFragment = { __typename?: 'ReleaseGenre' } & Pick<
+  ReleaseGenre,
+  'id' | 'name' | 'weight'
+>
+
+export type TrackGenreDataFragment = { __typename?: 'TrackGenre' } & Pick<
+  TrackGenre,
+  'id' | 'name' | 'weight'
+>
+
+export type ReleaseDataFragment = { __typename?: 'Release' } & Pick<
+  Release,
+  | 'id'
+  | 'title'
+  | 'coverArt'
+  | 'siteRating'
+  | 'friendRating'
+  | 'similarUserRating'
+> & {
+    artists: Array<{ __typename?: 'Artist' } & ArtistDataFragment>
+    releaseDate?: Maybe<
+      { __typename?: 'ReleaseDate' } & Pick<
+        ReleaseDate,
+        'day' | 'month' | 'year'
+      >
+    >
+    tracks: Array<{ __typename?: 'Track' } & TrackDataFragment>
+    genres: Array<{ __typename?: 'ReleaseGenre' } & ReleaseGenreDataFragment>
+    reviews: Array<{ __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment>
+  }
 
 export type GetReleaseQueryVariables = Exact<{
   id: Scalars['Int']
@@ -359,43 +400,25 @@ export type GetReleaseQueryVariables = Exact<{
 
 export type GetReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
-    get: { __typename?: 'Release' } & Pick<
-      Release,
-      | 'id'
-      | 'title'
-      | 'coverArt'
-      | 'siteRating'
-      | 'friendRating'
-      | 'similarUserRating'
-    > & {
-        artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>>
-        releaseDate?: Maybe<
-          { __typename?: 'ReleaseDate' } & Pick<
-            ReleaseDate,
-            'day' | 'month' | 'year'
-          >
-        >
-        tracks: Array<{ __typename?: 'Track' } & Pick<Track, 'id'>>
-        genres: Array<
-          { __typename?: 'ReleaseGenre' } & Pick<
-            ReleaseGenre,
-            'id' | 'name' | 'weight'
-          >
-        >
-        reviews: Array<
-          { __typename?: 'ReleaseReview' } & Pick<
-            ReleaseReview,
-            'id' | 'rating' | 'text'
-          > & {
-              account: { __typename?: 'Account' } & Pick<
-                Account,
-                'id' | 'username'
-              >
-            }
-        >
-      }
+    get: { __typename?: 'Release' } & ReleaseDataFragment
   }
 }
+
+export type ReleaseReviewDataFragment = { __typename?: 'ReleaseReview' } & Pick<
+  ReleaseReview,
+  'id' | 'rating' | 'text'
+> & {
+    account: { __typename?: 'Account' } & AccountDataFragment
+    release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
+  }
+
+export type TrackReviewDataFragment = { __typename?: 'TrackReview' } & Pick<
+  TrackReview,
+  'id' | 'rating' | 'text'
+> & {
+    account: { __typename?: 'Account' } & AccountDataFragment
+    track: { __typename?: 'Track' } & Pick<Track, 'id' | 'siteRating'>
+  }
 
 export type CreateReleaseReviewMutationVariables = Exact<{
   releaseId: Scalars['Int']
@@ -406,13 +429,7 @@ export type CreateReleaseReviewMutationVariables = Exact<{
 
 export type CreateReleaseReviewMutation = { __typename?: 'Mutation' } & {
   releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
-    create: { __typename?: 'ReleaseReview' } & Pick<
-      ReleaseReview,
-      'id' | 'rating' | 'text'
-    > & {
-        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
-        release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
-      }
+    create: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
   }
 }
 
@@ -423,13 +440,7 @@ export type UpdateReleaseReviewRatingMutationVariables = Exact<{
 
 export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
   releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
-    updateRating: { __typename?: 'ReleaseReview' } & Pick<
-      ReleaseReview,
-      'id' | 'rating' | 'text'
-    > & {
-        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
-        release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
-      }
+    updateRating: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
   }
 }
 
@@ -442,13 +453,7 @@ export type CreateTrackReviewMutationVariables = Exact<{
 
 export type CreateTrackReviewMutation = { __typename?: 'Mutation' } & {
   trackReview: { __typename?: 'TrackReviewMutation' } & {
-    create: { __typename?: 'TrackReview' } & Pick<
-      TrackReview,
-      'id' | 'rating' | 'text'
-    > & {
-        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
-        track: { __typename?: 'Track' } & Pick<Track, 'id'>
-      }
+    create: { __typename?: 'TrackReview' } & TrackReviewDataFragment
   }
 }
 
@@ -459,15 +464,24 @@ export type UpdateTrackReviewRatingMutationVariables = Exact<{
 
 export type UpdateTrackReviewRatingMutation = { __typename?: 'Mutation' } & {
   trackReview: { __typename?: 'TrackReviewMutation' } & {
-    updateRating: { __typename?: 'TrackReview' } & Pick<
-      TrackReview,
-      'id' | 'rating' | 'text'
-    > & {
-        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
-        track: { __typename?: 'Track' } & Pick<Track, 'id'>
-      }
+    updateRating: { __typename?: 'TrackReview' } & TrackReviewDataFragment
   }
 }
+
+export type TrackDataFragment = { __typename?: 'Track' } & Pick<
+  Track,
+  | 'id'
+  | 'title'
+  | 'durationMs'
+  | 'siteRating'
+  | 'friendRating'
+  | 'similarUserRating'
+> & {
+    release: { __typename?: 'Release' } & Pick<Release, 'id'>
+    artists: Array<{ __typename?: 'Artist' } & ArtistDataFragment>
+    genres: Array<{ __typename?: 'TrackGenre' } & TrackGenreDataFragment>
+    reviews: Array<{ __typename?: 'TrackReview' } & TrackReviewDataFragment>
+  }
 
 export type GetTrackQueryVariables = Exact<{
   id: Scalars['Int']
@@ -475,206 +489,227 @@ export type GetTrackQueryVariables = Exact<{
 
 export type GetTrackQuery = { __typename?: 'Query' } & {
   track: { __typename?: 'TrackQuery' } & {
-    get: { __typename?: 'Track' } & Pick<
-      Track,
-      | 'id'
-      | 'title'
-      | 'durationMs'
-      | 'siteRating'
-      | 'friendRating'
-      | 'similarUserRating'
-    > & {
-        release: { __typename?: 'Release' } & Pick<Release, 'id'>
-        artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>>
-        genres: Array<
-          { __typename?: 'TrackGenre' } & Pick<
-            TrackGenre,
-            'id' | 'name' | 'weight'
-          >
-        >
-        reviews: Array<
-          { __typename?: 'TrackReview' } & Pick<
-            TrackReview,
-            'id' | 'rating' | 'text'
-          > & {
-              account: { __typename?: 'Account' } & Pick<
-                Account,
-                'id' | 'username'
-              >
-            }
-        >
-      }
+    get: { __typename?: 'Track' } & TrackDataFragment
   }
 }
 
-export const LoginDocument = `
-    mutation Login($username: String!, $password: String!) {
-  account {
-    login(username: $username, password: $password) {
-      token
-      exp
-      account {
-        id
-        username
-      }
+export type AccountDataFragment = { __typename?: 'Account' } & Pick<
+  Account,
+  'id' | 'username'
+>
+
+export const AccountDataFragmentDoc = gql`
+  fragment accountData on Account {
+    id
+    username
+  }
+`
+export const AuthDataFragmentDoc = gql`
+  fragment authData on Auth {
+    token
+    exp
+    account {
+      ...accountData
     }
   }
-}
-    `
-export const GetReleaseDocument = `
-    query GetRelease($id: Int!) {
-  release {
-    get(id: $id) {
+  ${AccountDataFragmentDoc}
+`
+export const ArtistDataFragmentDoc = gql`
+  fragment artistData on Artist {
+    id
+    name
+  }
+`
+export const TrackGenreDataFragmentDoc = gql`
+  fragment trackGenreData on TrackGenre {
+    id
+    name
+    weight
+  }
+`
+export const TrackReviewDataFragmentDoc = gql`
+  fragment trackReviewData on TrackReview {
+    id
+    account {
+      ...accountData
+    }
+    rating
+    text
+    track {
       id
-      title
-      artists {
-        id
-        name
-      }
-      releaseDate {
-        day
-        month
-        year
-      }
-      coverArt
-      tracks {
-        id
-      }
-      genres {
-        id
-        name
-        weight
-      }
       siteRating
-      friendRating
-      similarUserRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-      }
     }
   }
-}
-    `
-export const CreateReleaseReviewDocument = `
-    mutation CreateReleaseReview($releaseId: Int!, $accountId: Int!, $rating: Int, $text: String) {
-  releaseReview {
-    create(
-      releaseId: $releaseId
-      accountId: $accountId
-      rating: $rating
-      text: $text
-    ) {
+  ${AccountDataFragmentDoc}
+`
+export const TrackDataFragmentDoc = gql`
+  fragment trackData on Track {
+    id
+    title
+    durationMs
+    release {
       id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
-      }
+    }
+    artists {
+      ...artistData
+    }
+    genres {
+      ...trackGenreData
+    }
+    siteRating
+    friendRating
+    similarUserRating
+    reviews {
+      ...trackReviewData
     }
   }
-}
-    `
-export const UpdateReleaseReviewRatingDocument = `
-    mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
-  releaseReview {
-    updateRating(reviewId: $reviewId, rating: $rating) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
-      }
-    }
+  ${ArtistDataFragmentDoc}
+  ${TrackGenreDataFragmentDoc}
+  ${TrackReviewDataFragmentDoc}
+`
+export const ReleaseGenreDataFragmentDoc = gql`
+  fragment releaseGenreData on ReleaseGenre {
+    id
+    name
+    weight
   }
-}
-    `
-export const CreateTrackReviewDocument = `
-    mutation CreateTrackReview($trackId: Int!, $accountId: Int!, $rating: Int, $text: String) {
-  trackReview {
-    create(trackId: $trackId, accountId: $accountId, rating: $rating, text: $text) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-      }
+`
+export const ReleaseReviewDataFragmentDoc = gql`
+  fragment releaseReviewData on ReleaseReview {
+    id
+    account {
+      ...accountData
     }
-  }
-}
-    `
-export const UpdateTrackReviewRatingDocument = `
-    mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
-  trackReview {
-    updateRating(reviewId: $reviewId, rating: $rating) {
+    rating
+    text
+    release {
       id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-      }
-    }
-  }
-}
-    `
-export const GetTrackDocument = `
-    query GetTrack($id: Int!) {
-  track {
-    get(id: $id) {
-      id
-      title
-      durationMs
-      release {
-        id
-      }
-      artists {
-        id
-        name
-      }
-      genres {
-        id
-        name
-        weight
-      }
       siteRating
-      friendRating
-      similarUserRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
+    }
+  }
+  ${AccountDataFragmentDoc}
+`
+export const ReleaseDataFragmentDoc = gql`
+  fragment releaseData on Release {
+    id
+    title
+    artists {
+      ...artistData
+    }
+    releaseDate {
+      day
+      month
+      year
+    }
+    coverArt
+    tracks {
+      ...trackData
+    }
+    genres {
+      ...releaseGenreData
+    }
+    siteRating
+    friendRating
+    similarUserRating
+    reviews {
+      ...releaseReviewData
+    }
+  }
+  ${ArtistDataFragmentDoc}
+  ${TrackDataFragmentDoc}
+  ${ReleaseGenreDataFragmentDoc}
+  ${ReleaseReviewDataFragmentDoc}
+`
+export const LoginDocument = gql`
+  mutation Login($username: String!, $password: String!) {
+    account {
+      login(username: $username, password: $password) {
+        ...authData
       }
     }
   }
-}
-    `
+  ${AuthDataFragmentDoc}
+`
+export const GetReleaseDocument = gql`
+  query GetRelease($id: Int!) {
+    release {
+      get(id: $id) {
+        ...releaseData
+      }
+    }
+  }
+  ${ReleaseDataFragmentDoc}
+`
+export const CreateReleaseReviewDocument = gql`
+  mutation CreateReleaseReview(
+    $releaseId: Int!
+    $accountId: Int!
+    $rating: Int
+    $text: String
+  ) {
+    releaseReview {
+      create(
+        releaseId: $releaseId
+        accountId: $accountId
+        rating: $rating
+        text: $text
+      ) {
+        ...releaseReviewData
+      }
+    }
+  }
+  ${ReleaseReviewDataFragmentDoc}
+`
+export const UpdateReleaseReviewRatingDocument = gql`
+  mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
+    releaseReview {
+      updateRating(reviewId: $reviewId, rating: $rating) {
+        ...releaseReviewData
+      }
+    }
+  }
+  ${ReleaseReviewDataFragmentDoc}
+`
+export const CreateTrackReviewDocument = gql`
+  mutation CreateTrackReview(
+    $trackId: Int!
+    $accountId: Int!
+    $rating: Int
+    $text: String
+  ) {
+    trackReview {
+      create(
+        trackId: $trackId
+        accountId: $accountId
+        rating: $rating
+        text: $text
+      ) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
+`
+export const UpdateTrackReviewRatingDocument = gql`
+  mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
+    trackReview {
+      updateRating(reviewId: $reviewId, rating: $rating) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
+`
+export const GetTrackDocument = gql`
+  query GetTrack($id: Int!) {
+    track {
+      get(id: $id) {
+        ...trackData
+      }
+    }
+  }
+  ${TrackDataFragmentDoc}
+`
 
 export type GraphqlResponse<D> =
   | GraphqlSuccessResponse<D>
@@ -720,7 +755,7 @@ export const isGraphqlError = (error: any): error is GraphqlError =>
   typeof error === 'object' && error.name === 'GraphqlError'
 
 export type Requester<O = Record<string, never>> = <R, V>(
-  doc: string,
+  doc: DocumentNode,
   vars?: V,
   options?: O
 ) => Promise<Result<HttpError | GraphqlError, R>>

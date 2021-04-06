@@ -1,3 +1,29 @@
+fragment releaseReviewData on ReleaseReview {
+  id
+  account {
+    ...accountData
+  }
+  rating
+  text
+  release {
+    id
+    siteRating
+  }
+}
+
+fragment trackReviewData on TrackReview {
+  id
+  account {
+    ...accountData
+  }
+  rating
+  text
+  track {
+    id
+    siteRating
+  }
+}
+
 mutation CreateReleaseReview(
   $releaseId: Int!
   $accountId: Int!
@@ -11,17 +37,7 @@ mutation CreateReleaseReview(
       rating: $rating
       text: $text
     ) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
-      }
+      ...releaseReviewData
     }
   }
 }
@@ -29,17 +45,7 @@ mutation CreateReleaseReview(
 mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
   releaseReview {
     updateRating(reviewId: $reviewId, rating: $rating) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
-      }
+      ...releaseReviewData
     }
   }
 }
@@ -57,16 +63,7 @@ mutation CreateTrackReview(
       rating: $rating
       text: $text
     ) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-      }
+      ...trackReviewData
     }
   }
 }
@@ -74,16 +71,7 @@ mutation CreateTrackReview(
 mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
   trackReview {
     updateRating(reviewId: $reviewId, rating: $rating) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-      }
+      ...trackReviewData
     }
   }
 }

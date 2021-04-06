@@ -1,12 +1,15 @@
+fragment authData on Auth {
+  token
+  exp
+  account {
+    ...accountData
+  }
+}
+
 mutation Login($username: String!, $password: String!) {
   account {
     login(username: $username, password: $password) {
-      token
-      exp
-      account {
-        id
-        username
-      }
+      ...authData
     }
   }
 }

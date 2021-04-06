@@ -1,0 +1,4 @@
+fragment artistData on Artist {
+  id
+  name
+}

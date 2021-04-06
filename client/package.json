@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
+    "graphql-tag": "^2.11.0",
     "odiff": "^1.4.3",
     "preact": "^10.5.13",
     "preact-feather": "^4.2.1"

@@ -18,7 +18,8 @@ class GenericSdkVisitor extends visitor_plugin_common_1.ClientSideBaseVisitor {
     auto_bind_1.default(this)
     this._additionalImports.push(
       `import { HttpError } from '../utils/http'`,
-      `import { Result } from '../utils/result'`
+      `import { Result } from '../utils/result'`,
+      `import { DocumentNode } from 'graphql/language/ast'`
     )
   }
   buildOperation(
@@ -108,7 +109,7 @@ class GenericSdkVisitor extends visitor_plugin_common_1.ClientSideBaseVisitor {
       export const isGraphqlError = (error: any): error is GraphqlError =>
         typeof error === 'object' && error.name === 'GraphqlError'
 
-      export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => Promise<Result<HttpError | GraphqlError, R>>
+      export type Requester<O = Record<string, never>> = <R, V>(doc: DocumentNode, vars?: V, options?: O) => Promise<Result<HttpError | GraphqlError, R>>
 
       export function getSdk<O>(requester: Requester<O>) {
         return {

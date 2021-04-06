@@ -1,5 +1,6 @@
 import { isSuccess } from '../../utils/remote-data'
 import { Reducer } from '../store'
+import { mergeIds } from './utils'
 
 //
 // Types
@@ -31,14 +32,7 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
       const response = action.request.data.release.get
       const artists: Artist[] = response.artists
 
-      let nextState = { ...state }
-      for (const artist of artists) {
-        nextState = {
-          ...nextState,
-          [artist.id]: artist,
-        }
-      }
-      return nextState
+      return mergeIds(state, artists)
     }
 
     case 'track/get': {
@@ -47,14 +41,7 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
       const response = action.request.data.track.get
       const artists: Artist[] = response.artists
 
-      let nextState = { ...state }
-      for (const artist of artists) {
-        nextState = {
-          ...nextState,
-          [artist.id]: artist,
-        }
-      }
-      return nextState
+      return mergeIds(state, artists)
     }
 
     default:

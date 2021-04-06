@@ -16,6 +16,7 @@ import {
   loading,
 } from '../../utils/remote-data'
 import { Reducer } from '../store'
+import { mergeIds } from './utils'
 
 //
 // Types
@@ -64,18 +65,14 @@ export const reviewsReducer: Reducer<ReviewsState> = (state, action) => {
 
       const response = action.request.data.release.get
       const releaseReviews = response.reviews.map(mapReview)
-
-      let nextState = { ...state }
-      for (const releaseReview of releaseReviews) {
-        nextState = {
-          ...nextState,
-          release: {
-            ...nextState.track,
-            [releaseReview.id]: releaseReview,
-          },
-        }
+      const trackReviews = response.tracks
+        .flatMap((track) => track.reviews)
+        .map(mapReview)
+      return {
+        ...state,
+        release: mergeIds(state.release, releaseReviews),
+        track: mergeIds(state.track, trackReviews),
       }
-      return nextState
     }
 
     case 'track/get': {
@@ -83,18 +80,7 @@ export const reviewsReducer: Reducer<ReviewsState> = (state, action) => {
 
       const response = action.request.data.track.get
       const trackReviews = response.reviews.map(mapReview)
-
-      let nextState = { ...state }
-      for (const trackReview of trackReviews) {
-        nextState = {
-          ...nextState,
-          track: {
-            ...nextState.track,
-            [trackReview.id]: trackReview,
-          },
-        }
-      }
-      return nextState
+      return { ...state, track: mergeIds(state.track, trackReviews) }
     }
 
     case 'review/release/create': {

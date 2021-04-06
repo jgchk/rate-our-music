@@ -1,5 +1,6 @@
 import { isSuccess } from '../../utils/remote-data'
 import { Reducer } from '../store'
+import { mergeIds } from './utils'
 
 //
 // Types
@@ -29,33 +30,15 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.release.get
-      const genres: Genre[] = response.genres
-
-      let nextState = { ...state }
-      for (const genre of genres) {
-        nextState = {
-          ...nextState,
-          [genre.id]: genre,
-        }
-      }
-      return nextState
+      const genres: Genre[] = action.request.data.release.get.genres
+      return mergeIds(state, genres)
     }
 
     case 'track/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.track.get
-      const genres: Genre[] = response.genres
-
-      let nextState = { ...state }
-      for (const genre of genres) {
-        nextState = {
-          ...nextState,
-          [genre.id]: genre,
-        }
-      }
-      return nextState
+      const genres: Genre[] = action.request.data.track.get.genres
+      return mergeIds(state, genres)
     }
 
     default:

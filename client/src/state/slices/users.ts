@@ -1,5 +1,6 @@
 import { isSuccess } from '../../utils/remote-data'
 import { Reducer } from '../store'
+import { mergeIds } from './utils'
 
 //
 // Types
@@ -36,16 +37,7 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
 
       const response = action.request.data.release.get
       const users: User[] = response.reviews.map((review) => review.account)
-
-      let nextState = { ...state }
-      for (const user of users) {
-        nextState = {
-          ...nextState,
-          [user.id]: user,
-        }
-      }
-
-      return nextState
+      return mergeIds(state, users)
     }
 
     case 'track/get': {
@@ -53,16 +45,7 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
 
       const response = action.request.data.track.get
       const users: User[] = response.reviews.map((review) => review.account)
-
-      let nextState = { ...state }
-      for (const user of users) {
-        nextState = {
-          ...nextState,
-          [user.id]: user,
-        }
-      }
-
-      return nextState
+      return mergeIds(state, users)
     }
 
     case 'review/release/create': {

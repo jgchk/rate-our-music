@@ -1,0 +1,4 @@
+fragment accountData on Account {
+  id
+  username
+}

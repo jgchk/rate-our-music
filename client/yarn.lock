@@ -8682,6 +8682,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.2.0
     eslint-plugin-unicorn: ^29.0.0
     graphql: ^15.5.0
+    graphql-tag: ^2.11.0
     http-proxy: ^1.18.1
     lint-staged: ^10.5.4
     odiff: ^1.4.3
