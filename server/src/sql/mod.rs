@@ -3,12 +3,13 @@ mod artist;
 mod descriptor;
 mod descriptor_vote;
 mod genre;
-mod genre_vote;
 mod log;
 mod release;
+mod release_genre_vote;
 mod release_review;
 mod tag;
 mod track;
+mod track_genre_vote;
 mod track_review;
 
 use crate::errors::Error;
@@ -17,14 +18,15 @@ use artist::ArtistDatabase;
 use descriptor::DescriptorDatabase;
 use descriptor_vote::DescriptorVoteDatabase;
 use genre::GenreDatabase;
-use genre_vote::GenreVoteDatabase;
 use log::LogDatabase;
 use release::ReleaseDatabase;
+use release_genre_vote::ReleaseGenreVoteDatabase;
 use release_review::ReleaseReviewDatabase;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use tag::TagDatabase;
 use track::TrackDatabase;
+use track_genre_vote::TrackGenreVoteDatabase;
 use track_review::TrackReviewDatabase;
 
 #[derive(Debug, Clone)]
@@ -69,8 +71,12 @@ impl Database {
         GenreDatabase::new(&self.pool)
     }
 
-    pub fn genre_vote(&self) -> GenreVoteDatabase {
-        GenreVoteDatabase::new(&self.pool)
+    pub fn release_genre_vote(&self) -> ReleaseGenreVoteDatabase {
+        ReleaseGenreVoteDatabase::new(&self.pool)
+    }
+
+    pub fn track_genre_vote(&self) -> TrackGenreVoteDatabase {
+        TrackGenreVoteDatabase::new(&self.pool)
     }
 
     pub fn descriptor(&self) -> DescriptorDatabase {

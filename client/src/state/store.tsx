@@ -5,6 +5,7 @@ import { AppState, appReducer } from './app'
 import { AuthActions } from './slices/auth'
 import { ReleaseActions } from './slices/releases'
 import { ReviewActions } from './slices/reviews'
+import { TrackActions } from './slices/tracks'
 
 export type RootState = AppState
 
@@ -12,19 +13,26 @@ export type RawAction =
   | InitAction
   | AuthActions
   | ReleaseActions
+  | TrackActions
   | ReviewActions
 
 export type Action = RawAction & { id: number }
 
 export type Reducer<S> = (state: S | undefined, action: Action) => S
 
-const isAction = (
-  action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>
-): action is RawAction => '_type' in action
+export type Dispatchable<A extends RawAction> =
+  | A
+  | Generator<A>
+  | AsyncGenerator<A>
 
-export type Dispatch = (
-  action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>
-) => number
+export type ActionCreator<Args extends unknown[], Act extends RawAction> = (
+  ...args: Args
+) => Dispatchable<Act>
+
+const isRawAction = (action: Dispatchable<RawAction>): action is RawAction =>
+  '_type' in action
+
+export type Dispatch = (action: Dispatchable<RawAction>) => number
 
 export const reducer: Reducer<RootState> = (state, action) => {
   const newState = appReducer(state, action)
@@ -53,7 +61,7 @@ export const StateProvider: FunctionComponent = ({ children }) => {
       action: RawAction | Generator<RawAction> | AsyncGenerator<RawAction>,
       id: number
     ) => {
-      if (isAction(action)) {
+      if (isRawAction(action)) {
         dispatch({ ...action, id })
       } else {
         for await (const subAction of action) {

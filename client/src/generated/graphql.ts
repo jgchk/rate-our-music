@@ -177,6 +177,7 @@ export type Query = {
   account: AccountQuery
   artist: ArtistQuery
   release: ReleaseQuery
+  track: TrackQuery
 }
 
 export type Release = {
@@ -226,10 +227,10 @@ export type ReleaseMutationCreateArgs = {
 
 export type ReleaseQuery = {
   __typename?: 'ReleaseQuery'
-  getOne: Release
+  get: Release
 }
 
-export type ReleaseQueryGetOneArgs = {
+export type ReleaseQueryGetArgs = {
   id: Scalars['Int']
 }
 
@@ -287,7 +288,29 @@ export type Track = {
   num: Scalars['Int']
   durationMs?: Maybe<Scalars['Int']>
   artists: Array<Artist>
+  genres: Array<TrackGenre>
+  siteRating?: Maybe<Scalars['Float']>
+  friendRating: Scalars['Int']
+  similarUserRating: Scalars['Int']
   reviews: Array<TrackReview>
+}
+
+export type TrackGenre = {
+  __typename?: 'TrackGenre'
+  id: Scalars['Int']
+  parent?: Maybe<Genre>
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
+  weight: Scalars['Float']
+}
+
+export type TrackQuery = {
+  __typename?: 'TrackQuery'
+  get: Track
+}
+
+export type TrackQueryGetArgs = {
+  id: Scalars['Int']
 }
 
 export type TrackReview = {
@@ -336,7 +359,7 @@ export type GetReleaseQueryVariables = Exact<{
 
 export type GetReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
-    getOne: { __typename?: 'Release' } & Pick<
+    get: { __typename?: 'Release' } & Pick<
       Release,
       | 'id'
       | 'title'
@@ -355,8 +378,23 @@ export type GetReleaseQuery = { __typename?: 'Query' } & {
         tracks: Array<
           { __typename?: 'Track' } & Pick<
             Track,
-            'id' | 'title' | 'durationMs'
+            | 'id'
+            | 'title'
+            | 'durationMs'
+            | 'siteRating'
+            | 'friendRating'
+            | 'similarUserRating'
           > & {
+              release: { __typename?: 'Release' } & Pick<Release, 'id'>
+              artists: Array<
+                { __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>
+              >
+              genres: Array<
+                { __typename?: 'TrackGenre' } & Pick<
+                  TrackGenre,
+                  'id' | 'name' | 'weight'
+                >
+              >
               reviews: Array<
                 { __typename?: 'TrackReview' } & Pick<
                   TrackReview,
@@ -463,6 +501,44 @@ export type UpdateTrackReviewRatingMutation = { __typename?: 'Mutation' } & {
   }
 }
 
+export type GetTrackQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetTrackQuery = { __typename?: 'Query' } & {
+  track: { __typename?: 'TrackQuery' } & {
+    get: { __typename?: 'Track' } & Pick<
+      Track,
+      | 'id'
+      | 'title'
+      | 'durationMs'
+      | 'siteRating'
+      | 'friendRating'
+      | 'similarUserRating'
+    > & {
+        release: { __typename?: 'Release' } & Pick<Release, 'id'>
+        artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>>
+        genres: Array<
+          { __typename?: 'TrackGenre' } & Pick<
+            TrackGenre,
+            'id' | 'name' | 'weight'
+          >
+        >
+        reviews: Array<
+          { __typename?: 'TrackReview' } & Pick<
+            TrackReview,
+            'id' | 'rating' | 'text'
+          > & {
+              account: { __typename?: 'Account' } & Pick<
+                Account,
+                'id' | 'username'
+              >
+            }
+        >
+      }
+  }
+}
+
 export const LoginDocument = `
     mutation Login($username: String!, $password: String!) {
   account {
@@ -480,7 +556,7 @@ export const LoginDocument = `
 export const GetReleaseDocument = `
     query GetRelease($id: Int!) {
   release {
-    getOne(id: $id) {
+    get(id: $id) {
       id
       title
       artists {
@@ -497,6 +573,21 @@ export const GetReleaseDocument = `
         id
         title
         durationMs
+        release {
+          id
+        }
+        artists {
+          id
+          name
+        }
+        genres {
+          id
+          name
+          weight
+        }
+        siteRating
+        friendRating
+        similarUserRating
         reviews {
           id
           account {
@@ -602,6 +693,41 @@ export const UpdateTrackReviewRatingDocument = `
       text
       track {
         id
+      }
+    }
+  }
+}
+    `
+export const GetTrackDocument = `
+    query GetTrack($id: Int!) {
+  track {
+    get(id: $id) {
+      id
+      title
+      durationMs
+      release {
+        id
+      }
+      artists {
+        id
+        name
+      }
+      genres {
+        id
+        name
+        weight
+      }
+      siteRating
+      friendRating
+      similarUserRating
+      reviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
       }
     }
   }
@@ -723,6 +849,17 @@ export function getSdk<O>(requester: Requester<O>) {
         UpdateTrackReviewRatingMutation,
         UpdateTrackReviewRatingMutationVariables
       >(UpdateTrackReviewRatingDocument, variables, options)
+    },
+
+    GetTrack(
+      variables: GetTrackQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetTrackQuery>> {
+      return requester<GetTrackQuery, GetTrackQueryVariables>(
+        GetTrackDocument,
+        variables,
+        options
+      )
     },
   }
 }

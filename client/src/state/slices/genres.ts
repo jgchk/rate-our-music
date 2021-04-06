@@ -29,7 +29,7 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.release.getOne
+      const response = action.request.data.release.get
       const genres: Genre[] = response.genres
 
       let nextState = { ...state }

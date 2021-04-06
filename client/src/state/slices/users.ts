@@ -34,7 +34,7 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.release.getOne
+      const response = action.request.data.release.get
       const users: User[] = [
         ...response.reviews.map((review) => review.account),
         ...response.tracks.flatMap((track) =>

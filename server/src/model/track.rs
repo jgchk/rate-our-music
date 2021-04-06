@@ -1,8 +1,8 @@
+use super::{track_genre::TrackGenre, track_review::TrackReview};
 use crate::model::artist::Artist;
 use crate::model::release::Release;
 use async_graphql::{Context, Object, Result};
-
-use super::track_review::TrackReview;
+use num_traits::ToPrimitive;
 
 pub struct Track {
     pub track_id: i32,
@@ -40,6 +40,36 @@ impl Track {
         let env = ctx.data::<crate::graphql::Context>()?;
         let artists = env.db().artist().get_by_release(self.release_id).await?;
         Ok(artists)
+    }
+
+    async fn genres(&self, ctx: &Context<'_>) -> Result<Vec<TrackGenre>> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let genres = env.db().genre().get_by_release(self.release_id).await?;
+        let release_genres = genres
+            .iter()
+            .map(|genre| TrackGenre::new(self.release_id, genre))
+            .collect();
+        Ok(release_genres)
+    }
+
+    async fn site_rating(&self, ctx: &Context<'_>) -> Result<Option<f64>> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let mean = env
+            .db()
+            .track_review()
+            .average_by_track(self.release_id)
+            .await?;
+        Ok(mean.and_then(|b| b.to_f64()))
+    }
+
+    async fn friend_rating(&self) -> i16 {
+        // TODO
+        7
+    }
+
+    async fn similar_user_rating(&self) -> i16 {
+        // TODO
+        7
     }
 
     async fn reviews(&self, ctx: &Context<'_>) -> Result<Vec<TrackReview>> {

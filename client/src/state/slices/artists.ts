@@ -28,8 +28,11 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.release.getOne
-      const artists: Artist[] = response.artists
+      const response = action.request.data.release.get
+      const artists: Artist[] = [
+        ...response.artists,
+        ...response.tracks.flatMap((track) => track.artists),
+      ]
 
       let nextState = { ...state }
       for (const artist of artists) {

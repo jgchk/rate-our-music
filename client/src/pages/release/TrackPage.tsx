@@ -2,8 +2,8 @@ import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
 import { useEffect } from 'preact/hooks'
 import {
-  createReleaseReview,
-  updateReleaseReviewRating,
+  createTrackReview,
+  updateTrackReviewRating,
 } from '../../state/slices/reviews'
 import { useDispatch, useSelector } from '../../state/store'
 import { findMap } from '../../utils/array'
@@ -15,18 +15,24 @@ import { ReleaseDate } from './components/ReleaseDate'
 import { Review } from './components/Review'
 import { ReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
+import { ReleaseViewLink } from './components/TracklistReleaseViewLink'
 import { useGetReleaseAction } from './hooks/useGetReleaseAction'
+import { useGetTrackAction } from './hooks/useGetTrackAction'
 import { useLoginAction } from './hooks/useLoginAction'
 import classes from './ReleasePage.module.css'
 
 export type Props = {
-  releaseId: number
+  trackId: number
 }
 
-export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
-  const release = useSelector((state) => state.releases[releaseId])
+export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
+  const track = useSelector((state) => state.tracks[trackId])
+  const release = useSelector((state) => {
+    if (track?.release === undefined) return
+    return state.releases[track.release]
+  })
 
-  const reviewIds = useSelector((state) => state.releases[releaseId]?.reviews)
+  const reviewIds = useSelector((state) => state.tracks[trackId]?.reviews)
 
   const user = useSelector((state) => {
     const id = state.auth.auth?.user
@@ -37,7 +43,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
   const userReview = useSelector((state) => {
     if (!user || !reviewIds) return
     return findMap([...reviewIds], (id) => {
-      const review = state.reviews.release[id]
+      const review = state.reviews.track[id]
       if (review && review.user === user.id) {
         return review
       }
@@ -46,21 +52,34 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
 
   const dispatch = useDispatch()
 
+  const [getTrack, getTrackAction] = useGetTrackAction()
+  useEffect(() => {
+    if (track === undefined || track.id !== trackId) {
+      getTrack(trackId)
+    }
+  }, [getTrack, track, trackId])
+
   const [getRelease, getReleaseAction] = useGetReleaseAction()
   useEffect(() => {
-    if (release === undefined || release.id !== releaseId) {
-      getRelease(releaseId)
+    if (
+      track !== undefined &&
+      (release === undefined || release.id !== track.release)
+    ) {
+      getRelease(track.release)
     }
-  }, [getRelease, release, releaseId])
+  }, [getRelease, release, track])
 
   const [login] = useLoginAction()
   useEffect(() => login('admin', 'admin'), [login])
 
-  if (getReleaseAction && isLoading(getReleaseAction.request)) {
+  if (
+    (getTrackAction && isLoading(getTrackAction.request)) ||
+    (getReleaseAction && isLoading(getReleaseAction.request))
+  ) {
     return <div>Loading...</div>
   }
 
-  if (!release) {
+  if (!track || !release) {
     return <div />
   }
 
@@ -72,6 +91,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         )}
         {release.tracks.size > 0 && (
           <div className={classes.tracklist}>
+            <ReleaseViewLink href={`/release/${release.id}`} />
             {[...release.tracks].map((id, i) => (
               <Track key={id} id={id} index={i} href={`/track/${id}`} />
             ))}
@@ -81,9 +101,9 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
 
       <div className={clsx(classes.column, classes.right)}>
         <div className={classes.section}>
-          <div className={classes.title}>{release.title}</div>
+          <div className={classes.title}>{track.title}</div>
           <ol className={clsx(classes.artists, classes.commaSeparatedList)}>
-            {[...release.artists].map((id) => (
+            {[...track.artists].map((id) => (
               <li key={id}>
                 <Artist id={id} />
               </li>
@@ -96,7 +116,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
 
         <div className={classes.section}>
           <ol className={classes.commaSeparatedList}>
-            {[...release.genres].map((id) => (
+            {[...track.genres].map((id) => (
               <li key={id}>
                 <Genre id={id} />
               </li>
@@ -105,14 +125,14 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         </div>
 
         <div className={classes.section}>
-          {release.siteRating !== undefined && (
-            <div>{(release.siteRating / 2).toFixed(1)}</div>
+          {track.siteRating !== undefined && (
+            <div>{(track.siteRating / 2).toFixed(1)}</div>
           )}
-          {release.friendRating !== undefined && (
-            <div>{(release.friendRating / 2).toFixed(1)}</div>
+          {track.friendRating !== undefined && (
+            <div>{(track.friendRating / 2).toFixed(1)}</div>
           )}
-          {release.similarUserRating !== undefined && (
-            <div>{(release.similarUserRating / 2).toFixed(1)}</div>
+          {track.similarUserRating !== undefined && (
+            <div>{(track.similarUserRating / 2).toFixed(1)}</div>
           )}
         </div>
 
@@ -123,8 +143,8 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
               onChange={(rating) => {
                 dispatch(
                   userReview
-                    ? updateReleaseReviewRating(userReview.id, rating)
-                    : createReleaseReview(releaseId, user.id, { rating })
+                    ? updateTrackReviewRating(userReview.id, rating)
+                    : createTrackReview(trackId, user.id, { rating })
                 )
               }}
             />
@@ -134,7 +154,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div>
             {[...reviewIds].map((id) => (
-              <ReviewWithText key={id} kind='release' id={id} />
+              <ReviewWithText key={id} kind='track' id={id} />
             ))}
           </div>
         )}
@@ -142,7 +162,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div className={classes.section}>
             {[...reviewIds].map((id) => (
-              <Review key={id} kind='release' id={id} />
+              <Review key={id} kind='track' id={id} />
             ))}
           </div>
         )}

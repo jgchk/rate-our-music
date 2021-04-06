@@ -44,7 +44,7 @@ module.exports = {
 
     'unicorn/filename-case': [
       'error',
-      { cases: { kebabCase: true, pascalCase: true } },
+      { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
     ],
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-array-callback-reference': 'off',

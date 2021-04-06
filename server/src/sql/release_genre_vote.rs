@@ -1,11 +1,11 @@
 use crate::errors::Error;
-use crate::model::genre_vote::GenreVote;
+use crate::model::release_genre_vote::ReleaseGenreVote;
 use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
-pub struct GenreVoteDatabase<'a>(&'a PgPool);
+pub struct ReleaseGenreVoteDatabase<'a>(&'a PgPool);
 
-impl<'a> GenreVoteDatabase<'a> {
+impl<'a> ReleaseGenreVoteDatabase<'a> {
     pub fn new(pool: &'a PgPool) -> Self {
         Self(pool)
     }
@@ -14,9 +14,9 @@ impl<'a> GenreVoteDatabase<'a> {
         &self,
         release_id: i32,
         genre_id: i32,
-    ) -> Result<Vec<GenreVote>, Error> {
+    ) -> Result<Vec<ReleaseGenreVote>, Error> {
         sqlx::query_as!(
-            GenreVote,
+            ReleaseGenreVote,
             r#"SELECT *
             FROM release_genre_vote
             WHERE release_id = $1 AND genre_id = $2"#,

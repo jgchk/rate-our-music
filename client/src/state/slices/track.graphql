@@ -1,0 +1,33 @@
+query GetTrack($id: Int!) {
+  track {
+    get(id: $id) {
+      id
+      title
+      durationMs
+      release {
+        id
+      }
+      artists {
+        id
+        name
+      }
+      genres {
+        id
+        name
+        weight
+      }
+      siteRating
+      friendRating
+      similarUserRating
+      reviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+      }
+    }
+  }
+}

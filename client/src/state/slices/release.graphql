@@ -1,6 +1,6 @@
 query GetRelease($id: Int!) {
   release {
-    getOne(id: $id) {
+    get(id: $id) {
       id
       title
       artists {
@@ -17,6 +17,21 @@ query GetRelease($id: Int!) {
         id
         title
         durationMs
+        release {
+          id
+        }
+        artists {
+          id
+          name
+        }
+        genres {
+          id
+          name
+          weight
+        }
+        siteRating
+        friendRating
+        similarUserRating
         reviews {
           id
           account {

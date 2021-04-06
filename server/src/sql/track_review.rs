@@ -1,5 +1,5 @@
 use crate::{errors::Error, model::track_review::TrackReview};
-use sqlx::PgPool;
+use sqlx::{types::BigDecimal, PgPool};
 
 #[derive(Debug, Clone)]
 pub struct TrackReviewDatabase<'a>(&'a PgPool);
@@ -54,5 +54,17 @@ impl<'a> TrackReviewDatabase<'a> {
         .fetch_all(self.0)
         .await
         .map_err(|e| e.into())
+    }
+
+    pub async fn average_by_track(&self, track_id: i32) -> Result<Option<BigDecimal>, Error> {
+        let result = sqlx::query!(
+            "SELECT AVG(track_review_rating)
+            FROM track_review
+            WHERE track_id = $1",
+            track_id
+        )
+        .fetch_one(self.0)
+        .await?;
+        Ok(result.avg)
     }
 }

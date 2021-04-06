@@ -45,7 +45,7 @@ export const reviewsReducer: Reducer<ReviewsState> = (state, action) => {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
 
-      const response = action.request.data.release.getOne
+      const response = action.request.data.release.get
       const releaseReviews = [...response.reviews].map((review) => ({
         id: review.id,
         user: review.account.id,

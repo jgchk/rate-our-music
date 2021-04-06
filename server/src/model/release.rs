@@ -1,13 +1,11 @@
+use super::{release_genre::ReleaseGenre, release_review::ReleaseReview};
 use crate::errors::Error;
 use crate::model::artist::Artist;
 use crate::model::descriptor_vote::DescriptorVote;
-use crate::model::genre::ReleaseGenre;
 use crate::model::tag::Tag;
 use crate::model::track::Track;
 use async_graphql::{Context, Enum, InputObject, Object, Result, SimpleObject};
 use num_traits::cast::ToPrimitive;
-
-use super::release_review::ReleaseReview;
 
 pub struct RawRelease {
     pub release_id: i32,
