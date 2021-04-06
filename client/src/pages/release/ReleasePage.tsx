@@ -122,9 +122,9 @@ export const ReleasePage: FunctionComponent<Props> = ({
         </div>
 
         <div className={classes.section}>
-          <div>{release.siteRating}</div>
-          <div>{release.friendRating}</div>
-          <div>{release.similarUserRating}</div>
+          <div>{(release.siteRating / 2).toFixed(1)}</div>
+          <div>{(release.friendRating / 2).toFixed(1)}</div>
+          <div>{(release.similarUserRating / 2).toFixed(1)}</div>
         </div>
 
         {user && (

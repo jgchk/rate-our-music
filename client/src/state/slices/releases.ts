@@ -79,16 +79,41 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
     case 'review/create': {
       if (!isSuccess(action.request)) return state
 
-      const release = state[action.releaseId]
+      const review = action.request.data.releaseReview.create
+
+      const release = state[review.release.id]
       if (release === undefined) {
-        console.error(`could not find release id: ${action.releaseId}`)
+        console.error(`could not find release id: ${review.release.id}`)
         return state
       }
 
-      const reviewId = action.request.data.releaseReview.create.id
       return {
         ...state,
-        [release.id]: { ...release, reviews: release.reviews.add(reviewId) },
+        [release.id]: {
+          ...release,
+          reviews: release.reviews.add(review.id),
+          siteRating: review.release.siteRating,
+        },
+      }
+    }
+
+    case 'review/update': {
+      if (!isSuccess(action.request)) return state
+
+      const review = action.request.data.releaseReview.updateRating
+
+      const release = state[review.release.id]
+      if (release === undefined) {
+        console.error(`could not find release id: ${review.release.id}`)
+        return state
+      }
+
+      return {
+        ...state,
+        [release.id]: {
+          ...release,
+          siteRating: review.release.siteRating,
+        },
       }
     }
 

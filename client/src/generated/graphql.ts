@@ -188,7 +188,7 @@ export type Release = {
   artists: Array<Artist>
   tracks: Array<Track>
   genres: Array<ReleaseGenre>
-  siteRating: Scalars['Int']
+  siteRating: Scalars['Float']
   friendRating: Scalars['Int']
   similarUserRating: Scalars['Int']
   reviews: Array<ReleaseReview>
@@ -386,6 +386,7 @@ export type CreateReleaseReviewMutation = { __typename?: 'Mutation' } & {
       'id' | 'rating' | 'text'
     > & {
         account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+        release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
       }
   }
 }
@@ -402,6 +403,7 @@ export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
       'id' | 'rating' | 'text'
     > & {
         account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+        release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
       }
   }
 }
@@ -487,6 +489,10 @@ export const CreateReleaseReviewDocument = `
       }
       rating
       text
+      release {
+        id
+        siteRating
+      }
     }
   }
 }
@@ -502,6 +508,10 @@ export const UpdateReleaseReviewRatingDocument = `
       }
       rating
       text
+      release {
+        id
+        siteRating
+      }
     }
   }
 }

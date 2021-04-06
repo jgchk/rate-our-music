@@ -18,6 +18,10 @@ mutation CreateReleaseReview(
       }
       rating
       text
+      release {
+        id
+        siteRating
+      }
     }
   }
 }
@@ -32,6 +36,10 @@ mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
       }
       rating
       text
+      release {
+        id
+        siteRating
+      }
     }
   }
 }

@@ -190,9 +190,20 @@ impl Release {
         Ok(release_genres)
     }
 
-    async fn site_rating(&self) -> i16 {
-        // TODO
-        7
+    async fn site_rating(&self, ctx: &Context<'_>) -> Result<f64> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let reviews = env
+            .db()
+            .release_review()
+            .get_by_release(self.release_id)
+            .await?;
+        let ratings: Vec<i16> = reviews
+            .iter()
+            .filter_map(|review| review.release_review_rating)
+            .collect();
+        let sum: f64 = ratings.iter().map(|&rating| rating as f64).sum();
+        let avg = (sum as f64) / (ratings.len() as f64);
+        Ok(avg)
     }
 
     async fn friend_rating(&self) -> i16 {
