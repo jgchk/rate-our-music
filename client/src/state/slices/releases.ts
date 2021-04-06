@@ -26,9 +26,9 @@ export type Release = {
   coverArt?: string
   tracks: Set<number>
   genres: Set<number>
-  siteRating: number
-  friendRating: number
-  similarUserRating: number
+  siteRating?: number
+  friendRating?: number
+  similarUserRating?: number
   reviews: Set<number>
 }
 
@@ -68,9 +68,9 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
         coverArt: response.coverArt ?? undefined,
         tracks: ids(response.tracks),
         genres: ids(response.genres),
-        siteRating: response.siteRating,
-        friendRating: response.friendRating,
-        similarUserRating: response.similarUserRating,
+        siteRating: response.siteRating ?? undefined,
+        friendRating: response.friendRating ?? undefined,
+        similarUserRating: response.similarUserRating ?? undefined,
         reviews: ids(response.reviews),
       }
       return { ...state, [release.id]: release }
@@ -92,7 +92,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
         [release.id]: {
           ...release,
           reviews: release.reviews.add(review.id),
-          siteRating: review.release.siteRating,
+          siteRating: review.release.siteRating ?? undefined,
         },
       }
     }
@@ -112,7 +112,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
         ...state,
         [release.id]: {
           ...release,
-          siteRating: review.release.siteRating,
+          siteRating: review.release.siteRating ?? undefined,
         },
       }
     }

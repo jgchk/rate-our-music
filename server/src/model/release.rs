@@ -5,6 +5,7 @@ use crate::model::genre::ReleaseGenre;
 use crate::model::tag::Tag;
 use crate::model::track::Track;
 use async_graphql::{Context, Enum, InputObject, Object, Result, SimpleObject};
+use num_traits::cast::ToPrimitive;
 
 use super::release_review::ReleaseReview;
 
@@ -190,20 +191,14 @@ impl Release {
         Ok(release_genres)
     }
 
-    async fn site_rating(&self, ctx: &Context<'_>) -> Result<f64> {
+    async fn site_rating(&self, ctx: &Context<'_>) -> Result<Option<f64>> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let reviews = env
+        let mean = env
             .db()
             .release_review()
-            .get_by_release(self.release_id)
+            .average_by_release(self.release_id)
             .await?;
-        let ratings: Vec<i16> = reviews
-            .iter()
-            .filter_map(|review| review.release_review_rating)
-            .collect();
-        let sum: f64 = ratings.iter().map(|&rating| rating as f64).sum();
-        let avg = (sum as f64) / (ratings.len() as f64);
-        Ok(avg)
+        Ok(mean.and_then(|b| b.to_f64()))
     }
 
     async fn friend_rating(&self) -> i16 {

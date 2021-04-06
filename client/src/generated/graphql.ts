@@ -188,7 +188,7 @@ export type Release = {
   artists: Array<Artist>
   tracks: Array<Track>
   genres: Array<ReleaseGenre>
-  siteRating: Scalars['Float']
+  siteRating?: Maybe<Scalars['Float']>
   friendRating: Scalars['Int']
   similarUserRating: Scalars['Int']
   reviews: Array<ReleaseReview>

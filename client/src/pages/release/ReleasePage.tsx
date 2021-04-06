@@ -122,9 +122,15 @@ export const ReleasePage: FunctionComponent<Props> = ({
         </div>
 
         <div className={classes.section}>
-          <div>{(release.siteRating / 2).toFixed(1)}</div>
-          <div>{(release.friendRating / 2).toFixed(1)}</div>
-          <div>{(release.similarUserRating / 2).toFixed(1)}</div>
+          {release.siteRating !== undefined && (
+            <div>{(release.siteRating / 2).toFixed(1)}</div>
+          )}
+          {release.friendRating !== undefined && (
+            <div>{(release.friendRating / 2).toFixed(1)}</div>
+          )}
+          {release.similarUserRating !== undefined && (
+            <div>{(release.similarUserRating / 2).toFixed(1)}</div>
+          )}
         </div>
 
         {user && (

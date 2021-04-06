@@ -1,5 +1,5 @@
 use crate::{errors::Error, model::release_review::ReleaseReview};
-use sqlx::PgPool;
+use sqlx::{types::BigDecimal, PgPool};
 
 #[derive(Debug, Clone)]
 pub struct ReleaseReviewDatabase<'a>(&'a PgPool);
@@ -47,13 +47,25 @@ impl<'a> ReleaseReviewDatabase<'a> {
     pub async fn get_by_release(&self, release_id: i32) -> Result<Vec<ReleaseReview>, Error> {
         sqlx::query_as!(
             ReleaseReview,
-            r#"SELECT *
+            "SELECT *
             FROM release_review
-            WHERE release_id = $1"#,
+            WHERE release_id = $1",
             release_id
         )
         .fetch_all(self.0)
         .await
         .map_err(Error::from)
+    }
+
+    pub async fn average_by_release(&self, release_id: i32) -> Result<Option<BigDecimal>, Error> {
+        let result = sqlx::query!(
+            "SELECT AVG(release_review_rating)
+            FROM release_review
+            WHERE release_id = $1",
+            release_id
+        )
+        .fetch_one(self.0)
+        .await?;
+        Ok(result.avg)
     }
 }
