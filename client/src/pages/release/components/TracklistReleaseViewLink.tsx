@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { FunctionComponent } from 'preact'
 import { CornerUpLeft } from 'preact-feather'
 import { Link } from '../../../router/Link'
@@ -9,7 +10,7 @@ export type Props = {
 }
 
 export const ReleaseViewLink: FunctionComponent<Props> = ({ href }) => (
-  <Link className={trackClasses.container} href={href}>
+  <Link className={clsx(classes.container, trackClasses.container)} href={href}>
     <div className={classes.icon}>
       <CornerUpLeft />
     </div>

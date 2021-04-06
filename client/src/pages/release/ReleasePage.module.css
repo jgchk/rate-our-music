@@ -38,7 +38,7 @@
 }
 
 .title {
-  font-size: var(--larger);
+  font-size: var(--font-larger);
 }
 
 .artists {
@@ -47,7 +47,7 @@
 
 .error {
   color: var(--red);
-  font-size: var(--small);
+  font-size: var(--font-small);
 }
 
 .commaSeparatedList {

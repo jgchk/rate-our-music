@@ -1,7 +1,25 @@
+.num {
+  flex: 1;
+  color: var(--foreground-darker);
+  transition: color var(--speed-1);
+}
+
+.title {
+  flex: 15;
+  transition: color var(--speed-1);
+}
+
+.duration {
+  flex: 1;
+  text-align: right;
+  transition: color var(--speed-1);
+}
+
 .container {
   display: flex;
   padding: var(--space-3);
   border-bottom: 1px solid var(--border);
+  transition: background var(--speed-1);
 
   &:last-child {
     border-bottom: none;
@@ -9,19 +27,14 @@
 
   &:hover {
     background: var(--background-lighter);
+
+    & .num {
+      color: var(--foreground-dark);
+    }
+
+    & .title,
+    & .duration {
+      color: var(--foreground-light);
+    }
   }
-}
-
-.num {
-  flex: 1;
-  color: var(--foreground-dark);
-}
-
-.title {
-  flex: 15;
-}
-
-.duration {
-  flex: 1;
-  text-align: right;
 }

@@ -1,8 +1,9 @@
 .icon {
   flex: 1;
   height: 1em;
-  color: var(--foreground-dark);
+  color: var(--foreground-darker);
   text-align: left;
+  transition: color var(--speed-1);
 
   & > svg {
     width: 1em;
@@ -14,4 +15,17 @@
 .text {
   flex: 16;
   font-weight: 500;
+  transition: color var(--speed-1);
+}
+
+.container {
+  &:hover {
+    & .icon {
+      color: var(--foreground-dark);
+    }
+
+    & .text {
+      color: var(--foreground-light);
+    }
+  }
 }
