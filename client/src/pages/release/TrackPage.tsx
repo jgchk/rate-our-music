@@ -93,7 +93,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
           <div className={classes.tracklist}>
             <ReleaseViewLink href={`/release/${release.id}`} />
             {[...release.tracks].map((id, i) => (
-              <Track key={id} id={id} index={i} href={`/track/${id}`} />
+              <Track key={id} id={id} index={i} />
             ))}
           </div>
         )}

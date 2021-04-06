@@ -1,6 +1,9 @@
 import { FunctionComponent } from 'preact'
+import { useEffect } from 'preact/hooks'
 import { Link } from '../../../router/Link'
 import { useSelector } from '../../../state/store'
+import { isLoading } from '../../../utils/remote-data'
+import { useGetTrackAction } from '../hooks/useGetTrackAction'
 import classes from './Track.module.css'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
@@ -21,14 +24,25 @@ const formatTime = (ms: number) => {
 export type Props = {
   id: number
   index: number
-  href: string
 }
 
-export const Track: FunctionComponent<Props> = ({ id, index, href }) => {
+export const Track: FunctionComponent<Props> = ({ id, index }) => {
   const track = useSelector((state) => state.tracks[id])
+
+  const [getTrack, getTrackAction] = useGetTrackAction()
+  useEffect(() => {
+    if (track === undefined || track.id !== id) {
+      getTrack(id)
+    }
+  }, [getTrack, id, track])
+
+  if (getTrackAction && isLoading(getTrackAction.request)) {
+    return <div>Loading...</div>
+  }
   if (!track) return <div>No track found with id: {id}</div>
+
   return (
-    <Link className={classes.container} href={href}>
+    <Link className={classes.container} href={`/track/${id}`}>
       <div className={classes.num}>{index + 1}</div>
       <div className={classes.title}>{track.title}</div>
       <div className={classes.duration}>

@@ -65,22 +65,6 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
       return { ...state, [track.id]: track }
     }
 
-    case 'release/get': {
-      if (!isSuccess(action.request)) return state
-
-      const response = action.request.data.release.get
-      const tracks: Track[] = response.tracks.map(mapTrack)
-
-      let nextState = { ...state }
-      for (const track of tracks) {
-        nextState = {
-          ...nextState,
-          [track.id]: track,
-        }
-      }
-      return nextState
-    }
-
     case 'review/track/create': {
       if (!isSuccess(action.request)) return state
 

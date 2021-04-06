@@ -1,6 +1,8 @@
 import {
   CreateReleaseReviewMutation,
   CreateTrackReviewMutation,
+  GetReleaseQuery,
+  GetTrackQuery,
   GraphqlError,
   UpdateReleaseReviewRatingMutation,
   UpdateTrackReviewRatingMutation,
@@ -32,6 +34,21 @@ export type Review = {
 }
 
 //
+// Mappers
+//
+
+const mapReview = (
+  review:
+    | GetReleaseQuery['release']['get']['reviews'][number]
+    | GetTrackQuery['track']['get']['reviews'][number]
+): Review => ({
+  id: review.id,
+  user: review.account.id,
+  rating: review.rating ?? undefined,
+  text: review.text ?? undefined,
+})
+
+//
 // Reducer
 //
 
@@ -46,20 +63,7 @@ export const reviewsReducer: Reducer<ReviewsState> = (state, action) => {
       if (!isSuccess(action.request)) return state
 
       const response = action.request.data.release.get
-      const releaseReviews = [...response.reviews].map((review) => ({
-        id: review.id,
-        user: review.account.id,
-        rating: review.rating ?? undefined,
-        text: review.text ?? undefined,
-      }))
-      const trackReviews: Review[] = [
-        ...response.tracks.flatMap((track) => track.reviews),
-      ].map((review) => ({
-        id: review.id,
-        user: review.account.id,
-        rating: review.rating ?? undefined,
-        text: review.text ?? undefined,
-      }))
+      const releaseReviews = response.reviews.map(mapReview)
 
       let nextState = { ...state }
       for (const releaseReview of releaseReviews) {
@@ -71,6 +75,16 @@ export const reviewsReducer: Reducer<ReviewsState> = (state, action) => {
           },
         }
       }
+      return nextState
+    }
+
+    case 'track/get': {
+      if (!isSuccess(action.request)) return state
+
+      const response = action.request.data.track.get
+      const trackReviews = response.reviews.map(mapReview)
+
+      let nextState = { ...state }
       for (const trackReview of trackReviews) {
         nextState = {
           ...nextState,

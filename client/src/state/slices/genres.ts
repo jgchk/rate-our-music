@@ -42,6 +42,22 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
       return nextState
     }
 
+    case 'track/get': {
+      if (!isSuccess(action.request)) return state
+
+      const response = action.request.data.track.get
+      const genres: Genre[] = response.genres
+
+      let nextState = { ...state }
+      for (const genre of genres) {
+        nextState = {
+          ...nextState,
+          [genre.id]: genre,
+        }
+      }
+      return nextState
+    }
+
     default:
       return state
   }

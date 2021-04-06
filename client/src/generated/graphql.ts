@@ -375,39 +375,7 @@ export type GetReleaseQuery = { __typename?: 'Query' } & {
             'day' | 'month' | 'year'
           >
         >
-        tracks: Array<
-          { __typename?: 'Track' } & Pick<
-            Track,
-            | 'id'
-            | 'title'
-            | 'durationMs'
-            | 'siteRating'
-            | 'friendRating'
-            | 'similarUserRating'
-          > & {
-              release: { __typename?: 'Release' } & Pick<Release, 'id'>
-              artists: Array<
-                { __typename?: 'Artist' } & Pick<Artist, 'id' | 'name'>
-              >
-              genres: Array<
-                { __typename?: 'TrackGenre' } & Pick<
-                  TrackGenre,
-                  'id' | 'name' | 'weight'
-                >
-              >
-              reviews: Array<
-                { __typename?: 'TrackReview' } & Pick<
-                  TrackReview,
-                  'id' | 'rating' | 'text'
-                > & {
-                    account: { __typename?: 'Account' } & Pick<
-                      Account,
-                      'id' | 'username'
-                    >
-                  }
-              >
-            }
-        >
+        tracks: Array<{ __typename?: 'Track' } & Pick<Track, 'id'>>
         genres: Array<
           { __typename?: 'ReleaseGenre' } & Pick<
             ReleaseGenre,
@@ -571,32 +539,6 @@ export const GetReleaseDocument = `
       coverArt
       tracks {
         id
-        title
-        durationMs
-        release {
-          id
-        }
-        artists {
-          id
-          name
-        }
-        genres {
-          id
-          name
-          weight
-        }
-        siteRating
-        friendRating
-        similarUserRating
-        reviews {
-          id
-          account {
-            id
-            username
-          }
-          rating
-          text
-        }
       }
       genres {
         id

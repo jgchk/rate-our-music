@@ -73,7 +73,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         {release.tracks.size > 0 && (
           <div className={classes.tracklist}>
             {[...release.tracks].map((id, i) => (
-              <Track key={id} id={id} index={i} href={`/track/${id}`} />
+              <Track key={id} id={id} index={i} />
             ))}
           </div>
         )}

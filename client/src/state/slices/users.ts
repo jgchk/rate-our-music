@@ -35,12 +35,24 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
       if (!isSuccess(action.request)) return state
 
       const response = action.request.data.release.get
-      const users: User[] = [
-        ...response.reviews.map((review) => review.account),
-        ...response.tracks.flatMap((track) =>
-          track.reviews.map((review) => review.account)
-        ),
-      ]
+      const users: User[] = response.reviews.map((review) => review.account)
+
+      let nextState = { ...state }
+      for (const user of users) {
+        nextState = {
+          ...nextState,
+          [user.id]: user,
+        }
+      }
+
+      return nextState
+    }
+
+    case 'track/get': {
+      if (!isSuccess(action.request)) return state
+
+      const response = action.request.data.track.get
+      const users: User[] = response.reviews.map((review) => review.account)
 
       let nextState = { ...state }
       for (const user of users) {

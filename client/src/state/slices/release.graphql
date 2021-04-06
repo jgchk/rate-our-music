@@ -15,32 +15,6 @@ query GetRelease($id: Int!) {
       coverArt
       tracks {
         id
-        title
-        durationMs
-        release {
-          id
-        }
-        artists {
-          id
-          name
-        }
-        genres {
-          id
-          name
-          weight
-        }
-        siteRating
-        friendRating
-        similarUserRating
-        reviews {
-          id
-          account {
-            id
-            username
-          }
-          rating
-          text
-        }
       }
       genres {
         id
