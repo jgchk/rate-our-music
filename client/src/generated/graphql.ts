@@ -168,6 +168,7 @@ export type Mutation = {
   artist: ArtistMutation
   release: ReleaseMutation
   releaseReview: ReleaseReviewMutation
+  trackReview: TrackReviewMutation
   logging: LoggingMutation
 }
 
@@ -298,6 +299,24 @@ export type TrackReview = {
   text?: Maybe<Scalars['String']>
 }
 
+export type TrackReviewMutation = {
+  __typename?: 'TrackReviewMutation'
+  create: TrackReview
+  updateRating: TrackReview
+}
+
+export type TrackReviewMutationCreateArgs = {
+  trackId: Scalars['Int']
+  accountId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}
+
+export type TrackReviewMutationUpdateRatingArgs = {
+  reviewId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+}
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']
   password: Scalars['String']
@@ -404,6 +423,42 @@ export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
     > & {
         account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
         release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
+      }
+  }
+}
+
+export type CreateTrackReviewMutationVariables = Exact<{
+  trackId: Scalars['Int']
+  accountId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}>
+
+export type CreateTrackReviewMutation = { __typename?: 'Mutation' } & {
+  trackReview: { __typename?: 'TrackReviewMutation' } & {
+    create: { __typename?: 'TrackReview' } & Pick<
+      TrackReview,
+      'id' | 'rating' | 'text'
+    > & {
+        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+        track: { __typename?: 'Track' } & Pick<Track, 'id'>
+      }
+  }
+}
+
+export type UpdateTrackReviewRatingMutationVariables = Exact<{
+  reviewId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+}>
+
+export type UpdateTrackReviewRatingMutation = { __typename?: 'Mutation' } & {
+  trackReview: { __typename?: 'TrackReviewMutation' } & {
+    updateRating: { __typename?: 'TrackReview' } & Pick<
+      TrackReview,
+      'id' | 'rating' | 'text'
+    > & {
+        account: { __typename?: 'Account' } & Pick<Account, 'id' | 'username'>
+        track: { __typename?: 'Track' } & Pick<Track, 'id'>
       }
   }
 }
@@ -516,6 +571,42 @@ export const UpdateReleaseReviewRatingDocument = `
   }
 }
     `
+export const CreateTrackReviewDocument = `
+    mutation CreateTrackReview($trackId: Int!, $accountId: Int!, $rating: Int, $text: String) {
+  trackReview {
+    create(trackId: $trackId, accountId: $accountId, rating: $rating, text: $text) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
+      track {
+        id
+      }
+    }
+  }
+}
+    `
+export const UpdateTrackReviewRatingDocument = `
+    mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
+  trackReview {
+    updateRating(reviewId: $reviewId, rating: $rating) {
+      id
+      account {
+        id
+        username
+      }
+      rating
+      text
+      track {
+        id
+      }
+    }
+  }
+}
+    `
 
 export type GraphqlResponse<D> =
   | GraphqlSuccessResponse<D>
@@ -610,6 +701,28 @@ export function getSdk<O>(requester: Requester<O>) {
         UpdateReleaseReviewRatingMutation,
         UpdateReleaseReviewRatingMutationVariables
       >(UpdateReleaseReviewRatingDocument, variables, options)
+    },
+
+    CreateTrackReview(
+      variables: CreateTrackReviewMutationVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, CreateTrackReviewMutation>> {
+      return requester<
+        CreateTrackReviewMutation,
+        CreateTrackReviewMutationVariables
+      >(CreateTrackReviewDocument, variables, options)
+    },
+
+    UpdateTrackReviewRating(
+      variables: UpdateTrackReviewRatingMutationVariables,
+      options?: O
+    ): Promise<
+      Result<HttpError | GraphqlError, UpdateTrackReviewRatingMutation>
+    > {
+      return requester<
+        UpdateTrackReviewRatingMutation,
+        UpdateTrackReviewRatingMutationVariables
+      >(UpdateTrackReviewRatingDocument, variables, options)
     },
   }
 }

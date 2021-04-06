@@ -49,6 +49,46 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
       return nextState
     }
 
+    case 'review/track/create': {
+      if (!isSuccess(action.request)) return state
+
+      const review = action.request.data.trackReview.create
+
+      const track = state[review.track.id]
+      if (track === undefined) {
+        console.error(`could not find track id: ${review.track.id}`)
+        return state
+      }
+
+      return {
+        ...state,
+        [track.id]: {
+          ...track,
+          reviews: track.reviews.add(review.id),
+          // TODO: siteRating: review.release.siteRating ?? undefined,
+        },
+      }
+    }
+    case 'review/track/update': {
+      if (!isSuccess(action.request)) return state
+
+      const review = action.request.data.trackReview.updateRating
+
+      const track = state[review.track.id]
+      if (track === undefined) {
+        console.error(`could not find track id: ${review.track.id}`)
+        return state
+      }
+
+      return {
+        ...state,
+        [track.id]: {
+          ...track,
+          // TODO: siteRating: review.release.siteRating ?? undefined,
+        },
+      }
+    }
+
     default:
       return state
   }

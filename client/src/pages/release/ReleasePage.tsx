@@ -3,7 +3,12 @@ import { FunctionComponent } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import { login } from '../../state/slices/auth'
 import { getRelease } from '../../state/slices/releases'
-import { createReview, updateReview } from '../../state/slices/reviews'
+import {
+  createReleaseReview,
+  createTrackReview,
+  updateReleaseReviewRating,
+  updateTrackReviewRating,
+} from '../../state/slices/reviews'
 import { useDispatch, useSelector } from '../../state/store'
 import { findMap } from '../../utils/array'
 import { isLoading } from '../../utils/remote-data'
@@ -39,17 +44,17 @@ export const ReleasePage: FunctionComponent<Props> = ({
       return state.users[id]
     }
   })
-  const userReview = useSelector(
-    (state) =>
-      user &&
-      reviewIds &&
-      findMap([...reviewIds], (id) => {
-        const review = state.reviews[id]
-        if (review && review.user === user.id) {
-          return review
-        }
-      })
-  )
+  const userReview = useSelector((state) => {
+    if (!user || !reviewIds) return
+    const reviews =
+      trackId === undefined ? state.reviews.release : state.reviews.track
+    return findMap([...reviewIds], (id) => {
+      const review = reviews[id]
+      if (review && review.user === user.id) {
+        return review
+      }
+    })
+  })
 
   const dispatch = useDispatch()
 
@@ -139,9 +144,13 @@ export const ReleasePage: FunctionComponent<Props> = ({
               value={userReview?.rating ?? 0}
               onChange={(rating) => {
                 dispatch(
-                  userReview
-                    ? updateReview(userReview.id, rating)
-                    : createReview(releaseId, trackId, user.id, { rating })
+                  trackId === undefined
+                    ? userReview
+                      ? updateReleaseReviewRating(userReview.id, rating)
+                      : createReleaseReview(releaseId, user.id, { rating })
+                    : userReview
+                    ? updateTrackReviewRating(userReview.id, rating)
+                    : createTrackReview(trackId, user.id, { rating })
                 )
               }}
             />
@@ -151,7 +160,11 @@ export const ReleasePage: FunctionComponent<Props> = ({
         {reviewIds && reviewIds.size > 0 && (
           <div>
             {[...reviewIds].map((id) => (
-              <ReviewWithText key={id} id={id} />
+              <ReviewWithText
+                key={id}
+                kind={trackId === undefined ? 'release' : 'track'}
+                id={id}
+              />
             ))}
           </div>
         )}
@@ -159,7 +172,11 @@ export const ReleasePage: FunctionComponent<Props> = ({
         {reviewIds && reviewIds.size > 0 && (
           <div className={classes.section}>
             {[...reviewIds].map((id) => (
-              <Review key={id} id={id} />
+              <Review
+                key={id}
+                kind={trackId === undefined ? 'release' : 'track'}
+                id={id}
+              />
             ))}
           </div>
         )}

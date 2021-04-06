@@ -76,7 +76,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
       return { ...state, [release.id]: release }
     }
 
-    case 'review/create': {
+    case 'review/release/create': {
       if (!isSuccess(action.request)) return state
 
       const review = action.request.data.releaseReview.create
@@ -96,8 +96,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
         },
       }
     }
-
-    case 'review/update': {
+    case 'review/release/update': {
       if (!isSuccess(action.request)) return state
 
       const review = action.request.data.releaseReview.updateRating

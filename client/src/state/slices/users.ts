@@ -53,18 +53,31 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
       return nextState
     }
 
-    case 'review/create': {
+    case 'review/release/create': {
       if (!isSuccess(action.request)) return state
 
       const response = action.request.data.releaseReview.create
       const user: User = response.account
       return { ...state, [user.id]: user }
     }
-
-    case 'review/update': {
+    case 'review/release/update': {
       if (!isSuccess(action.request)) return state
 
       const response = action.request.data.releaseReview.updateRating
+      const user: User = response.account
+      return { ...state, [user.id]: user }
+    }
+    case 'review/track/create': {
+      if (!isSuccess(action.request)) return state
+
+      const response = action.request.data.trackReview.create
+      const user: User = response.account
+      return { ...state, [user.id]: user }
+    }
+    case 'review/track/update': {
+      if (!isSuccess(action.request)) return state
+
+      const response = action.request.data.trackReview.updateRating
       const user: User = response.account
       return { ...state, [user.id]: user }
     }

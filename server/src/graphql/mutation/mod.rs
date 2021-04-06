@@ -3,6 +3,7 @@ mod artist;
 mod logging;
 mod release;
 mod release_review;
+mod track_review;
 
 use account::AccountMutation;
 use artist::ArtistMutation;
@@ -10,6 +11,7 @@ use async_graphql::*;
 use logging::LoggingMutation;
 use release::ReleaseMutation;
 use release_review::ReleaseReviewMutation;
+use track_review::TrackReviewMutation;
 
 pub struct Mutation;
 
@@ -29,6 +31,10 @@ impl Mutation {
 
     async fn release_review(&self) -> ReleaseReviewMutation {
         ReleaseReviewMutation
+    }
+
+    async fn track_review(&self) -> TrackReviewMutation {
+        TrackReviewMutation
     }
 
     async fn logging(&self) -> LoggingMutation {

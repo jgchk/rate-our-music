@@ -13,12 +13,16 @@ const User: FunctionComponent<UserProps> = ({ id }) => {
   return <Link href={`/user/${user.id}`}>{user.username}</Link>
 }
 
-export type ReviewWithTextProps = { id: number }
+export type ReviewWithTextProps = {
+  kind: 'release' | 'track'
+  id: number
+}
 
 export const ReviewWithText: FunctionComponent<ReviewWithTextProps> = ({
+  kind,
   id,
 }) => {
-  const review = useSelector((state) => state.reviews[id])
+  const review = useSelector((state) => state.reviews[kind][id])
   if (!review) return <div>No review found with id: {id}</div>
   return (
     <div className={pageClasses.section}>
