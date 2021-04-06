@@ -1,4 +1,12 @@
-import { isSuccess } from '../../utils/remote-data'
+import { GetArtistQuery, GraphqlError } from '../../generated/graphql'
+import { gql } from '../../utils/gql'
+import { HttpError } from '../../utils/http'
+import {
+  RemoteData,
+  fromResult,
+  isSuccess,
+  loading,
+} from '../../utils/remote-data'
 import { Reducer } from '../store'
 import { mergeIds } from './utils'
 
@@ -47,4 +55,22 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
     default:
       return state
   }
+}
+
+//
+// Actions
+//
+
+export type ArtistActions = GetArtistAction
+
+export type GetArtistAction = {
+  _type: 'artist/get'
+  request: RemoteData<HttpError | GraphqlError, GetArtistQuery>
+}
+export const getArtist = async function* (
+  id: number
+): AsyncGenerator<GetArtistAction> {
+  yield { _type: 'artist/get', request: loading }
+  const response = await gql.GetArtist({ id })
+  yield { _type: 'artist/get', request: fromResult(response) }
 }

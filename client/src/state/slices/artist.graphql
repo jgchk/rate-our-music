@@ -2,3 +2,11 @@ fragment artistData on Artist {
   id
   name
 }
+
+query GetArtist($id: Int!) {
+  artist {
+    get(id: $id) {
+      ...artistData
+    }
+  }
+}

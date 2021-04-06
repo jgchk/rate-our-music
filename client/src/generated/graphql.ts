@@ -80,11 +80,11 @@ export type ArtistMutationCreateArgs = {
 
 export type ArtistQuery = {
   __typename?: 'ArtistQuery'
-  getOne: Artist
+  get: Artist
   filterByName: Array<Artist>
 }
 
-export type ArtistQueryGetOneArgs = {
+export type ArtistQueryGetArgs = {
   id: Scalars['Int']
 }
 
@@ -346,6 +346,16 @@ export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
   Artist,
   'id' | 'name'
 >
+
+export type GetArtistQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetArtistQuery = { __typename?: 'Query' } & {
+  artist: { __typename?: 'ArtistQuery' } & {
+    get: { __typename?: 'Artist' } & ArtistDataFragment
+  }
+}
 
 export type AuthDataFragment = { __typename?: 'Auth' } & Pick<
   Auth,
@@ -620,6 +630,16 @@ export const ReleaseDataFragmentDoc = gql`
   ${ReleaseGenreDataFragmentDoc}
   ${ReleaseReviewDataFragmentDoc}
 `
+export const GetArtistDocument = gql`
+  query GetArtist($id: Int!) {
+    artist {
+      get(id: $id) {
+        ...artistData
+      }
+    }
+  }
+  ${ArtistDataFragmentDoc}
+`
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
     account {
@@ -762,6 +782,17 @@ export type Requester<O = Record<string, never>> = <R, V>(
 
 export function getSdk<O>(requester: Requester<O>) {
   return {
+    GetArtist(
+      variables: GetArtistQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetArtistQuery>> {
+      return requester<GetArtistQuery, GetArtistQueryVariables>(
+        GetArtistDocument,
+        variables,
+        options
+      )
+    },
+
     Login(
       variables: LoginMutationVariables,
       options?: O

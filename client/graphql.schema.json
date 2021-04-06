@@ -451,7 +451,7 @@
         "description": null,
         "fields": [
           {
-            "name": "getOne",
+            "name": "get",
             "description": null,
             "args": [
               {

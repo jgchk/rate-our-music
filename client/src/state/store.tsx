@@ -2,6 +2,7 @@ import odiff from 'odiff'
 import { FunctionComponent, createContext } from 'preact'
 import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
 import { AppState, appReducer } from './app'
+import { ArtistActions } from './slices/artists'
 import { AuthActions } from './slices/auth'
 import { ReleaseActions } from './slices/releases'
 import { ReviewActions } from './slices/reviews'
@@ -15,6 +16,7 @@ export type RawAction =
   | ReleaseActions
   | TrackActions
   | ReviewActions
+  | ArtistActions
 
 export type Action = RawAction & { id: number }
 
