@@ -16,11 +16,7 @@ import { TrackReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
 import { TrackGenre } from './components/TrackGenre'
 import { ReleaseViewLink } from './components/TracklistReleaseViewLink'
-import {
-  useGetReleaseAction,
-  useGetTrackAction,
-  useLoginAction,
-} from './hooks/useAction'
+import { useGetReleaseAction, useGetTrackAction } from './hooks/useAction'
 import classes from './ReleasePage.module.css'
 
 export type Props = {
@@ -70,9 +66,6 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
       getRelease(track.release)
     }
   }, [getRelease, release, track])
-
-  const [login] = useLoginAction()
-  useEffect(() => login('admin', 'admin'), [login])
 
   if (
     (getTrackAction && isLoading(getTrackAction.request)) ||

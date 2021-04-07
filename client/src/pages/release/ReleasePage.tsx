@@ -15,7 +15,7 @@ import { ReleaseGenre } from './components/ReleaseGenre'
 import { ReleaseReview } from './components/Review'
 import { ReleaseReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
-import { useGetReleaseAction, useLoginAction } from './hooks/useAction'
+import { useGetReleaseAction } from './hooks/useAction'
 import classes from './ReleasePage.module.css'
 
 export type Props = {
@@ -51,9 +51,6 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
       getRelease(releaseId)
     }
   }, [getRelease, release, releaseId])
-
-  const [login] = useLoginAction()
-  useEffect(() => login('admin', 'admin'), [login])
 
   if (getReleaseAction && isLoading(getReleaseAction.request)) {
     return <div>Loading...</div>
