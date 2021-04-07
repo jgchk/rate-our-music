@@ -1,4 +1,12 @@
-import { isSuccess } from '../../utils/remote-data'
+import { GetUserQuery, GraphqlError } from '../../generated/graphql'
+import { gql } from '../../utils/gql'
+import { HttpError } from '../../utils/http'
+import {
+  RemoteData,
+  fromResult,
+  isSuccess,
+  loading,
+} from '../../utils/remote-data'
 import { Reducer } from '../store'
 import { mergeIds } from './utils'
 
@@ -80,4 +88,23 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
     default:
       return state
   }
+}
+
+//
+// Actions
+//
+
+export type UserActions = GetUserAction
+
+export type GetUserAction = {
+  _type: 'user/get'
+  request: RemoteData<HttpError | GraphqlError, GetUserQuery>
+}
+export const getUser = async function* (
+  id: number
+): AsyncGenerator<GetUserAction> {
+  const base = { _type: 'user/get' } as const
+  yield { ...base, request: loading }
+  const response = await gql.GetUser({ id })
+  yield { ...base, request: fromResult(response) }
 }

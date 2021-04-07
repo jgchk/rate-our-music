@@ -22,4 +22,10 @@ impl AccountQuery {
         let account = env.db().account().get_by_username(&username).await?;
         Ok(account.is_some())
     }
+
+    async fn get(&self, ctx: &Context<'_>, id: i32) -> Result<Account> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let account = env.db().account().get(id).await?;
+        Ok(account)
+    }
 }

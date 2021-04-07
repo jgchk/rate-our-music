@@ -2,3 +2,11 @@ fragment accountData on Account {
   id
   username
 }
+
+query GetUser($id: Int!) {
+  account {
+    get(id: $id) {
+      ...accountData
+    }
+  }
+}

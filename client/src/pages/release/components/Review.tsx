@@ -2,27 +2,19 @@ import { FunctionComponent } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useSelector } from '../../../state/store'
 import { isLoading } from '../../../utils/remote-data'
-import { Link } from '../../common/components/Link'
 import {
   useGetReleaseReviewAction,
   useGetTrackReviewAction,
 } from '../hooks/useAction'
 import { RatingStars } from './RatingStars'
 import classes from './Review.module.css'
+import { UserLink } from './UserLink'
 
-type UserProps = { id: number }
-
-const User: FunctionComponent<UserProps> = ({ id }) => {
-  const user = useSelector((state) => state.users[id])
-  if (!user) return <div>No user found with id: {id}</div>
-  return <Link href={`/user/${user.id}`}>{user.username}</Link>
-}
-
-export type ReviewProps = {
+export type Props = {
   id: number
 }
 
-export const ReleaseReview: FunctionComponent<ReviewProps> = ({ id }) => {
+export const ReleaseReview: FunctionComponent<Props> = ({ id }) => {
   const review = useSelector((state) => state.releaseReviews[id])
 
   const [getReleaseReview, getReleaseReviewAction] = useGetReleaseReviewAction()
@@ -39,13 +31,13 @@ export const ReleaseReview: FunctionComponent<ReviewProps> = ({ id }) => {
 
   return (
     <div className={classes.container}>
-      <User id={review.user} />
+      <UserLink id={review.user} />
       <RatingStars value={review.rating ?? 0} />
     </div>
   )
 }
 
-export const TrackReview: FunctionComponent<ReviewProps> = ({ id }) => {
+export const TrackReview: FunctionComponent<Props> = ({ id }) => {
   const review = useSelector((state) => state.trackReviews[id])
 
   const [getTrackReview, getTrackReviewAction] = useGetTrackReviewAction()
@@ -62,7 +54,7 @@ export const TrackReview: FunctionComponent<ReviewProps> = ({ id }) => {
 
   return (
     <div className={classes.container}>
-      <User id={review.user} />
+      <UserLink id={review.user} />
       <RatingStars value={review.rating ?? 0} />
     </div>
   )

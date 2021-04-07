@@ -6,6 +6,7 @@ import { getReleaseReview } from '../../../state/slices/release-reviews'
 import { getRelease } from '../../../state/slices/releases'
 import { getTrackReview } from '../../../state/slices/track-reviews'
 import { getTrack } from '../../../state/slices/tracks'
+import { getUser } from '../../../state/slices/users'
 import {
   ActionCreator,
   DispatchedAction,
@@ -50,4 +51,5 @@ export const useGetReleaseReviewAction = () =>
   useAction(getReleaseReview, 'review/release/get')
 export const useGetTrackReviewAction = () =>
   useAction(getTrackReview, 'review/track/get')
+export const useGetUserAction = () => useAction(getUser, 'user/get')
 /* eslint-enable @typescript-eslint/explicit-module-boundary-types */

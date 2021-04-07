@@ -9,6 +9,7 @@ import { ReleaseReviewActions } from './slices/release-reviews'
 import { ReleaseActions } from './slices/releases'
 import { TrackReviewActions } from './slices/track-reviews'
 import { TrackActions } from './slices/tracks'
+import { UserActions } from './slices/users'
 
 export type RootState = AppState
 
@@ -21,6 +22,7 @@ export type RawAction =
   | TrackReviewActions
   | ArtistActions
   | GenreActions
+  | UserActions
 
 export type DispatchedAction<A extends RawAction = RawAction> = A & {
   id: number

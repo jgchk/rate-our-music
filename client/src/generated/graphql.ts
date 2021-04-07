@@ -51,10 +51,15 @@ export type AccountQuery = {
   __typename?: 'AccountQuery'
   me: Account
   doesUsernameExist: Scalars['Boolean']
+  get: Account
 }
 
 export type AccountQueryDoesUsernameExistArgs = {
   username: Scalars['String']
+}
+
+export type AccountQueryGetArgs = {
+  id: Scalars['Int']
 }
 
 export type Artist = {
@@ -592,6 +597,16 @@ export type AccountDataFragment = { __typename?: 'Account' } & Pick<
   'id' | 'username'
 >
 
+export type GetUserQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetUserQuery = { __typename?: 'Query' } & {
+  account: { __typename?: 'AccountQuery' } & {
+    get: { __typename?: 'Account' } & AccountDataFragment
+  }
+}
+
 export const AccountDataFragmentDoc = gql`
   fragment accountData on Account {
     id
@@ -854,6 +869,16 @@ export const GetTrackDocument = gql`
   }
   ${TrackDataFragmentDoc}
 `
+export const GetUserDocument = gql`
+  query GetUser($id: Int!) {
+    account {
+      get(id: $id) {
+        ...accountData
+      }
+    }
+  }
+  ${AccountDataFragmentDoc}
+`
 
 export type GraphqlResponse<D> =
   | GraphqlSuccessResponse<D>
@@ -1033,6 +1058,17 @@ export function getSdk<O>(requester: Requester<O>) {
     ): Promise<Result<HttpError | GraphqlError, GetTrackQuery>> {
       return requester<GetTrackQuery, GetTrackQueryVariables>(
         GetTrackDocument,
+        variables,
+        options
+      )
+    },
+
+    GetUser(
+      variables: GetUserQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetUserQuery>> {
+      return requester<GetUserQuery, GetUserQueryVariables>(
+        GetUserDocument,
         variables,
         options
       )
