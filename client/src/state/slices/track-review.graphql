@@ -1,0 +1,46 @@
+fragment trackReviewData on TrackReview {
+  id
+  account {
+    ...accountData
+  }
+  rating
+  text
+  track {
+    id
+    siteRating
+  }
+}
+
+query GetTrackReview($id: Int!) {
+  trackReview {
+    get(id: $id) {
+      ...trackReviewData
+    }
+  }
+}
+
+mutation CreateTrackReview(
+  $trackId: Int!
+  $accountId: Int!
+  $rating: Int
+  $text: String
+) {
+  trackReview {
+    create(
+      trackId: $trackId
+      accountId: $accountId
+      rating: $rating
+      text: $text
+    ) {
+      ...trackReviewData
+    }
+  }
+}
+
+mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
+  trackReview {
+    updateRating(reviewId: $reviewId, rating: $rating) {
+      ...trackReviewData
+    }
+  }
+}

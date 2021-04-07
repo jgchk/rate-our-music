@@ -5,8 +5,9 @@ import { AppState, appReducer } from './app'
 import { ArtistActions } from './slices/artists'
 import { AuthActions } from './slices/auth'
 import { GenreActions } from './slices/genres'
+import { ReleaseReviewActions } from './slices/release-reviews'
 import { ReleaseActions } from './slices/releases'
-import { ReviewActions } from './slices/reviews'
+import { TrackReviewActions } from './slices/track-reviews'
 import { TrackActions } from './slices/tracks'
 
 export type RootState = AppState
@@ -16,7 +17,8 @@ export type RawAction =
   | AuthActions
   | ReleaseActions
   | TrackActions
-  | ReviewActions
+  | ReleaseReviewActions
+  | TrackReviewActions
   | ArtistActions
   | GenreActions
 

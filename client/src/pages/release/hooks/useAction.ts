@@ -2,7 +2,9 @@ import { useMemo, useState } from 'preact/hooks'
 import { getArtist } from '../../../state/slices/artists'
 import { login } from '../../../state/slices/auth'
 import { getReleaseGenre, getTrackGenre } from '../../../state/slices/genres'
+import { getReleaseReview } from '../../../state/slices/release-reviews'
 import { getRelease } from '../../../state/slices/releases'
+import { getTrackReview } from '../../../state/slices/track-reviews'
 import { getTrack } from '../../../state/slices/tracks'
 import {
   ActionCreator,
@@ -44,4 +46,8 @@ export const useGetReleaseGenreAction = () =>
   useAction(getReleaseGenre, 'genre/release/get')
 export const useGetTrackGenreAction = () =>
   useAction(getTrackGenre, 'genre/track/get')
+export const useGetReleaseReviewAction = () =>
+  useAction(getReleaseReview, 'review/release/get')
+export const useGetTrackReviewAction = () =>
+  useAction(getTrackReview, 'review/track/get')
 /* eslint-enable @typescript-eslint/explicit-module-boundary-types */

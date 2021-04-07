@@ -4,7 +4,7 @@ import { useEffect } from 'preact/hooks'
 import {
   createReleaseReview,
   updateReleaseReviewRating,
-} from '../../state/slices/reviews'
+} from '../../state/slices/release-reviews'
 import { useDispatch, useSelector } from '../../state/store'
 import { findMap } from '../../utils/array'
 import { isLoading } from '../../utils/remote-data'
@@ -12,8 +12,8 @@ import { Artist } from './components/Artist'
 import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
 import { ReleaseGenre } from './components/ReleaseGenre'
-import { Review } from './components/Review'
-import { ReviewWithText } from './components/ReviewWithText'
+import { ReleaseReview } from './components/Review'
+import { ReleaseReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
 import { useGetReleaseAction, useLoginAction } from './hooks/useAction'
 import classes from './ReleasePage.module.css'
@@ -36,7 +36,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
   const userReview = useSelector((state) => {
     if (!user || !reviewIds) return
     return findMap([...reviewIds], (id) => {
-      const review = state.reviews.release[id]
+      const review = state.releaseReviews[id]
       if (review && review.user === user.id) {
         return review
       }
@@ -133,7 +133,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div>
             {[...reviewIds].map((id) => (
-              <ReviewWithText key={id} kind='release' id={id} />
+              <ReleaseReviewWithText key={id} id={id} />
             ))}
           </div>
         )}
@@ -141,7 +141,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div className={classes.section}>
             {[...reviewIds].map((id) => (
-              <Review key={id} kind='release' id={id} />
+              <ReleaseReview key={id} id={id} />
             ))}
           </div>
         )}

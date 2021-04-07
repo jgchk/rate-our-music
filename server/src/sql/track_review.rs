@@ -43,6 +43,19 @@ impl<'a> TrackReviewDatabase<'a> {
         .map_err(Error::from)
     }
 
+    pub async fn get(&self, id: i32) -> Result<TrackReview, Error> {
+        sqlx::query_as!(
+            TrackReview,
+            "SELECT *
+            FROM track_review
+            WHERE track_review_id = $1",
+            id
+        )
+        .fetch_one(self.0)
+        .await
+        .map_err(Error::from)
+    }
+
     pub async fn get_by_track(&self, track_id: i32) -> Result<Vec<TrackReview>, Error> {
         sqlx::query_as!(
             TrackReview,

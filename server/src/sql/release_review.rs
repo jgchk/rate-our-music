@@ -44,6 +44,19 @@ impl<'a> ReleaseReviewDatabase<'a> {
         .map_err(Error::from)
     }
 
+    pub async fn get(&self, id: i32) -> Result<ReleaseReview, Error> {
+        sqlx::query_as!(
+            ReleaseReview,
+            "SELECT *
+            FROM release_review
+            WHERE release_review_id = $1",
+            id
+        )
+        .fetch_one(self.0)
+        .await
+        .map_err(Error::from)
+    }
+
     pub async fn get_by_release(&self, release_id: i32) -> Result<Vec<ReleaseReview>, Error> {
         sqlx::query_as!(
             ReleaseReview,

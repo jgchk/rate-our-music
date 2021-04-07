@@ -2,8 +2,12 @@ import { ActionsState, actionsReducer } from './slices/actions'
 import { ArtistsState, artistsReducer } from './slices/artists'
 import { AuthState, authReducer } from './slices/auth'
 import { GenresState, genresReducer } from './slices/genres'
+import {
+  ReleaseReviewsState,
+  releaseReviewsReducer,
+} from './slices/release-reviews'
 import { ReleasesState, releasesReducer } from './slices/releases'
-import { ReviewsState, reviewsReducer } from './slices/reviews'
+import { TrackReviewsState, trackReviewsReducer } from './slices/track-reviews'
 import { TracksState, tracksReducer } from './slices/tracks'
 import { UsersState, usersReducer } from './slices/users'
 import { Reducer } from './store'
@@ -15,7 +19,8 @@ export type AppState = {
   artists: ArtistsState
   tracks: TracksState
   genres: GenresState
-  reviews: ReviewsState
+  releaseReviews: ReleaseReviewsState
+  trackReviews: TrackReviewsState
   auth: AuthState
 }
 
@@ -26,6 +31,7 @@ export const appReducer: Reducer<AppState> = (state, action) => ({
   artists: artistsReducer(state?.artists, action),
   tracks: tracksReducer(state?.tracks, action),
   genres: genresReducer(state?.genres, action),
-  reviews: reviewsReducer(state?.reviews, action),
+  releaseReviews: releaseReviewsReducer(state?.releaseReviews, action),
+  trackReviews: trackReviewsReducer(state?.trackReviews, action),
   auth: authReducer(state?.auth, action),
 })

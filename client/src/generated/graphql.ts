@@ -202,6 +202,8 @@ export type Query = {
   release: ReleaseQuery
   track: TrackQuery
   genre: GenreQuery
+  releaseReview: ReleaseReviewQuery
+  trackReview: TrackReviewQuery
 }
 
 export type Release = {
@@ -285,6 +287,15 @@ export type ReleaseReviewMutationUpdateRatingArgs = {
   rating?: Maybe<Scalars['Int']>
 }
 
+export type ReleaseReviewQuery = {
+  __typename?: 'ReleaseReviewQuery'
+  get: ReleaseReview
+}
+
+export type ReleaseReviewQueryGetArgs = {
+  id: Scalars['Int']
+}
+
 export enum ReleaseType {
   Album = 'ALBUM',
   Compilation = 'COMPILATION',
@@ -364,6 +375,15 @@ export type TrackReviewMutationUpdateRatingArgs = {
   rating?: Maybe<Scalars['Int']>
 }
 
+export type TrackReviewQuery = {
+  __typename?: 'TrackReviewQuery'
+  get: TrackReview
+}
+
+export type TrackReviewQueryGetArgs = {
+  id: Scalars['Int']
+}
+
 export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
   Artist,
   'id' | 'name'
@@ -427,6 +447,48 @@ export type GetTrackGenreQuery = { __typename?: 'Query' } & {
   }
 }
 
+export type ReleaseReviewDataFragment = { __typename?: 'ReleaseReview' } & Pick<
+  ReleaseReview,
+  'id' | 'rating' | 'text'
+> & {
+    account: { __typename?: 'Account' } & AccountDataFragment
+    release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
+  }
+
+export type GetReleaseReviewQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetReleaseReviewQuery = { __typename?: 'Query' } & {
+  releaseReview: { __typename?: 'ReleaseReviewQuery' } & {
+    get: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
+  }
+}
+
+export type CreateReleaseReviewMutationVariables = Exact<{
+  releaseId: Scalars['Int']
+  accountId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+  text?: Maybe<Scalars['String']>
+}>
+
+export type CreateReleaseReviewMutation = { __typename?: 'Mutation' } & {
+  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
+    create: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
+  }
+}
+
+export type UpdateReleaseReviewRatingMutationVariables = Exact<{
+  reviewId: Scalars['Int']
+  rating?: Maybe<Scalars['Int']>
+}>
+
+export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
+  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
+    updateRating: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
+  }
+}
+
 export type ReleaseDataFragment = { __typename?: 'Release' } & Pick<
   Release,
   | 'id'
@@ -458,14 +520,6 @@ export type GetReleaseQuery = { __typename?: 'Query' } & {
   }
 }
 
-export type ReleaseReviewDataFragment = { __typename?: 'ReleaseReview' } & Pick<
-  ReleaseReview,
-  'id' | 'rating' | 'text'
-> & {
-    account: { __typename?: 'Account' } & AccountDataFragment
-    release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
-  }
-
 export type TrackReviewDataFragment = { __typename?: 'TrackReview' } & Pick<
   TrackReview,
   'id' | 'rating' | 'text'
@@ -474,27 +528,13 @@ export type TrackReviewDataFragment = { __typename?: 'TrackReview' } & Pick<
     track: { __typename?: 'Track' } & Pick<Track, 'id' | 'siteRating'>
   }
 
-export type CreateReleaseReviewMutationVariables = Exact<{
-  releaseId: Scalars['Int']
-  accountId: Scalars['Int']
-  rating?: Maybe<Scalars['Int']>
-  text?: Maybe<Scalars['String']>
+export type GetTrackReviewQueryVariables = Exact<{
+  id: Scalars['Int']
 }>
 
-export type CreateReleaseReviewMutation = { __typename?: 'Mutation' } & {
-  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
-    create: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
-  }
-}
-
-export type UpdateReleaseReviewRatingMutationVariables = Exact<{
-  reviewId: Scalars['Int']
-  rating?: Maybe<Scalars['Int']>
-}>
-
-export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
-  releaseReview: { __typename?: 'ReleaseReviewMutation' } & {
-    updateRating: { __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment
+export type GetTrackReviewQuery = { __typename?: 'Query' } & {
+  trackReview: { __typename?: 'TrackReviewQuery' } & {
+    get: { __typename?: 'TrackReview' } & TrackReviewDataFragment
   }
 }
 
@@ -714,15 +754,15 @@ export const GetTrackGenreDocument = gql`
   }
   ${TrackGenreDataFragmentDoc}
 `
-export const GetReleaseDocument = gql`
-  query GetRelease($id: Int!) {
-    release {
+export const GetReleaseReviewDocument = gql`
+  query GetReleaseReview($id: Int!) {
+    releaseReview {
       get(id: $id) {
-        ...releaseData
+        ...releaseReviewData
       }
     }
   }
-  ${ReleaseDataFragmentDoc}
+  ${ReleaseReviewDataFragmentDoc}
 `
 export const CreateReleaseReviewDocument = gql`
   mutation CreateReleaseReview(
@@ -753,6 +793,26 @@ export const UpdateReleaseReviewRatingDocument = gql`
     }
   }
   ${ReleaseReviewDataFragmentDoc}
+`
+export const GetReleaseDocument = gql`
+  query GetRelease($id: Int!) {
+    release {
+      get(id: $id) {
+        ...releaseData
+      }
+    }
+  }
+  ${ReleaseDataFragmentDoc}
+`
+export const GetTrackReviewDocument = gql`
+  query GetTrackReview($id: Int!) {
+    trackReview {
+      get(id: $id) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
 `
 export const CreateTrackReviewDocument = gql`
   mutation CreateTrackReview(
@@ -890,12 +950,12 @@ export function getSdk<O>(requester: Requester<O>) {
       )
     },
 
-    GetRelease(
-      variables: GetReleaseQueryVariables,
+    GetReleaseReview(
+      variables: GetReleaseReviewQueryVariables,
       options?: O
-    ): Promise<Result<HttpError | GraphqlError, GetReleaseQuery>> {
-      return requester<GetReleaseQuery, GetReleaseQueryVariables>(
-        GetReleaseDocument,
+    ): Promise<Result<HttpError | GraphqlError, GetReleaseReviewQuery>> {
+      return requester<GetReleaseReviewQuery, GetReleaseReviewQueryVariables>(
+        GetReleaseReviewDocument,
         variables,
         options
       )
@@ -921,6 +981,28 @@ export function getSdk<O>(requester: Requester<O>) {
         UpdateReleaseReviewRatingMutation,
         UpdateReleaseReviewRatingMutationVariables
       >(UpdateReleaseReviewRatingDocument, variables, options)
+    },
+
+    GetRelease(
+      variables: GetReleaseQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetReleaseQuery>> {
+      return requester<GetReleaseQuery, GetReleaseQueryVariables>(
+        GetReleaseDocument,
+        variables,
+        options
+      )
+    },
+
+    GetTrackReview(
+      variables: GetTrackReviewQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetTrackReviewQuery>> {
+      return requester<GetTrackReviewQuery, GetTrackReviewQueryVariables>(
+        GetTrackReviewDocument,
+        variables,
+        options
+      )
     },
 
     CreateTrackReview(

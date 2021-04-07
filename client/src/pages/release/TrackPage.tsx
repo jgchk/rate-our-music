@@ -4,15 +4,15 @@ import { useEffect } from 'preact/hooks'
 import {
   createTrackReview,
   updateTrackReviewRating,
-} from '../../state/slices/reviews'
+} from '../../state/slices/track-reviews'
 import { useDispatch, useSelector } from '../../state/store'
 import { findMap } from '../../utils/array'
 import { isLoading } from '../../utils/remote-data'
 import { Artist } from './components/Artist'
 import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
-import { Review } from './components/Review'
-import { ReviewWithText } from './components/ReviewWithText'
+import { TrackReview } from './components/Review'
+import { TrackReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
 import { TrackGenre } from './components/TrackGenre'
 import { ReleaseViewLink } from './components/TracklistReleaseViewLink'
@@ -45,7 +45,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
   const userReview = useSelector((state) => {
     if (!user || !reviewIds) return
     return findMap([...reviewIds], (id) => {
-      const review = state.reviews.track[id]
+      const review = state.trackReviews[id]
       if (review && review.user === user.id) {
         return review
       }
@@ -156,7 +156,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div>
             {[...reviewIds].map((id) => (
-              <ReviewWithText key={id} kind='track' id={id} />
+              <TrackReviewWithText key={id} id={id} />
             ))}
           </div>
         )}
@@ -164,7 +164,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
         {reviewIds && reviewIds.size > 0 && (
           <div className={classes.section}>
             {[...reviewIds].map((id) => (
-              <Review key={id} kind='track' id={id} />
+              <TrackReview key={id} id={id} />
             ))}
           </div>
         )}

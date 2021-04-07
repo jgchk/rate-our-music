@@ -11,16 +11,11 @@ fragment releaseReviewData on ReleaseReview {
   }
 }
 
-fragment trackReviewData on TrackReview {
-  id
-  account {
-    ...accountData
-  }
-  rating
-  text
-  track {
-    id
-    siteRating
+query GetReleaseReview($id: Int!) {
+  releaseReview {
+    get(id: $id) {
+      ...releaseReviewData
+    }
   }
 }
 
@@ -46,32 +41,6 @@ mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
   releaseReview {
     updateRating(reviewId: $reviewId, rating: $rating) {
       ...releaseReviewData
-    }
-  }
-}
-
-mutation CreateTrackReview(
-  $trackId: Int!
-  $accountId: Int!
-  $rating: Int
-  $text: String
-) {
-  trackReview {
-    create(
-      trackId: $trackId
-      accountId: $accountId
-      rating: $rating
-      text: $text
-    ) {
-      ...trackReviewData
-    }
-  }
-}
-
-mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
-  trackReview {
-    updateRating(reviewId: $reviewId, rating: $rating) {
-      ...trackReviewData
     }
   }
 }
