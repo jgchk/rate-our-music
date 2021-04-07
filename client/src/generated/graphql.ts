@@ -130,6 +130,27 @@ export type Genre = {
   description?: Maybe<Scalars['String']>
 }
 
+export type GenreQuery = {
+  __typename?: 'GenreQuery'
+  get: Genre
+  getByRelease: ReleaseGenre
+  getByTrack: TrackGenre
+}
+
+export type GenreQueryGetArgs = {
+  id: Scalars['Int']
+}
+
+export type GenreQueryGetByReleaseArgs = {
+  genreId: Scalars['Int']
+  releaseId: Scalars['Int']
+}
+
+export type GenreQueryGetByTrackArgs = {
+  genreId: Scalars['Int']
+  trackId: Scalars['Int']
+}
+
 export type Log = {
   __typename?: 'Log'
   id: Scalars['Int']
@@ -180,6 +201,7 @@ export type Query = {
   artist: ArtistQuery
   release: ReleaseQuery
   track: TrackQuery
+  genre: GenreQuery
 }
 
 export type Release = {
@@ -382,6 +404,28 @@ export type TrackGenreDataFragment = { __typename?: 'TrackGenre' } & Pick<
   TrackGenre,
   'id' | 'name' | 'weight'
 >
+
+export type GetReleaseGenreQueryVariables = Exact<{
+  genreId: Scalars['Int']
+  releaseId: Scalars['Int']
+}>
+
+export type GetReleaseGenreQuery = { __typename?: 'Query' } & {
+  genre: { __typename?: 'GenreQuery' } & {
+    getByRelease: { __typename?: 'ReleaseGenre' } & ReleaseGenreDataFragment
+  }
+}
+
+export type GetTrackGenreQueryVariables = Exact<{
+  genreId: Scalars['Int']
+  trackId: Scalars['Int']
+}>
+
+export type GetTrackGenreQuery = { __typename?: 'Query' } & {
+  genre: { __typename?: 'GenreQuery' } & {
+    getByTrack: { __typename?: 'TrackGenre' } & TrackGenreDataFragment
+  }
+}
 
 export type ReleaseDataFragment = { __typename?: 'Release' } & Pick<
   Release,
@@ -650,6 +694,26 @@ export const LoginDocument = gql`
   }
   ${AuthDataFragmentDoc}
 `
+export const GetReleaseGenreDocument = gql`
+  query GetReleaseGenre($genreId: Int!, $releaseId: Int!) {
+    genre {
+      getByRelease(genreId: $genreId, releaseId: $releaseId) {
+        ...releaseGenreData
+      }
+    }
+  }
+  ${ReleaseGenreDataFragmentDoc}
+`
+export const GetTrackGenreDocument = gql`
+  query GetTrackGenre($genreId: Int!, $trackId: Int!) {
+    genre {
+      getByTrack(genreId: $genreId, trackId: $trackId) {
+        ...trackGenreData
+      }
+    }
+  }
+  ${TrackGenreDataFragmentDoc}
+`
 export const GetReleaseDocument = gql`
   query GetRelease($id: Int!) {
     release {
@@ -799,6 +863,28 @@ export function getSdk<O>(requester: Requester<O>) {
     ): Promise<Result<HttpError | GraphqlError, LoginMutation>> {
       return requester<LoginMutation, LoginMutationVariables>(
         LoginDocument,
+        variables,
+        options
+      )
+    },
+
+    GetReleaseGenre(
+      variables: GetReleaseGenreQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetReleaseGenreQuery>> {
+      return requester<GetReleaseGenreQuery, GetReleaseGenreQueryVariables>(
+        GetReleaseGenreDocument,
+        variables,
+        options
+      )
+    },
+
+    GetTrackGenre(
+      variables: GetTrackGenreQueryVariables,
+      options?: O
+    ): Promise<Result<HttpError | GraphqlError, GetTrackGenreQuery>> {
+      return requester<GetTrackGenreQuery, GetTrackGenreQueryVariables>(
+        GetTrackGenreDocument,
         variables,
         options
       )

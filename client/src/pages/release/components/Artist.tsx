@@ -3,7 +3,7 @@ import { useEffect } from 'preact/hooks'
 import { useSelector } from '../../../state/store'
 import { isLoading } from '../../../utils/remote-data'
 import { Link } from '../../common/components/Link'
-import { useGetArtistAction } from '../hooks/useGetArtistAction'
+import { useGetArtistAction } from '../hooks/useAction'
 import classes from './Artist.module.css'
 
 export type Props = { id: number }

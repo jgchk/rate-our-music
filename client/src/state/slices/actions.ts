@@ -1,11 +1,11 @@
-import { Action, Reducer } from '../store'
+import { DispatchedAction, Reducer } from '../store'
 
 //
 // Types
 //
 
 export type ActionsState = {
-  [id: number]: Action
+  [id: number]: DispatchedAction
 }
 
 //

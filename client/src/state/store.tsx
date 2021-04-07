@@ -4,6 +4,7 @@ import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
 import { AppState, appReducer } from './app'
 import { ArtistActions } from './slices/artists'
 import { AuthActions } from './slices/auth'
+import { GenreActions } from './slices/genres'
 import { ReleaseActions } from './slices/releases'
 import { ReviewActions } from './slices/reviews'
 import { TrackActions } from './slices/tracks'
@@ -17,24 +18,22 @@ export type RawAction =
   | TrackActions
   | ReviewActions
   | ArtistActions
+  | GenreActions
 
-export type Action = RawAction & { id: number }
-
-export type Reducer<S> = (state: S | undefined, action: Action) => S
-
-export type Dispatchable<A extends RawAction> =
-  | A
-  | Generator<A>
-  | AsyncGenerator<A>
-
+export type DispatchedAction<A extends RawAction = RawAction> = A & {
+  id: number
+}
+export type Action<A extends RawAction> = A | Generator<A> | AsyncGenerator<A>
 export type ActionCreator<Args extends unknown[], Act extends RawAction> = (
   ...args: Args
-) => Dispatchable<Act>
+) => Action<Act>
 
-const isRawAction = (action: Dispatchable<RawAction>): action is RawAction =>
+export type Reducer<S> = (state: S | undefined, action: DispatchedAction) => S
+
+const isRawAction = (action: Action<RawAction>): action is RawAction =>
   '_type' in action
 
-export type Dispatch = (action: Dispatchable<RawAction>) => number
+export type Dispatch = (action: Action<RawAction>) => number
 
 export const reducer: Reducer<RootState> = (state, action) => {
   const newState = appReducer(state, action)

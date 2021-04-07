@@ -9,16 +9,18 @@ import { useDispatch, useSelector } from '../../state/store'
 import { findMap } from '../../utils/array'
 import { isLoading } from '../../utils/remote-data'
 import { Artist } from './components/Artist'
-import { Genre } from './components/Genre'
 import { RatingStarsInput } from './components/RatingStarsInput'
 import { ReleaseDate } from './components/ReleaseDate'
 import { Review } from './components/Review'
 import { ReviewWithText } from './components/ReviewWithText'
 import { Track } from './components/Track'
+import { TrackGenre } from './components/TrackGenre'
 import { ReleaseViewLink } from './components/TracklistReleaseViewLink'
-import { useGetReleaseAction } from './hooks/useGetReleaseAction'
-import { useGetTrackAction } from './hooks/useGetTrackAction'
-import { useLoginAction } from './hooks/useLoginAction'
+import {
+  useGetReleaseAction,
+  useGetTrackAction,
+  useLoginAction,
+} from './hooks/useAction'
 import classes from './ReleasePage.module.css'
 
 export type Props = {
@@ -118,7 +120,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
           <ol className={classes.commaSeparatedList}>
             {[...track.genres].map((id) => (
               <li key={id}>
-                <Genre id={id} />
+                <TrackGenre id={id} trackId={trackId} />
               </li>
             ))}
           </ol>

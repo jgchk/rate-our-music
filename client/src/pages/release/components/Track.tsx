@@ -3,7 +3,7 @@ import { useEffect } from 'preact/hooks'
 import { Link } from '../../../router/Link'
 import { useSelector } from '../../../state/store'
 import { isLoading } from '../../../utils/remote-data'
-import { useGetTrackAction } from '../hooks/useGetTrackAction'
+import { useGetTrackAction } from '../hooks/useAction'
 import classes from './Track.module.css'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')

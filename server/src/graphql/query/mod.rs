@@ -1,11 +1,13 @@
 mod account;
 mod artist;
+mod genre;
 mod release;
 mod track;
 
 use account::AccountQuery;
 use artist::ArtistQuery;
 use async_graphql::*;
+use genre::GenreQuery;
 use release::ReleaseQuery;
 use track::TrackQuery;
 
@@ -27,5 +29,9 @@ impl Query {
 
     async fn track(&self) -> TrackQuery {
         TrackQuery
+    }
+
+    async fn genre(&self) -> GenreQuery {
+        GenreQuery
     }
 }

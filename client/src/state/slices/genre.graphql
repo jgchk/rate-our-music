@@ -9,3 +9,19 @@ fragment trackGenreData on TrackGenre {
   name
   weight
 }
+
+query GetReleaseGenre($genreId: Int!, $releaseId: Int!) {
+  genre {
+    getByRelease(genreId: $genreId, releaseId: $releaseId) {
+      ...releaseGenreData
+    }
+  }
+}
+
+query GetTrackGenre($genreId: Int!, $trackId: Int!) {
+  genre {
+    getByTrack(genreId: $genreId, trackId: $trackId) {
+      ...trackGenreData
+    }
+  }
+}
