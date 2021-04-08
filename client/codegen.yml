@@ -6,7 +6,7 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-operations'
-      - 'gql-plugins/plain-sdk/index.js'
+      - 'graphql-code-generator/build'
   ./graphql.schema.json:
     plugins:
       - 'introspection'

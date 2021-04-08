@@ -1,10 +1,11 @@
 {
   "name": "rate-our-music",
   "scripts": {
-    "dev": "concurrently 'NODE_ENV=development snowpack dev' 'yarn gql:codegen --watch'",
-    "prod": "NODE_ENV=production snowpack build",
+    "dev": "concurrently 'NODE_ENV=development snowpack dev' 'yarn gql:dev'",
+    "prod": "yarn gql && NODE_ENV=production snowpack build",
     "gql": "yarn gql:plugins && yarn gql:codegen",
-    "gql:plugins": "tsc --build ./gql-plugins/tsconfig.json",
+    "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
+    "gql:plugins": "tsc --build ./graphql-code-generator/tsconfig.json",
     "gql:codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {

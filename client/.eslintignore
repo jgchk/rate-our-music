@@ -5,5 +5,5 @@
 snowpack.config.js
 postcss.config.js
 
-/gql-plugins
+/graphql-code-generator
 /src/generated/graphql.ts
