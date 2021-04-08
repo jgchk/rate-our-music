@@ -6,7 +6,7 @@ import {
   UpdateReleaseReviewRatingMutation,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -115,7 +115,7 @@ export const createReleaseReview = async function* (
     review,
   } as const
   yield { ...base, request: loading }
-  const response = await gql.CreateReleaseReview({
+  const response = await graphql.CreateReleaseReview({
     releaseId,
     accountId: userId,
     ...review,
@@ -133,7 +133,7 @@ export const getReleaseReview = async function* (
 ): AsyncGenerator<GetReleaseReviewAction> {
   const base = { _type: 'review/release/get', reviewId } as const
   yield { ...base, request: loading }
-  const response = await gql.GetReleaseReview({ id: reviewId })
+  const response = await graphql.GetReleaseReview({ id: reviewId })
   yield { ...base, request: fromResult(response) }
 }
 
@@ -157,7 +157,7 @@ export const updateReleaseReviewRating = async function* (
     rating,
   } as const
   yield { ...base, request: loading }
-  const response = await gql.UpdateReleaseReviewRating({
+  const response = await graphql.UpdateReleaseReviewRating({
     reviewId,
     rating: rating > 0 ? rating : undefined,
   })

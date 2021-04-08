@@ -4,7 +4,7 @@ import {
   GraphqlError,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -71,7 +71,7 @@ export const getReleaseGenre = async function* (
   releaseId: number
 ): AsyncGenerator<GetReleaseGenreAction> {
   yield { _type: 'genre/release/get', request: loading }
-  const response = await gql.GetReleaseGenre({ genreId, releaseId })
+  const response = await graphql.GetReleaseGenre({ genreId, releaseId })
   yield { _type: 'genre/release/get', request: fromResult(response) }
 }
 
@@ -84,6 +84,6 @@ export const getTrackGenre = async function* (
   trackId: number
 ): AsyncGenerator<GetTrackGenreAction> {
   yield { _type: 'genre/track/get', request: loading }
-  const response = await gql.GetTrackGenre({ genreId, trackId })
+  const response = await graphql.GetTrackGenre({ genreId, trackId })
   yield { _type: 'genre/track/get', request: fromResult(response) }
 }

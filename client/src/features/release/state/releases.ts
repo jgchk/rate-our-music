@@ -1,6 +1,6 @@
 import { GetReleaseQuery, GraphqlError } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -139,6 +139,6 @@ export const getRelease = async function* (
     request: loading,
   }
 
-  const response = await gql.GetRelease({ id })
+  const response = await graphql.GetRelease({ id })
   yield { _type: 'release/get', request: fromResult(response) }
 }

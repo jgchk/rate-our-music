@@ -4,7 +4,7 @@ import {
   TrackDataFragment,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -138,6 +138,6 @@ export const getTrack = async function* (
     request: loading,
   }
 
-  const response = await gql.GetTrack({ id })
+  const response = await graphql.GetTrack({ id })
   yield { _type: 'track/get', request: fromResult(response) }
 }

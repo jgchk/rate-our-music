@@ -6,7 +6,7 @@ import {
   UpdateTrackReviewRatingMutation,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -122,7 +122,7 @@ export const createTrackReview = async function* (
     review,
   } as const
   yield { ...base, request: loading }
-  const response = await gql.CreateTrackReview({
+  const response = await graphql.CreateTrackReview({
     trackId,
     accountId: userId,
     ...review,
@@ -140,7 +140,7 @@ export const getTrackReview = async function* (
 ): AsyncGenerator<GetTrackReviewAction> {
   const base = { _type: 'review/track/get', trackId } as const
   yield { ...base, request: loading }
-  const response = await gql.GetTrackReview({ id: trackId })
+  const response = await graphql.GetTrackReview({ id: trackId })
   yield { ...base, request: fromResult(response) }
 }
 
@@ -160,7 +160,7 @@ export const updateTrackReviewRating = async function* (
     rating,
   } as const
   yield { ...base, request: loading }
-  const response = await gql.UpdateTrackReviewRating({
+  const response = await graphql.UpdateTrackReviewRating({
     reviewId,
     rating: rating > 0 ? rating : undefined,
   })

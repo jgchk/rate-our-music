@@ -1,6 +1,6 @@
 import { GraphqlError, LoginMutation } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -83,6 +83,6 @@ export const login = async function* (
   password: string
 ): AsyncGenerator<LoginAction> {
   yield { _type: 'auth/login', request: loading }
-  const response = await gql.Login({ username, password })
+  const response = await graphql.Login({ username, password })
   yield { _type: 'auth/login', request: fromResult(response) }
 }

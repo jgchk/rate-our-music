@@ -4,6 +4,8 @@
 .eslintrc.js
 snowpack.config.js
 postcss.config.js
+babel.config.js
 
 /graphql-code-generator
+/snowpack-plugin
 /src/generated/graphql.ts

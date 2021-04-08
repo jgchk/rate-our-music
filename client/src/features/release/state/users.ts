@@ -1,6 +1,6 @@
 import { GetUserQuery, GraphqlError } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -105,6 +105,6 @@ export const getUser = async function* (
 ): AsyncGenerator<GetUserAction> {
   const base = { _type: 'user/get' } as const
   yield { ...base, request: loading }
-  const response = await gql.GetUser({ id })
+  const response = await graphql.GetUser({ id })
   yield { ...base, request: fromResult(response) }
 }

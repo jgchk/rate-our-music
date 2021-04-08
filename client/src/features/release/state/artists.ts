@@ -1,6 +1,6 @@
 import { GetArtistQuery, GraphqlError } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { gql } from '../../common/utils/gql'
+import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
@@ -71,6 +71,6 @@ export const getArtist = async function* (
   id: number
 ): AsyncGenerator<GetArtistAction> {
   yield { _type: 'artist/get', request: loading }
-  const response = await gql.GetArtist({ id })
+  const response = await graphql.GetArtist({ id })
   yield { _type: 'artist/get', request: fromResult(response) }
 }

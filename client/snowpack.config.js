@@ -24,11 +24,17 @@ module.exports = {
     react: 'preact/compat',
     'react-dom': 'preact/compat',
   },
-  buildOptions: {
-    jsxInject: "import { h } from 'preact'",
-  },
   plugins: [
-    ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
+    // ['@snowpack/plugin-typescript', { tsc: 'yarn tsc' }],
+    [
+      '@snowpack/plugin-babel',
+      {
+        input: ['.js', '.mjs', '.jsx', '.ts', '.tsx'], // (optional) specify files for Babel to transform
+        transformOptions: {
+          // babel transform options
+        },
+      },
+    ],
     '@snowpack/plugin-postcss',
     ...(development
       ? [
@@ -41,9 +47,6 @@ module.exports = {
           ],
           '@prefresh/snowpack',
         ]
-      : []),
+      : ['./snowpack-plugin/plugin.js']),
   ],
-  optimize: {
-    minify: true,
-  },
 }

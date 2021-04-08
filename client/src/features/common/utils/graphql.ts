@@ -28,4 +28,4 @@ const requester = async <R, V>(
   return ok(responseData.data)
 }
 
-export const gql = getSdk(requester)
+export const graphql = getSdk(requester)
