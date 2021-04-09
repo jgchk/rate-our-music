@@ -22,17 +22,6 @@ jobs:
           source: "."
           target: "~/rom"
 
-      - name: build frontend
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}
-          key: ${{ secrets.SSHKEY }}
-          script: |
-            cd ~/rom/client
-            yarn
-            yarn prod
       - name: build backend
         uses: appleboy/ssh-action@master
         env:
@@ -49,7 +38,6 @@ jobs:
             cd ~/rom/server
             ~/.cargo/bin/cargo build --release
             ~/.cargo/bin/cargo sqlx migrate run
-
       - name: restart supervisor
         uses: appleboy/ssh-action@master
         env:
@@ -64,3 +52,15 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           envs: DATABASE_URL,REDIS_URL,JWT_SECRET,SUPERVISOR_PASSWORD
           script: echo "$SUPERVISOR_PASSWORD" | sudo -S supervisorctl restart rom
+
+      - name: build frontend
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSHKEY }}
+          script: |
+            cd ~/rom/client
+            yarn
+            yarn prod
