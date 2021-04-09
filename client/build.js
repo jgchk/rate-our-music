@@ -15,6 +15,7 @@ esbuild
         else console.log('watch build succeeded:', result)
       },
     },
+    sourcemap: isDev,
     minify: !isDev,
     target: 'es2018',
     entryPoints: ['./src/main.tsx'],

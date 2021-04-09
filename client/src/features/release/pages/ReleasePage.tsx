@@ -25,6 +25,10 @@ export type Props = {
 export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
   const release = useSelector((state) => state.releases[releaseId])
 
+  useEffect(() => {
+    throw new Error('whoa')
+  }, [])
+
   const reviewIds = useSelector((state) => state.releases[releaseId]?.reviews)
 
   const user = useSelector((state) => {
