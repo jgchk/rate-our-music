@@ -4,7 +4,7 @@
     "dev": "yarn clean && NODE_ENV=development concurrently 'node build.js' 'yarn gql:dev' 'yarn dev:server'",
     "dev:server": "ws --directory output --spa index.html --rewrite '/graphql -> http://localhost:3030/graphql'",
     "prod": "yarn clean && NODE_ENV=production node build.js",
-    "clean": "rm -r ./output && cp -r ./public ./output",
+    "clean": "rm -rf ./output && cp -r ./public ./output",
     "gql": "yarn gql:plugins && yarn gql:codegen",
     "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
     "gql:plugins": "tsc --build ./graphql-code-generator/tsconfig.json",
