@@ -31,7 +31,6 @@ const postCSSPlugin = ({
     const modulesMap: CSSModule[] = []
 
     const modulesPlugin = postcssModules({
-      generateScopedName: '[name]__[local]___[hash:base64:5]',
       ...(typeof modules !== 'boolean' ? modules : {}),
       getJSON(
         filepath: string,
