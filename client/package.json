@@ -1,16 +1,17 @@
 {
   "name": "rate-our-music",
   "scripts": {
-    "dev": "yarn clean && NODE_ENV=development concurrently 'yarn build' 'yarn gql:dev' 'yarn dev:server'",
+    "dev": "yarn clean && NODE_ENV=development concurrently 'yarn esb' 'yarn gql:dev' 'yarn dev:server'",
     "dev:server": "ws --directory output --spa index.html --rewrite '/graphql -> http://localhost:3030/graphql'",
-    "prod": "yarn clean && yarn gql && NODE_ENV=production yarn build",
+    "prod": "yarn clean && yarn gql && NODE_ENV=production yarn esb",
     "clean": "rm -rf ./output && cp -r ./public ./output",
-    "build": "yarn esb:plugins && node build.js",
     "gql": "yarn gql:plugins && yarn gql:codegen",
     "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
-    "gql:plugins": "tsc --build ./graphql-code-generator/tsconfig.json",
+    "gql:plugins": "tsc --project ./graphql-code-generator/tsconfig.json --incremental",
     "gql:codegen": "graphql-codegen --config codegen.yml",
-    "esb:plugins": "tsc --build ./esbuild-postcss/tsconfig.json"
+    "esb": "yarn esb:plugins && yarn esb:build",
+    "esb:plugins": "tsc --project ./esbuild-postcss/tsconfig.json --incremental",
+    "esb:build": "node build.js"
   },
   "dependencies": {
     "preact": "^10.5.13"
