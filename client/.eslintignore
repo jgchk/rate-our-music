@@ -4,8 +4,9 @@
 .eslintrc.js
 postcss.config.js
 babel.config.js
-webpack.config.js
+build.js
 
+/esbuild-postcss
 /graphql-code-generator
 /src/generated/graphql.ts
 /output

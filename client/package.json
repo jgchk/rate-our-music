@@ -1,12 +1,14 @@
 {
   "name": "rate-our-music",
   "scripts": {
-    "dev": "NODE_ENV=development concurrently 'webpack serve' 'yarn gql:dev'",
-    "prod": "NODE_ENV=production webpack",
+    "dev": "NODE_ENV=development concurrently 'node build.js' 'yarn gql:dev' 'yarn dev:server'",
+    "dev:server": "ws --directory output --spa index.html --rewrite '/graphql -> http://localhost:3030/graphql'",
+    "prod": "NODE_ENV=production node build.js",
     "gql": "yarn gql:plugins && yarn gql:codegen",
     "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
     "gql:plugins": "tsc --build ./graphql-code-generator/tsconfig.json",
-    "gql:codegen": "graphql-codegen --config codegen.yml"
+    "gql:codegen": "graphql-codegen --config codegen.yml",
+    "esb:plugins": "tsc --build ./esbuild-postcss/tsconfig.json"
   },
   "browserslist": {
     "modern": [
@@ -31,14 +33,14 @@
     "@graphql-codegen/plugin-helpers": "^1.18.4",
     "@graphql-codegen/typescript": "1.21.1",
     "@graphql-codegen/typescript-operations": "1.17.15",
-    "@graphql-codegen/visitor-plugin-common": "^1.19.1",
+    "@types/fs-extra": "^9.0.10",
     "@types/node": "^14.14.37",
+    "@types/tmp": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
-    "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^6.0.1",
-    "css-loader": "^5.2.0",
-    "esbuild-loader": "^2.11.0",
+    "esbuild": "^0.11.6",
+    "esbuild-plugin-pnp": "^0.3.0",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-import-resolver-node": "^0.3.4",
@@ -47,14 +49,13 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^29.0.0",
-    "fork-ts-checker-webpack-plugin": "^6.2.0",
+    "fs-extra": "^9.1.0",
     "graphql": "^15.5.0",
-    "html-webpack-plugin": "^5.3.1",
     "lint-staged": "^10.5.4",
-    "mini-css-extract-plugin": "^1.4.1",
+    "local-web-server": "^4.2.1",
     "postcss": "^8.2.9",
     "postcss-color-mod-function": "^3.0.3",
-    "postcss-loader": "^5.2.0",
+    "postcss-modules": "^4.0.0",
     "postcss-nesting": "^7.0.1",
     "prettier": "^2.2.1",
     "simple-git-hooks": "^2.2.0",
@@ -62,12 +63,10 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^21.0.0",
+    "tmp": "^0.2.1",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3",
-    "typescript-plugin-css-modules": "^3.2.0",
-    "webpack": "^5.31.0",
-    "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2"
+    "typescript-plugin-css-modules": "^3.2.0"
   },
   "simple-git-hooks": {
     "pre-commit": "cd client && yarn lint-staged"
