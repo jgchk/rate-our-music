@@ -71,6 +71,6 @@ export const getArtist = async function* (
   id: number
 ): AsyncGenerator<GetArtistAction> {
   yield { _type: 'artist/get', request: loading }
-  const response = await graphql.GetArtist({ id })
+  const response = await graphql.getArtist({ id })
   yield { _type: 'artist/get', request: fromResult(response) }
 }

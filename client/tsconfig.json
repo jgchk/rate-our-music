@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["DOM", "ES2017", "ES2019.Array"],
-    "target": "ES2017",
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "lib": ["DOM", "ES2015", "ES2019.Array"],
+    "target": "ES2015",
 
-    "jsx": "preserve",
-    "jsxImportSource": "preact",
+    "sourceMap": true,
 
-    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+
+    "isolatedModules": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["./src/**/*", "./types/**/*"]
 }

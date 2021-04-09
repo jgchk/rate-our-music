@@ -138,6 +138,6 @@ export const getTrack = async function* (
     request: loading,
   }
 
-  const response = await graphql.GetTrack({ id })
+  const response = await graphql.getTrack({ id })
   yield { _type: 'track/get', request: fromResult(response) }
 }

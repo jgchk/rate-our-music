@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { useCallback, useEffect, useState } from 'preact/hooks'
 import { findMap } from '../../common/utils/array'
 import { RouterContext } from '../contexts/RouterContext'

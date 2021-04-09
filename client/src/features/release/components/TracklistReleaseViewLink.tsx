@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { CornerUpLeft } from 'preact-feather'
 import { Link } from '../../routing/components/Link'
 import trackClasses from './Track.module.css'

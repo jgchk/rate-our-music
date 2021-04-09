@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { Link } from '../../common/components/Link'
 import { PartialDate } from '../state/releases'
 

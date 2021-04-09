@@ -1,4 +1,4 @@
-import { VNode } from 'preact'
+import { VNode, h } from 'preact'
 import { pipe } from '../common/utils/pipe'
 import { ReleasePage } from '../release/pages/ReleasePage'
 import { TrackPage } from '../release/pages/TrackPage'

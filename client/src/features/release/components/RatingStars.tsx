@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { Star } from 'preact-feather'
 import { range } from '../../common/utils/array'
 import classes from './RatingStars.module.css'

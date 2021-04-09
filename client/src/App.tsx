@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { Layout } from './features/common/components/Layout'
 import { StateProvider } from './features/common/state/store'
 import { Router } from './features/routing/components/Router'

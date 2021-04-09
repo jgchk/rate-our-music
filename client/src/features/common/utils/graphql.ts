@@ -1,5 +1,3 @@
-import { DocumentNode } from 'graphql/language/ast'
-import { print } from 'graphql/language/printer'
 import {
   GraphqlError,
   GraphqlResponse,
@@ -11,12 +9,11 @@ import { HttpError, post } from './http'
 import { Result, err, isErr, ok } from './result'
 
 const requester = async <R, V>(
-  doc: DocumentNode,
+  doc: string,
   variables: V
 ): Promise<Result<HttpError | GraphqlError, R>> => {
-  const query = print(doc)
   const response = await post('/graphql', {
-    json: { query, variables },
+    json: { query: doc, variables },
   })
 
   if (isErr(response)) return err(response.error)

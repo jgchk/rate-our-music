@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useGetTrackAction } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'

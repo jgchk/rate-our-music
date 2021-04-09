@@ -1,5 +1,5 @@
 import odiff from 'odiff'
-import { FunctionComponent, createContext } from 'preact'
+import { FunctionComponent, createContext, h } from 'preact'
 import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
 import { RootAction, RootState, appReducer } from './root'
 

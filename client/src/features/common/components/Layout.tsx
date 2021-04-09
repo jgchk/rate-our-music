@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useLoginAction } from '../../auth/hooks/useAuthAction'
 import classes from './Layout.module.css'

@@ -139,6 +139,6 @@ export const getRelease = async function* (
     request: loading,
   }
 
-  const response = await graphql.GetRelease({ id })
+  const response = await graphql.getRelease({ id })
   yield { _type: 'release/get', request: fromResult(response) }
 }

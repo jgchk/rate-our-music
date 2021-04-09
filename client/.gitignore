@@ -8,8 +8,6 @@
 !/.yarn/cache
 #/.pnp.*
 
-/node_modules
-/build
-.eslintcache
-
+/output
 /src/generated
+.eslintcache

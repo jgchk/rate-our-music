@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { Link } from '../../common/components/Link'
 import { useGetReleaseGenreAction } from '../../common/hooks/useAction'

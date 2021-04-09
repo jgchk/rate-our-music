@@ -122,7 +122,7 @@ export const createTrackReview = async function* (
     review,
   } as const
   yield { ...base, request: loading }
-  const response = await graphql.CreateTrackReview({
+  const response = await graphql.createTrackReview({
     trackId,
     accountId: userId,
     ...review,
@@ -140,7 +140,7 @@ export const getTrackReview = async function* (
 ): AsyncGenerator<GetTrackReviewAction> {
   const base = { _type: 'review/track/get', trackId } as const
   yield { ...base, request: loading }
-  const response = await graphql.GetTrackReview({ id: trackId })
+  const response = await graphql.getTrackReview({ id: trackId })
   yield { ...base, request: fromResult(response) }
 }
 
@@ -160,7 +160,7 @@ export const updateTrackReviewRating = async function* (
     rating,
   } as const
   yield { ...base, request: loading }
-  const response = await graphql.UpdateTrackReviewRating({
+  const response = await graphql.updateTrackReviewRating({
     reviewId,
     rating: rating > 0 ? rating : undefined,
   })

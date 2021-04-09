@@ -105,6 +105,6 @@ export const getUser = async function* (
 ): AsyncGenerator<GetUserAction> {
   const base = { _type: 'user/get' } as const
   yield { ...base, request: loading }
-  const response = await graphql.GetUser({ id })
+  const response = await graphql.getUser({ id })
   yield { ...base, request: fromResult(response) }
 }

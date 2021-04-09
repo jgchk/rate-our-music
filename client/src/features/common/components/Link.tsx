@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import {
   Link as RouterLink,
   Props as RouterLinkProps,

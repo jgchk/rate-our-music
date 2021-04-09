@@ -83,6 +83,6 @@ export const login = async function* (
   password: string
 ): AsyncGenerator<LoginAction> {
   yield { _type: 'auth/login', request: loading }
-  const response = await graphql.Login({ username, password })
+  const response = await graphql.login({ username, password })
   yield { _type: 'auth/login', request: fromResult(response) }
 }

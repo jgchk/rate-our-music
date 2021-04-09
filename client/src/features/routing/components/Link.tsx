@@ -1,4 +1,4 @@
-import { FunctionComponent, JSX } from 'preact'
+import { FunctionComponent, JSX, h } from 'preact'
 import { useContext, useMemo } from 'preact/hooks'
 import { RouterContext } from '../contexts/RouterContext'
 

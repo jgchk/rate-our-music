@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FunctionComponent } from 'preact'
+import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useGetReleaseAction } from '../../common/hooks/useAction'
 import { useDispatch, useSelector } from '../../common/state/store'

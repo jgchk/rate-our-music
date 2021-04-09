@@ -1,8 +1,8 @@
-import { render } from 'preact'
+import { h, render } from 'preact'
 import { App } from './App'
 
-const rootElement = document.getElementById('root')
+const rootElement = document.createElement('div')
+rootElement.id = 'root'
+document.body.append(rootElement)
 
-if (rootElement) {
-  render(<App />, rootElement)
-}
+render(<App />, rootElement)

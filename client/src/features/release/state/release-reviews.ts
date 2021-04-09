@@ -115,7 +115,7 @@ export const createReleaseReview = async function* (
     review,
   } as const
   yield { ...base, request: loading }
-  const response = await graphql.CreateReleaseReview({
+  const response = await graphql.createReleaseReview({
     releaseId,
     accountId: userId,
     ...review,
@@ -133,7 +133,7 @@ export const getReleaseReview = async function* (
 ): AsyncGenerator<GetReleaseReviewAction> {
   const base = { _type: 'review/release/get', reviewId } as const
   yield { ...base, request: loading }
-  const response = await graphql.GetReleaseReview({ id: reviewId })
+  const response = await graphql.getReleaseReview({ id: reviewId })
   yield { ...base, request: fromResult(response) }
 }
 
@@ -157,7 +157,7 @@ export const updateReleaseReviewRating = async function* (
     rating,
   } as const
   yield { ...base, request: loading }
-  const response = await graphql.UpdateReleaseReviewRating({
+  const response = await graphql.updateReleaseReviewRating({
     reviewId,
     rating: rating > 0 ? rating : undefined,
   })
