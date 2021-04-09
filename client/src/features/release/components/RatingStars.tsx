@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { FunctionComponent, h } from 'preact'
-import { Star } from 'preact-feather'
+import { Star } from '../../common/components/icons/Star'
 import { range } from '../../common/utils/array'
 import classes from './RatingStars.module.css'
 

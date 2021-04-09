@@ -8631,15 +8631,6 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"preact-feather@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "preact-feather@npm:4.2.1"
-  peerDependencies:
-    preact: ^10.0.0
-  checksum: b2177dea8a158d199f724262a83035a763e13dea8061742a04d32029fcad76bc32b6b1ab6d850dff42c0ab56d9aea7946183483eb67d6ac1a74f1e5fe458eb35
-  languageName: node
-  linkType: hard
-
 "preact@npm:^10.5.13":
   version: 10.5.13
   resolution: "preact@npm:10.5.13"
@@ -8824,7 +8815,6 @@ fsevents@~2.3.1:
     postcss-modules: ^4.0.0
     postcss-nesting: ^7.0.1
     preact: ^10.5.13
-    preact-feather: ^4.2.1
     prettier: ^2.2.1
     simple-git-hooks: ^2.2.0
     stylelint: ^13.12.0

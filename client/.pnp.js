@@ -118,10 +118,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ],
                   ['postcss-nesting', 'npm:7.0.1'],
                   ['preact', 'npm:10.5.13'],
-                  [
-                    'preact-feather',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
-                  ],
                   ['prettier', 'npm:2.2.1'],
                   ['simple-git-hooks', 'npm:2.2.0'],
                   ['stylelint', 'npm:13.12.0'],
@@ -16824,37 +16820,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
-          'preact-feather',
-          [
-            [
-              'npm:4.2.1',
-              {
-                packageLocation:
-                  './.yarn/cache/preact-feather-npm-4.2.1-44bd7420b0-b2177dea8a.zip/node_modules/preact-feather/',
-                packageDependencies: [['preact-feather', 'npm:4.2.1']],
-                linkType: 'SOFT',
-              },
-            ],
-            [
-              'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
-              {
-                packageLocation:
-                  './.yarn/$$virtual/preact-feather-virtual-b927909f7b/0/cache/preact-feather-npm-4.2.1-44bd7420b0-b2177dea8a.zip/node_modules/preact-feather/',
-                packageDependencies: [
-                  [
-                    'preact-feather',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
-                  ],
-                  ['@types/preact', null],
-                  ['preact', 'npm:10.5.13'],
-                ],
-                packagePeers: ['@types/preact', 'preact'],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
           'prelude-ls',
           [
             [
@@ -17197,10 +17162,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ],
                   ['postcss-nesting', 'npm:7.0.1'],
                   ['preact', 'npm:10.5.13'],
-                  [
-                    'preact-feather',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.2.1',
-                  ],
                   ['prettier', 'npm:2.2.1'],
                   ['simple-git-hooks', 'npm:2.2.0'],
                   ['stylelint', 'npm:13.12.0'],
