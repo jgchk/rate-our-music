@@ -11,17 +11,6 @@
     "gql:codegen": "graphql-codegen --config codegen.yml",
     "esb:plugins": "tsc --build ./esbuild-postcss/tsconfig.json"
   },
-  "browserslist": {
-    "modern": [
-      "last 2 Chrome versions",
-      "last 2 Firefox versions",
-      "last 2 Edge versions",
-      "last 2 Opera versions"
-    ],
-    "legacy": [
-      "defaults"
-    ]
-  },
   "dependencies": {
     "odiff": "^1.4.3",
     "preact": "^10.5.13"
