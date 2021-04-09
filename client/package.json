@@ -7,10 +7,10 @@
     "clean": "rm -rf ./output && cp -r ./public ./output",
     "gql": "yarn gql:plugins && yarn gql:codegen",
     "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
-    "gql:plugins": "tsc --project ./graphql-code-generator/tsconfig.json --incremental",
+    "gql:plugins": "cd ./graphql-code-generator && node ./build.js",
     "gql:codegen": "graphql-codegen --config codegen.yml",
     "esb": "yarn esb:plugins && yarn esb:build",
-    "esb:plugins": "tsc --project ./esbuild-postcss/tsconfig.json --incremental",
+    "esb:plugins": "cd ./esbuild-postcss && node ./build.js",
     "esb:build": "node build.js"
   },
   "dependencies": {

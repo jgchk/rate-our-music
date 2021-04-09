@@ -1,7 +1,7 @@
 const esbuild = require('esbuild')
 const process = require('process')
 const pnpPlugin = require('esbuild-plugin-pnp')
-const { default: postCssPlugin } = require('./esbuild-postcss/build')
+const { default: postCssPlugin } = require('./esbuild-postcss/output')
 const postCssNesting = require('postcss-nesting')
 const postCssColorModFunction = require('postcss-color-mod-function')
 
