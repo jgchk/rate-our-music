@@ -9,9 +9,6 @@ generates:
       - 'graphql-code-generator/build'
     config:
       gqlImport: '../features/common/utils/identity-tag'
-  ./graphql.schema.json:
-    plugins:
-      - 'introspection'
 hooks:
   afterAllFileWrite:
     - prettier --write

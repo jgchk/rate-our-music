@@ -46,10 +46,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.3',
                   ],
                   [
-                    '@graphql-codegen/introspection',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.1',
-                  ],
-                  [
                     '@graphql-codegen/plugin-helpers',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.4',
                   ],
@@ -2023,44 +2019,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     '@graphql-tools/utils',
                     'virtual:1f3c4eb84c27dae14b420609903b207ba95c086df86171f630872a4810474da8fe6ee17ef82fa9afd3cfae62745a74b635ddc4dec719f287262effad5f782601#npm:6.2.4',
-                  ],
-                  ['@types/graphql', null],
-                  ['graphql', 'npm:15.5.0'],
-                  ['tslib', 'npm:2.0.3'],
-                ],
-                packagePeers: ['@types/graphql', 'graphql'],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          '@graphql-codegen/introspection',
-          [
-            [
-              'npm:1.18.1',
-              {
-                packageLocation:
-                  './.yarn/cache/@graphql-codegen-introspection-npm-1.18.1-dbc1fb9ab1-c81313e690.zip/node_modules/@graphql-codegen/introspection/',
-                packageDependencies: [
-                  ['@graphql-codegen/introspection', 'npm:1.18.1'],
-                ],
-                linkType: 'SOFT',
-              },
-            ],
-            [
-              'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.1',
-              {
-                packageLocation:
-                  './.yarn/$$virtual/@graphql-codegen-introspection-virtual-1f092c14a5/0/cache/@graphql-codegen-introspection-npm-1.18.1-dbc1fb9ab1-c81313e690.zip/node_modules/@graphql-codegen/introspection/',
-                packageDependencies: [
-                  [
-                    '@graphql-codegen/introspection',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.1',
-                  ],
-                  [
-                    '@graphql-codegen/plugin-helpers',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.4',
                   ],
                   ['@types/graphql', null],
                   ['graphql', 'npm:15.5.0'],
@@ -17058,10 +17016,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     '@graphql-codegen/cli',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.21.3',
-                  ],
-                  [
-                    '@graphql-codegen/introspection',
-                    'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:1.18.1',
                   ],
                   [
                     '@graphql-codegen/plugin-helpers',
