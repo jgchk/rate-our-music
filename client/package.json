@@ -1,10 +1,11 @@
 {
   "name": "rate-our-music",
   "scripts": {
-    "dev": "yarn clean && NODE_ENV=development concurrently 'node build.js' 'yarn gql:dev' 'yarn dev:server'",
+    "dev": "yarn clean && NODE_ENV=development concurrently 'yarn build' 'yarn gql:dev' 'yarn dev:server'",
     "dev:server": "ws --directory output --spa index.html --rewrite '/graphql -> http://localhost:3030/graphql'",
-    "prod": "yarn clean && yarn gql && NODE_ENV=production node build.js",
+    "prod": "yarn clean && yarn gql && NODE_ENV=production yarn build",
     "clean": "rm -rf ./output && cp -r ./public ./output",
+    "build": "yarn esb:plugins && node build.js",
     "gql": "yarn gql:plugins && yarn gql:codegen",
     "gql:dev": "yarn gql:plugins && yarn gql:codegen --watch",
     "gql:plugins": "tsc --build ./graphql-code-generator/tsconfig.json",
