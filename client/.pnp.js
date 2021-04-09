@@ -72,7 +72,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     '@typescript-eslint/parser',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.19.0',
                   ],
-                  ['clsx', 'npm:1.1.1'],
                   ['concurrently', 'npm:6.0.1'],
                   ['esbuild', 'npm:0.11.6'],
                   [
@@ -6085,20 +6084,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['clone-response', 'npm:1.0.2'],
                   ['mimic-response', 'npm:1.0.1'],
                 ],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'clsx',
-          [
-            [
-              'npm:1.1.1',
-              {
-                packageLocation:
-                  './.yarn/cache/clsx-npm-1.1.1-362bec0598-d8ae10ac05.zip/node_modules/clsx/',
-                packageDependencies: [['clsx', 'npm:1.1.1']],
                 linkType: 'HARD',
               },
             ],
@@ -17116,7 +17101,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     '@typescript-eslint/parser',
                     'virtual:3185941fb62a82b3d1ae9ccf3d973f5078cf8d55c84c7126fa01b64ca353d6277ed6acf13be10910ae567fcb44c2b141201948b81fadf4c496ae5e931ab3c85f#npm:4.19.0',
                   ],
-                  ['clsx', 'npm:1.1.1'],
                   ['concurrently', 'npm:6.0.1'],
                   ['esbuild', 'npm:0.11.6'],
                   [

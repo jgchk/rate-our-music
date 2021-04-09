@@ -1,7 +1,7 @@
-import clsx from 'clsx'
 import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useLoginAction } from '../../auth/hooks/useAuthAction'
+import { clsx } from '../utils/clsx'
 import classes from './Layout.module.css'
 
 export const Layout: FunctionComponent = ({ children }) => {
