@@ -1,4 +1,3 @@
-import odiff from 'odiff'
 import { FunctionComponent, createContext, h } from 'preact'
 import { useCallback, useContext, useMemo, useReducer } from 'preact/hooks'
 import { RootAction, RootState, appReducer } from './root'
@@ -26,7 +25,7 @@ export type Dispatch = (action: ActionGenerator<Action>) => number
 
 export const reducer: Reducer<State> = (state, action) => {
   const newState = appReducer(state, action)
-  console.log({ action, state: newState, diff: odiff(state, newState) })
+  console.log({ action, state: newState })
   return newState
 }
 

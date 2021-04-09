@@ -7809,13 +7809,6 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"odiff@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "odiff@npm:1.4.3"
-  checksum: e8ac1163cd4ff2d0b880f9a4f713550e3bcc295703f96f51530576e9e69f4eef0a1c528e6b5de17fc643d9499e0e0bef89c1af59ad750c8ab729f048a5feec81
-  languageName: node
-  linkType: hard
-
 "on-finished@npm:^2.3.0, on-finished@npm:~2.3.0":
   version: 2.3.0
   resolution: "on-finished@npm:2.3.0"
@@ -8801,7 +8794,6 @@ fsevents@~2.3.1:
     graphql: ^15.5.0
     lint-staged: ^10.5.4
     local-web-server: ^4.2.1
-    odiff: ^1.4.3
     postcss: ^8.2.9
     postcss-color-mod-function: ^3.0.3
     postcss-modules: ^4.0.0

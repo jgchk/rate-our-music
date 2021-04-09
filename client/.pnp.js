@@ -108,7 +108,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['graphql', 'npm:15.5.0'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['local-web-server', 'npm:4.2.1'],
-                  ['odiff', 'npm:1.4.3'],
                   ['postcss', 'npm:8.2.9'],
                   ['postcss-color-mod-function', 'npm:3.0.3'],
                   [
@@ -15147,20 +15146,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
-          'odiff',
-          [
-            [
-              'npm:1.4.3',
-              {
-                packageLocation:
-                  './.yarn/cache/odiff-npm-1.4.3-cf94705606-e8ac1163cd.zip/node_modules/odiff/',
-                packageDependencies: [['odiff', 'npm:1.4.3']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
           'on-finished',
           [
             [
@@ -17137,7 +17122,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['graphql', 'npm:15.5.0'],
                   ['lint-staged', 'npm:10.5.4'],
                   ['local-web-server', 'npm:4.2.1'],
-                  ['odiff', 'npm:1.4.3'],
                   ['postcss', 'npm:8.2.9'],
                   ['postcss-color-mod-function', 'npm:3.0.3'],
                   [

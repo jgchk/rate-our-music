@@ -12,7 +12,6 @@
     "esb:plugins": "tsc --build ./esbuild-postcss/tsconfig.json"
   },
   "dependencies": {
-    "odiff": "^1.4.3",
     "preact": "^10.5.13"
   },
   "devDependencies": {
