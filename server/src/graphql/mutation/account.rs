@@ -24,13 +24,9 @@ impl AccountMutation {
         }
 
         let env = ctx.data::<crate::graphql::Context>()?;
-        let account = env
-            .db()
-            .account()
-            .create(&username, &password, Vec::new())
-            .await?;
-        let (token, exp) = make_token(env, account.account_id).await?;
-        make_refresh_token(env, ctx, account.account_id).await?;
+        let account = env.db().account().create(&username, &password).await?;
+        let (token, exp) = make_token(env, account.id).await?;
+        make_refresh_token(env, ctx, account.id).await?;
 
         Ok(Auth {
             token,
@@ -51,8 +47,8 @@ impl AccountMutation {
             None => return Err(errors::Error::InvalidCredentials.into()),
         };
 
-        let (token, exp) = make_token(env, account.account_id).await?;
-        make_refresh_token(env, ctx, account.account_id).await?;
+        let (token, exp) = make_token(env, account.id).await?;
+        make_refresh_token(env, ctx, account.id).await?;
 
         Ok(Auth {
             token,

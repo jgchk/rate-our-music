@@ -15,25 +15,24 @@ impl<'a> TrackDatabase<'a> {
             Track,
             "SELECT *
             FROM track
-            WHERE track_id = $1",
+            WHERE id = $1",
             id
         )
         .fetch_one(self.0)
         .await
-        .map_err(|e| e.into())
+        .map_err(Error::from)
     }
 
     pub async fn get_by_release(&self, release_id: i32) -> Result<Vec<Track>, Error> {
         sqlx::query_as!(
             Track,
-            "SELECT t.*
-            FROM track t
-            LEFT JOIN release r ON t.release_id = r.release_id
-            WHERE r.release_id = $1",
+            "SELECT *
+            FROM track
+            WHERE release_id = $1",
             release_id
         )
         .fetch_all(self.0)
         .await
-        .map_err(|e| e.into())
+        .map_err(Error::from)
     }
 }

@@ -1,6 +1,5 @@
 use crate::environment::Environment;
 use crate::errors::Error;
-use crate::model::account::Role;
 use crate::session::Session;
 
 #[derive(Shrinkwrap)]
@@ -41,13 +40,14 @@ impl Context {
         self.refresh_session.as_ref()
     }
 
-    pub fn account_id(&self) -> Option<i32> {
-        self.session.as_ref().map(|session| session.account_id())
-    }
-
-    pub fn has_role(&self, role: Role) -> bool {
+    pub fn has_role(&self, role: &str) -> bool {
         match &self.session {
-            Some(session) => session.roles().contains(&role),
+            Some(session) => session
+                .roles()
+                .iter()
+                .map(|role| (&role.name).to_string())
+                .collect::<String>()
+                .contains(role),
             None => false,
         }
     }

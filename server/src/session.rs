@@ -1,9 +1,8 @@
-use crate::auth;
 use crate::auth::is_token_revoked;
 use crate::auth::revoke_token;
 use crate::environment::Environment;
 use crate::errors::Error;
-use crate::model::account::Role;
+use crate::{auth, model::role::Role};
 use jsonwebtoken::TokenData;
 
 pub struct Session {

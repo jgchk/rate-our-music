@@ -1,7 +1,5 @@
 use crate::errors::Error;
 use crate::model::account::Account;
-use crate::model::account::RawAccount;
-use crate::model::account::Role;
 use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
@@ -12,48 +10,31 @@ impl<'a> AccountDatabase<'a> {
         Self(pool)
     }
 
-    pub async fn create(
-        &self,
-        username: &str,
-        password: &str,
-        roles: Vec<Role>,
-    ) -> Result<Account, Error> {
-        let account = sqlx::query!(
-            "INSERT INTO account (username, password, roles)
-            VALUES ($1, crypt($2, gen_salt('bf')), $3::role[])
-            RETURNING account_id",
+    pub async fn create(&self, username: &str, password: &str) -> Result<Account, Error> {
+        sqlx::query_as!(
+            Account,
+            "INSERT INTO account (username, password)
+            VALUES ($1, crypt($2, gen_salt('bf')))
+            RETURNING *",
             username,
             password,
-            roles
-                .iter()
-                .map(|role| role.to_string())
-                .collect::<Vec<String>>() as Vec<String>
         )
         .fetch_one(self.0)
-        .await?;
-        Ok(Account {
-            account_id: account.account_id,
-            username: username.to_string(),
-            password: password.to_string(),
-            roles,
-        })
+        .await
+        .map_err(Error::from)
     }
 
     pub async fn get(&self, id: i32) -> Result<Account, Error> {
-        let account = sqlx::query_as!(
-            RawAccount,
-            r#"SELECT
-                account_id,
-                username,
-                password,
-                roles as "roles: Vec<String>"
+        sqlx::query_as!(
+            Account,
+            "SELECT *
             FROM account
-            WHERE account_id = $1"#,
+            WHERE id = $1",
             id
         )
         .fetch_one(self.0)
-        .await?;
-        Ok(account.into())
+        .await
+        .map_err(Error::from)
     }
 
     pub async fn get_by_login(
@@ -61,38 +42,16 @@ impl<'a> AccountDatabase<'a> {
         username: &str,
         password: &str,
     ) -> Result<Option<Account>, Error> {
-        let maybe_account = sqlx::query_as!(
-            RawAccount,
-            r#"SELECT
-                account_id,
-                username,
-                password,
-                roles as "roles: Vec<String>"
+        sqlx::query_as!(
+            Account,
+            "SELECT *
             FROM account
-            WHERE username = $1 AND password = crypt($2, password)"#,
+            WHERE username = $1 AND password = crypt($2, password)",
             username,
             password
         )
         .fetch_optional(self.0)
-        .await?;
-
-        Ok(maybe_account.map(Account::from))
-    }
-
-    pub async fn get_by_username(&self, username: &str) -> Result<Option<Account>, Error> {
-        let maybe_account = sqlx::query_as!(
-            RawAccount,
-            r#"SELECT
-                account_id,
-                username,
-                password,
-                roles as "roles: Vec<String>"
-            FROM account
-            WHERE username = $1"#,
-            username
-        )
-        .fetch_optional(self.0)
-        .await?;
-        Ok(maybe_account.map(Account::from))
+        .await
+        .map_err(Error::from)
     }
 }

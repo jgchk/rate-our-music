@@ -1,16 +1,12 @@
 pub mod account;
 pub mod artist;
-pub mod descriptor;
-pub mod descriptor_vote;
 pub mod genre;
-pub mod log;
 pub mod release;
 pub mod release_artist;
 pub mod release_genre;
 pub mod release_genre_vote;
 pub mod release_review;
-pub mod release_tag;
-pub mod tag;
+pub mod role;
 pub mod track;
 pub mod track_genre;
 pub mod track_genre_vote;

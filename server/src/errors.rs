@@ -10,14 +10,8 @@ pub enum Error {
     TryFromIntError(#[from] std::num::TryFromIntError),
     #[error("invalid credentials")]
     InvalidCredentials,
-    #[error("invalid role {0}")]
-    InvalidRole(String),
     #[error("insufficient permissions")]
     InsufficientPermissions,
-    #[error("invalid date: year {0:?}, month {1:?}, day {2:?}")]
-    InvalidDate(Option<i16>, Option<i16>, Option<i16>),
-    #[error("ArtistInput must have either `id` or `name`")]
-    InvalidArtistInput,
 
     #[error("username must be {0} to {1} characters")]
     InvalidUsernameLength(i32, i32),

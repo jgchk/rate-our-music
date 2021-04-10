@@ -18,25 +18,13 @@ impl<'a> TrackReviewDatabase<'a> {
     ) -> Result<TrackReview, Error> {
         sqlx::query_as!(
             TrackReview,
-            "INSERT INTO track_review (track_id, account_id, track_review_rating, track_review_text)
+            "INSERT INTO track_review (track_id, account_id, rating, text)
             VALUES ($1, $2, $3, $4)
             RETURNING *",
-            track_id, account_id, rating, text
-        )
-        .fetch_one(self.0)
-        .await
-        .map_err(Error::from)
-    }
-
-    pub async fn update_rating(&self, id: i32, rating: Option<i16>) -> Result<TrackReview, Error> {
-        sqlx::query_as!(
-            TrackReview,
-            "UPDATE track_review
-            SET track_review_rating = $2
-            WHERE track_review_id = $1
-            RETURNING *",
-            id,
-            rating
+            track_id,
+            account_id,
+            rating,
+            text
         )
         .fetch_one(self.0)
         .await
@@ -48,7 +36,7 @@ impl<'a> TrackReviewDatabase<'a> {
             TrackReview,
             "SELECT *
             FROM track_review
-            WHERE track_review_id = $1",
+            WHERE id = $1",
             id
         )
         .fetch_one(self.0)
@@ -71,7 +59,7 @@ impl<'a> TrackReviewDatabase<'a> {
 
     pub async fn average_by_track(&self, track_id: i32) -> Result<Option<BigDecimal>, Error> {
         let result = sqlx::query!(
-            "SELECT AVG(track_review_rating)
+            "SELECT AVG(rating)
             FROM track_review
             WHERE track_id = $1",
             track_id
@@ -79,5 +67,20 @@ impl<'a> TrackReviewDatabase<'a> {
         .fetch_one(self.0)
         .await?;
         Ok(result.avg)
+    }
+
+    pub async fn update_rating(&self, id: i32, rating: Option<i16>) -> Result<TrackReview, Error> {
+        sqlx::query_as!(
+            TrackReview,
+            "UPDATE track_review
+            SET rating = $2
+            WHERE id = $1
+            RETURNING *",
+            id,
+            rating
+        )
+        .fetch_one(self.0)
+        .await
+        .map_err(Error::from)
     }
 }

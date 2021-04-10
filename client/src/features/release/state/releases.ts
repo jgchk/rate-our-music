@@ -1,4 +1,9 @@
-import { GetReleaseQuery, GraphqlError } from '../../../generated/graphql'
+import {
+  GetReleaseQuery,
+  GraphqlError,
+  ReleaseDataFragment,
+  ReleaseGenreDataFragment,
+} from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
 import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
@@ -25,10 +30,8 @@ export type Release = {
   releaseDate?: PartialDate
   coverArt?: string
   tracks: Set<number>
-  genres: Set<number>
+  genres: GenreMap
   siteRating?: number
-  friendRating?: number
-  similarUserRating?: number
   reviews: Set<number>
 }
 
@@ -37,6 +40,38 @@ export type PartialDate = {
   month: number | undefined
   year: number
 }
+
+export type GenreMap = { [id: number]: number }
+
+//
+// Mappers
+//
+
+const mapGenres = (genres: ReleaseGenreDataFragment[]): GenreMap => {
+  const genreMap: { [id: number]: number } = {}
+  for (const genre of genres) {
+    genreMap[genre.genre.id] = genre.weight
+  }
+  return genreMap
+}
+
+const mapRelease = (release: ReleaseDataFragment): Release => ({
+  id: release.id,
+  title: release.title,
+  artists: ids(release.artists),
+  releaseDate: release.releaseDate
+    ? {
+        day: release.releaseDate.day ?? undefined,
+        month: release.releaseDate.month ?? undefined,
+        year: release.releaseDate.year,
+      }
+    : undefined,
+  coverArt: release.coverArt ?? undefined,
+  tracks: ids(release.tracks),
+  genres: mapGenres(release.genres),
+  siteRating: release.siteRating ?? undefined,
+  reviews: ids(release.reviews),
+})
 
 //
 // Reducer
@@ -51,28 +86,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
   switch (action._type) {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
-
-      const response = action.request.data.release.get
-
-      const release: Release = {
-        id: response.id,
-        title: response.title,
-        artists: ids(response.artists),
-        releaseDate: response.releaseDate
-          ? {
-              day: response.releaseDate.day ?? undefined,
-              month: response.releaseDate.month ?? undefined,
-              year: response.releaseDate.year,
-            }
-          : undefined,
-        coverArt: response.coverArt ?? undefined,
-        tracks: ids(response.tracks),
-        genres: ids(response.genres),
-        siteRating: response.siteRating ?? undefined,
-        friendRating: response.friendRating ?? undefined,
-        similarUserRating: response.similarUserRating ?? undefined,
-        reviews: ids(response.reviews),
-      }
+      const release = mapRelease(action.request.data.release.get)
       return { ...state, [release.id]: release }
     }
 

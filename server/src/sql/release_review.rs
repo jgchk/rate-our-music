@@ -18,26 +18,13 @@ impl<'a> ReleaseReviewDatabase<'a> {
     ) -> Result<ReleaseReview, Error> {
         sqlx::query_as!(
             ReleaseReview,
-            "INSERT INTO release_review (release_id, account_id, release_review_rating, release_review_text)
+            "INSERT INTO release_review (release_id, account_id, rating, text)
             VALUES ($1, $2, $3, $4)
             RETURNING *",
-            release_id, account_id, rating, text
-        ).fetch_one(self.0).await.map_err(Error::from)
-    }
-
-    pub async fn update_rating(
-        &self,
-        id: i32,
-        rating: Option<i16>,
-    ) -> Result<ReleaseReview, Error> {
-        sqlx::query_as!(
-            ReleaseReview,
-            "UPDATE release_review
-            SET release_review_rating = $2
-            WHERE release_review_id = $1
-            RETURNING *",
-            id,
-            rating
+            release_id,
+            account_id,
+            rating,
+            text
         )
         .fetch_one(self.0)
         .await
@@ -49,7 +36,7 @@ impl<'a> ReleaseReviewDatabase<'a> {
             ReleaseReview,
             "SELECT *
             FROM release_review
-            WHERE release_review_id = $1",
+            WHERE id = $1",
             id
         )
         .fetch_one(self.0)
@@ -72,7 +59,7 @@ impl<'a> ReleaseReviewDatabase<'a> {
 
     pub async fn average_by_release(&self, release_id: i32) -> Result<Option<BigDecimal>, Error> {
         let result = sqlx::query!(
-            "SELECT AVG(release_review_rating)
+            "SELECT AVG(rating)
             FROM release_review
             WHERE release_id = $1",
             release_id
@@ -80,5 +67,24 @@ impl<'a> ReleaseReviewDatabase<'a> {
         .fetch_one(self.0)
         .await?;
         Ok(result.avg)
+    }
+
+    pub async fn update_rating(
+        &self,
+        id: i32,
+        rating: Option<i16>,
+    ) -> Result<ReleaseReview, Error> {
+        sqlx::query_as!(
+            ReleaseReview,
+            "UPDATE release_review
+            SET rating = $2
+            WHERE id = $1
+            RETURNING *",
+            id,
+            rating
+        )
+        .fetch_one(self.0)
+        .await
+        .map_err(Error::from)
     }
 }

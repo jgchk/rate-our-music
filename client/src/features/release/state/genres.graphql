@@ -1,12 +1,16 @@
 fragment releaseGenreData on ReleaseGenre {
-  id
-  name
+  genre {
+    id
+    name
+  }
   weight
 }
 
 fragment trackGenreData on TrackGenre {
-  id
-  name
+  genre {
+    id
+    name
+  }
   weight
 }
 

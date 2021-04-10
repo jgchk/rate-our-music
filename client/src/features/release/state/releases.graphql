@@ -17,8 +17,6 @@ fragment releaseData on Release {
     ...releaseGenreData
   }
   siteRating
-  friendRating
-  similarUserRating
   reviews {
     ...releaseReviewData
   }

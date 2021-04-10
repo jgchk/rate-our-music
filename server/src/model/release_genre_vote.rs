@@ -1,16 +1,18 @@
 use crate::model::account::Account;
 use crate::model::genre::Genre;
 use crate::model::release::Release;
-use async_graphql::{Context, Object, Result};
+use async_graphql::{ComplexObject, Context, Result, SimpleObject};
 
+#[derive(SimpleObject)]
+#[graphql(complex)]
 pub struct ReleaseGenreVote {
     pub account_id: i32,
     pub release_id: i32,
     pub genre_id: i32,
-    pub release_genre_vote_value: i16,
+    pub value: i16,
 }
 
-#[Object]
+#[ComplexObject]
 impl ReleaseGenreVote {
     async fn account(&self, ctx: &Context<'_>) -> Result<Account> {
         let env = ctx.data::<crate::graphql::Context>()?;
@@ -28,9 +30,5 @@ impl ReleaseGenreVote {
         let env = ctx.data::<crate::graphql::Context>()?;
         let genre = env.db().genre().get(self.genre_id).await?;
         Ok(genre)
-    }
-
-    async fn value(&self) -> i16 {
-        self.release_genre_vote_value
     }
 }

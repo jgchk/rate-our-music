@@ -12,8 +12,6 @@ fragment trackData on Track {
     ...trackGenreData
   }
   siteRating
-  friendRating
-  similarUserRating
   reviews {
     ...trackReviewData
   }

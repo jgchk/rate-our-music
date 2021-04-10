@@ -114,23 +114,19 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
 
         <div className={classes.section}>
           <ol className={classes.commaSeparatedList}>
-            {[...track.genres].map((id) => (
-              <li key={id}>
-                <TrackGenre id={id} trackId={trackId} />
-              </li>
-            ))}
+            {Object.keys(track.genres)
+              .map(Number)
+              .map((id) => (
+                <li key={id}>
+                  <TrackGenre id={id} trackId={trackId} />
+                </li>
+              ))}
           </ol>
         </div>
 
         <div className={classes.section}>
           {track.siteRating !== undefined && (
             <div>{(track.siteRating / 2).toFixed(1)}</div>
-          )}
-          {track.friendRating !== undefined && (
-            <div>{(track.friendRating / 2).toFixed(1)}</div>
-          )}
-          {track.similarUserRating !== undefined && (
-            <div>{(track.similarUserRating / 2).toFixed(1)}</div>
           )}
         </div>
 

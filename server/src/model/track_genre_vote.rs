@@ -1,14 +1,16 @@
 use super::{account::Account, genre::Genre, track::Track};
-use async_graphql::{Context, Object, Result};
+use async_graphql::{ComplexObject, Context, Result, SimpleObject};
 
+#[derive(SimpleObject)]
+#[graphql(complex)]
 pub struct TrackGenreVote {
     pub account_id: i32,
     pub track_id: i32,
     pub genre_id: i32,
-    pub track_genre_vote_value: i16,
+    pub value: i16,
 }
 
-#[Object]
+#[ComplexObject]
 impl TrackGenreVote {
     async fn account(&self, ctx: &Context<'_>) -> Result<Account> {
         let env = ctx.data::<crate::graphql::Context>()?;
@@ -26,9 +28,5 @@ impl TrackGenreVote {
         let env = ctx.data::<crate::graphql::Context>()?;
         let genre = env.db().genre().get(self.genre_id).await?;
         Ok(genre)
-    }
-
-    async fn value(&self) -> i16 {
-        self.track_genre_vote_value
     }
 }

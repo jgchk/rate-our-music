@@ -92,23 +92,19 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
 
         <div className={classes.section}>
           <ol className={classes.commaSeparatedList}>
-            {[...release.genres].map((id) => (
-              <li key={id}>
-                <ReleaseGenre id={id} releaseId={releaseId} />
-              </li>
-            ))}
+            {Object.keys(release.genres)
+              .map(Number)
+              .map((id) => (
+                <li key={id}>
+                  <ReleaseGenre id={id} releaseId={releaseId} />
+                </li>
+              ))}
           </ol>
         </div>
 
         <div className={classes.section}>
           {release.siteRating !== undefined && (
             <div>{(release.siteRating / 2).toFixed(1)}</div>
-          )}
-          {release.friendRating !== undefined && (
-            <div>{(release.friendRating / 2).toFixed(1)}</div>
-          )}
-          {release.similarUserRating !== undefined && (
-            <div>{(release.similarUserRating / 2).toFixed(1)}</div>
           )}
         </div>
 

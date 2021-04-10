@@ -1,13 +1,10 @@
 mod account;
 mod artist;
-mod descriptor;
-mod descriptor_vote;
 mod genre;
-mod log;
 mod release;
 mod release_genre_vote;
 mod release_review;
-mod tag;
+mod role;
 mod track;
 mod track_genre_vote;
 mod track_review;
@@ -15,16 +12,13 @@ mod track_review;
 use crate::errors::Error;
 use account::AccountDatabase;
 use artist::ArtistDatabase;
-use descriptor::DescriptorDatabase;
-use descriptor_vote::DescriptorVoteDatabase;
 use genre::GenreDatabase;
-use log::LogDatabase;
 use release::ReleaseDatabase;
 use release_genre_vote::ReleaseGenreVoteDatabase;
 use release_review::ReleaseReviewDatabase;
+use role::RoleDatabase;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use tag::TagDatabase;
 use track::TrackDatabase;
 use track_genre_vote::TrackGenreVoteDatabase;
 use track_review::TrackReviewDatabase;
@@ -79,19 +73,7 @@ impl Database {
         TrackGenreVoteDatabase::new(&self.pool)
     }
 
-    pub fn descriptor(&self) -> DescriptorDatabase {
-        DescriptorDatabase::new(&self.pool)
-    }
-
-    pub fn descriptor_vote(&self) -> DescriptorVoteDatabase {
-        DescriptorVoteDatabase::new(&self.pool)
-    }
-
-    pub fn tag(&self) -> TagDatabase {
-        TagDatabase::new(&self.pool)
-    }
-
-    pub fn log(&self) -> LogDatabase {
-        LogDatabase::new(&self.pool)
+    pub fn role(&self) -> RoleDatabase {
+        RoleDatabase::new(&self.pool)
     }
 }

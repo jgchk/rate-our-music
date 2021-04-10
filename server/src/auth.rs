@@ -1,6 +1,5 @@
-use crate::environment::Environment;
 use crate::errors::Error;
-use crate::model::account::Role;
+use crate::{environment::Environment, model::role::Role};
 use chrono::DateTime;
 use chrono::Duration;
 use chrono::Utc;
@@ -32,12 +31,13 @@ pub async fn create_token(
     let exp = expiration_date.timestamp();
 
     let account = env.db().account().get(id).await?;
+    let roles = env.db().role().get_by_account(account.id).await?;
 
     let claims = Claims {
         sub: id,
         iat,
         exp,
-        roles: account.roles,
+        roles,
     };
     let token = env.jwt().encode(&claims)?;
 

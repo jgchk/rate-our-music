@@ -17,14 +17,14 @@ impl<'a> ReleaseGenreVoteDatabase<'a> {
     ) -> Result<Vec<ReleaseGenreVote>, Error> {
         sqlx::query_as!(
             ReleaseGenreVote,
-            r#"SELECT *
+            "SELECT *
             FROM release_genre_vote
-            WHERE release_id = $1 AND genre_id = $2"#,
+            WHERE release_id = $1 AND genre_id = $2",
             release_id,
             genre_id
         )
         .fetch_all(self.0)
         .await
-        .map_err(|e| e.into())
+        .map_err(Error::from)
     }
 }

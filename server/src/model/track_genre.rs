@@ -1,51 +1,25 @@
-use super::genre::Genre;
-use async_graphql::{Context, Object, Result};
+use super::{genre::Genre, track::Track};
+use async_graphql::{ComplexObject, Context, Result, SimpleObject};
 
+#[derive(SimpleObject)]
+#[graphql(complex)]
 pub struct TrackGenre {
     pub track_id: i32,
-    pub genre: Genre,
+    pub genre_id: i32,
 }
 
+#[ComplexObject]
 impl TrackGenre {
-    pub fn new(track_id: i32, genre: &Genre) -> Self {
-        Self {
-            track_id,
-            genre: Genre {
-                genre_id: genre.genre_id,
-                genre_parent_id: genre.genre_parent_id,
-                genre_name: (&genre.genre_name).to_string(),
-                genre_description: genre.genre_description.as_ref().map(String::from),
-            },
-        }
-    }
-}
-
-#[Object]
-impl TrackGenre {
-    async fn id(&self) -> i32 {
-        self.genre.genre_id
+    async fn track(&self, ctx: &Context<'_>) -> Result<Track> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let track = env.db().track().get(self.track_id).await?;
+        Ok(track)
     }
 
-    async fn parent(&self, ctx: &Context<'_>) -> Result<Option<Genre>> {
-        match self.genre.genre_parent_id {
-            Some(parent_id) => {
-                let env = ctx.data::<crate::graphql::Context>()?;
-                let genre = env.db().genre().get(parent_id).await?;
-                Ok(Some(genre))
-            }
-            None => Ok(None),
-        }
-    }
-
-    async fn name(&self) -> String {
-        (&self.genre.genre_name).to_string()
-    }
-
-    async fn description(&self) -> Option<String> {
-        match &self.genre.genre_description {
-            Some(description) => Some(description.to_string()),
-            None => None,
-        }
+    async fn genre(&self, ctx: &Context<'_>) -> Result<Genre> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let genre = env.db().genre().get(self.genre_id).await?;
+        Ok(genre)
     }
 
     async fn weight(&self, ctx: &Context<'_>) -> Result<f64> {
@@ -53,12 +27,9 @@ impl TrackGenre {
         let votes = env
             .db()
             .track_genre_vote()
-            .get_by_track_genre(self.track_id, self.genre.genre_id)
+            .get_by_track_genre(self.track_id, self.genre_id)
             .await?;
-        let sum = votes
-            .iter()
-            .map(|vote| vote.track_genre_vote_value as i32)
-            .sum::<i32>();
+        let sum = votes.iter().map(|vote| vote.value as i32).sum::<i32>();
         let avg = (sum as f64) / (votes.len() as f64);
         Ok(avg)
     }

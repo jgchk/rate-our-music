@@ -24,6 +24,6 @@ impl<'a> TrackGenreVoteDatabase<'a> {
         )
         .fetch_all(self.0)
         .await
-        .map_err(|e| e.into())
+        .map_err(Error::from)
     }
 }

@@ -25,7 +25,6 @@ export type GenresState = {
 export type Genre = {
   id: number
   name: string
-  weight: number
 }
 
 //
@@ -41,13 +40,17 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
   switch (action._type) {
     case 'release/get': {
       if (!isSuccess(action.request)) return state
-      const genres: Genre[] = action.request.data.release.get.genres
+      const genres: Genre[] = action.request.data.release.get.genres.map(
+        (genre) => genre.genre
+      )
       return mergeIds(state, genres)
     }
 
     case 'track/get': {
       if (!isSuccess(action.request)) return state
-      const genres: Genre[] = action.request.data.track.get.genres
+      const genres: Genre[] = action.request.data.track.get.genres.map(
+        (genre) => genre.genre
+      )
       return mergeIds(state, genres)
     }
 

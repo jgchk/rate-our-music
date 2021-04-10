@@ -1,39 +1,25 @@
 use super::{track_genre::TrackGenre, track_review::TrackReview};
 use crate::model::artist::Artist;
 use crate::model::release::Release;
-use async_graphql::{Context, Object, Result};
+use async_graphql::{ComplexObject, Context, Result, SimpleObject};
 use num_traits::ToPrimitive;
 
+#[derive(SimpleObject)]
+#[graphql(complex)]
 pub struct Track {
-    pub track_id: i32,
+    pub id: i32,
     pub release_id: i32,
-    pub track_title: String,
+    pub title: String,
     pub track_num: i16,
-    pub track_duration_ms: Option<i32>,
+    pub duration_ms: Option<i32>,
 }
 
-#[Object]
+#[ComplexObject]
 impl Track {
-    async fn id(&self) -> i32 {
-        self.release_id
-    }
-
     async fn release(&self, ctx: &Context<'_>) -> Result<Release> {
         let env = ctx.data::<crate::graphql::Context>()?;
         let release = env.db().release().get_by_track(self.release_id).await?;
         Ok(release)
-    }
-
-    async fn title(&self) -> String {
-        (&self.track_title).to_string()
-    }
-
-    async fn num(&self) -> i16 {
-        self.track_num
-    }
-
-    async fn duration_ms(&self) -> Option<i32> {
-        self.track_duration_ms
     }
 
     async fn artists(&self, ctx: &Context<'_>) -> Result<Vec<Artist>> {
@@ -44,12 +30,15 @@ impl Track {
 
     async fn genres(&self, ctx: &Context<'_>) -> Result<Vec<TrackGenre>> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let genres = env.db().genre().get_by_release(self.release_id).await?;
-        let release_genres = genres
+        let genres = env.db().genre().get_by_track(self.id).await?;
+        let track_genres = genres
             .iter()
-            .map(|genre| TrackGenre::new(self.release_id, genre))
+            .map(|genre| TrackGenre {
+                track_id: self.id,
+                genre_id: genre.id,
+            })
             .collect();
-        Ok(release_genres)
+        Ok(track_genres)
     }
 
     async fn site_rating(&self, ctx: &Context<'_>) -> Result<Option<f64>> {
@@ -62,19 +51,9 @@ impl Track {
         Ok(mean.and_then(|b| b.to_f64()))
     }
 
-    async fn friend_rating(&self) -> i16 {
-        // TODO
-        7
-    }
-
-    async fn similar_user_rating(&self) -> i16 {
-        // TODO
-        7
-    }
-
     async fn reviews(&self, ctx: &Context<'_>) -> Result<Vec<TrackReview>> {
         let env = ctx.data::<crate::graphql::Context>()?;
-        let reviews = env.db().track_review().get_by_track(self.track_id).await?;
+        let reviews = env.db().track_review().get_by_track(self.id).await?;
         Ok(reviews)
     }
 }

@@ -2,6 +2,7 @@ import {
   GetTrackQuery,
   GraphqlError,
   TrackDataFragment,
+  TrackGenreDataFragment,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
 import { graphql } from '../../common/utils/graphql'
@@ -27,27 +28,33 @@ export type Track = {
   title: string
   durationMs: number | undefined
   release: number
-  genres: Set<number>
+  genres: { [id: number]: number }
   siteRating?: number
-  friendRating?: number
-  similarUserRating?: number
   artists: Set<number>
   reviews: Set<number>
 }
 
+export type GenreMap = { [id: number]: number }
+
 //
 // Mappers
 //
+
+const mapGenres = (genres: TrackGenreDataFragment[]): GenreMap => {
+  const genreMap: { [id: number]: number } = {}
+  for (const genre of genres) {
+    genreMap[genre.genre.id] = genre.weight
+  }
+  return genreMap
+}
 
 const mapTrack = (track: TrackDataFragment): Track => ({
   id: track.id,
   title: track.title,
   durationMs: track.durationMs ?? undefined,
   release: track.release.id,
-  genres: ids(track.genres),
+  genres: mapGenres(track.genres),
   siteRating: track.siteRating ?? undefined,
-  friendRating: track.friendRating ?? undefined,
-  similarUserRating: track.similarUserRating ?? undefined,
   artists: ids(track.artists),
   reviews: ids(track.reviews),
 })
@@ -91,7 +98,7 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
         [track.id]: {
           ...track,
           reviews: track.reviews.add(review.id),
-          // TODO: siteRating: review.release.siteRating ?? undefined,
+          siteRating: review.track.siteRating ?? undefined,
         },
       }
     }
@@ -110,7 +117,7 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
         ...state,
         [track.id]: {
           ...track,
-          // TODO: siteRating: review.release.siteRating ?? undefined,
+          siteRating: review.track.siteRating ?? undefined,
         },
       }
     }
