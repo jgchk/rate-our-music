@@ -1,0 +1,21 @@
+{
+  "name": "client",
+  "scripts": {
+    "dev": "node build.js --dev",
+    "prod": "node build.js --prod"
+  },
+  "dependencies": {
+    "preact": "^10.5.13"
+  },
+  "devDependencies": {
+    "@builder/core": "workspace:packages/builder/packages/core",
+    "@builder/plugin-dev-server": "workspace:packages/builder/packages/plugin-dev-server",
+    "@builder/plugin-esbuild": "workspace:packages/builder/packages/plugin-esbuild",
+    "@builder/plugin-eslint": "workspace:packages/builder/packages/plugin-eslint",
+    "@builder/plugin-graphql": "workspace:packages/builder/packages/plugin-graphql",
+    "@builder/plugin-stylelint": "workspace:packages/builder/packages/plugin-stylelint",
+    "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript",
+    "typescript": "^4.2.4",
+    "typescript-plugin-css-modules": "^3.2.0"
+  }
+}

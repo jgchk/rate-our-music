@@ -1,0 +1,15 @@
+{
+  "name": "builder",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "core": "yarn workspace @builder/core",
+    "plugin-dev-server": "yarn workspace @builder/plugin-dev-server",
+    "plugin-esbuild": "yarn workspace @builder/plugin-esbuild",
+    "plugin-eslint": "yarn workspace @builder/plugin-eslint",
+    "plugin-graphql": "yarn workspace @builder/plugin-graphql",
+    "plugin-stylelint": "yarn workspace @builder/plugin-stylelint",
+    "plugin-typescript": "yarn workspace @builder/plugin-typescript"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "output",
+    "composite": true
+  },
+  "include": ["src/**/*", "types/**/*"],
+  "exclude": ["src/live-reload.ts"]
+}

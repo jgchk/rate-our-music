@@ -1,13 +1,10 @@
-const project = process.cwd().includes('client')
-  ? 'tsconfig.json'
-  : './client/tsconfig.json'
-
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
+    project: ['./packages/**/tsconfig.json'],
+    jsxPragma: 'h',
   },
   plugins: ['@typescript-eslint'],
   extends: [
@@ -24,11 +21,11 @@ module.exports = {
   ],
   settings: {
     react: { version: '16.0' },
-    'import/resolver': {
-      typescript: {
-        project,
-      },
-    },
+    // 'import/resolver': {
+    //   typescript: {
+    //     project: ['./packages/**/tsconfig.json'],
+    //   },
+    // },
   },
   rules: {
     'import/order': [
@@ -49,7 +46,6 @@ module.exports = {
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-array-callback-reference': 'off',
     'unicorn/no-array-reduce': 'off',
-    // 'unicorn/no-useless-undefined': 'off',
     'unicorn/prefer-query-selector': 'off',
   },
   env: {

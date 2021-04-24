@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2018", "ES2019.Array"],
+    "target": "ES2018",
+
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+  },
+  "include": ["./src/**/*", "./types/**/*"]
+}

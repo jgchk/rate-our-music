@@ -1,0 +1,178 @@
+"""
+Directs the executor to query only when the field exists.
+"""
+directive @ifdef on FIELD
+
+type Account {
+  id: Int!
+  username: String!
+}
+
+type AccountMutation {
+  register(username: String!, password: String!): Auth!
+  login(username: String!, password: String!): Auth!
+  logout(force: Boolean!): Boolean!
+  refreshAuth: Auth!
+}
+
+type AccountQuery {
+  get(id: Int!): Account!
+}
+
+type Artist {
+  id: Int!
+  name: String!
+  releases: [Release!]!
+}
+
+type ArtistMutation {
+  create(name: String!): Artist!
+}
+
+type ArtistQuery {
+  get(id: Int!): Artist!
+}
+
+type Auth {
+  token: String!
+  exp: Int!
+  account: Account!
+}
+
+type Genre {
+  id: Int!
+  parentId: Int
+  name: String!
+  description: String
+  parent: Genre
+}
+
+type GenreQuery {
+  get(id: Int!): Genre!
+  getByRelease(genreId: Int!, releaseId: Int!): ReleaseGenre!
+  getByTrack(genreId: Int!, trackId: Int!): TrackGenre!
+}
+
+type Mutation {
+  account: AccountMutation!
+  artist: ArtistMutation!
+  releaseReview: ReleaseReviewMutation!
+  trackReview: TrackReviewMutation!
+}
+
+type Query {
+  account: AccountQuery!
+  artist: ArtistQuery!
+  release: ReleaseQuery!
+  track: TrackQuery!
+  genre: GenreQuery!
+  releaseReview: ReleaseReviewQuery!
+  trackReview: TrackReviewQuery!
+}
+
+type Release {
+  id: Int!
+  title: String!
+  releaseDateYear: Int
+  releaseDateMonth: Int
+  releaseDateDay: Int
+  releaseTypeId: Int!
+  coverArt: String
+  releaseDate: ReleaseDate
+  artists: [Artist!]!
+  tracks: [Track!]!
+  genres: [ReleaseGenre!]!
+  siteRating: Float
+  reviews: [ReleaseReview!]!
+}
+
+type ReleaseDate {
+  year: Int!
+  month: Int
+  day: Int
+}
+
+type ReleaseGenre {
+  releaseId: Int!
+  genreId: Int!
+  release: Release!
+  genre: Genre!
+  weight: Float!
+}
+
+type ReleaseQuery {
+  get(id: Int!): Release!
+}
+
+type ReleaseReview {
+  id: Int!
+  releaseId: Int!
+  accountId: Int!
+  rating: Int
+  text: String
+  release: Release!
+  account: Account!
+}
+
+type ReleaseReviewMutation {
+  create(
+    releaseId: Int!
+    accountId: Int!
+    rating: Int
+    text: String
+  ): ReleaseReview!
+  updateRating(reviewId: Int!, rating: Int): ReleaseReview!
+}
+
+type ReleaseReviewQuery {
+  get(id: Int!): ReleaseReview!
+}
+
+type Track {
+  id: Int!
+  releaseId: Int!
+  title: String!
+  trackNum: Int!
+  durationMs: Int
+  release: Release!
+  artists: [Artist!]!
+  genres: [TrackGenre!]!
+  siteRating: Float
+  reviews: [TrackReview!]!
+}
+
+type TrackGenre {
+  trackId: Int!
+  genreId: Int!
+  track: Track!
+  genre: Genre!
+  weight: Float!
+}
+
+type TrackQuery {
+  get(id: Int!): Track!
+}
+
+type TrackReview {
+  id: Int!
+  trackId: Int!
+  accountId: Int!
+  rating: Int
+  text: String
+  track: Track!
+  account: Account!
+}
+
+type TrackReviewMutation {
+  create(
+    trackId: Int!
+    accountId: Int!
+    rating: Int
+    text: String
+  ): TrackReview!
+  updateRating(reviewId: Int!, rating: Int): TrackReview!
+}
+
+type TrackReviewQuery {
+  get(id: Int!): TrackReview!
+}

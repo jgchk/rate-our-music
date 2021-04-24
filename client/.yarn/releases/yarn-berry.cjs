@@ -6193,12 +6193,12 @@ module.exports = (() => {
                 return null === i ? null : n.y1.resolve(i, o)
               }
               async fetch(e, t) {
-                const { parentLocator: r, path: s } = A.parseFileStyleRange(
-                    e.reference,
-                    {
-                      protocol: 'portal:',
-                    }
-                  ),
+                const {
+                    parentLocator: r,
+                    path: s,
+                  } = A.parseFileStyleRange(e.reference, {
+                    protocol: 'portal:',
+                  }),
                   a = n.y1.isAbsolute(s)
                     ? {
                         packageFs: new o.M(n.LZ.root),
@@ -12041,13 +12041,15 @@ module.exports = (() => {
               }
             }
             return (
-              u.getMapWithDefault(this.packageRegistry, r).set(A, {
-                packageLocation: E,
-                packageDependencies: B,
-                packagePeers: y,
-                linkType: e.linkType,
-                discardFromLookup: t.discardFromLookup || !1,
-              }),
+              u
+                .getMapWithDefault(this.packageRegistry, r)
+                .set(A, {
+                  packageLocation: E,
+                  packageDependencies: B,
+                  packagePeers: y,
+                  linkType: e.linkType,
+                  discardFromLookup: t.discardFromLookup || !1,
+                }),
               { packageLocation: I, buildDirective: p.length > 0 ? p : null }
             )
           }
@@ -44058,17 +44060,13 @@ PERFORMANCE OF THIS SOFTWARE.
         }
       },
       97369: (e, t) => {
-        var r,
-          A,
-          n,
-          o
-          /*!
-           * is-windows <https://github.com/jonschlinkert/is-windows>
-           *
-           * Copyright © 2015-2018, Jon Schlinkert.
-           * Released under the MIT License.
-           */
-        ;(o = function () {
+        var r, A, n, o
+        /*!
+         * is-windows <https://github.com/jonschlinkert/is-windows>
+         *
+         * Copyright © 2015-2018, Jon Schlinkert.
+         * Released under the MIT License.
+         */ ;(o = function () {
           'use strict'
           return function () {
             return (

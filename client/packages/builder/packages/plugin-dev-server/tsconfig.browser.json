@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "output",
+    "lib": ["DOM", "ES2018", "ES2019.Array"],
+    "composite": true,
+    "module": "ES2015"
+  },
+  "include": ["src/live-reload.ts"]
+}
