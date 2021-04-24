@@ -5,7 +5,9 @@
   ],
   "scripts": {
     "builder": "yarn workspace builder",
-    "client": "yarn workspace client"
+    "client": "yarn workspace client",
+    "dev": "yarn client dev",
+    "prod": "yarn client prod"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.22.0",
