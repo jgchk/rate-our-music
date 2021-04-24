@@ -1,5 +1,6 @@
-use crate::model::release_review::ReleaseReview;
+use crate::{errors, model::release_review::ReleaseReview};
 use async_graphql::*;
+use errors::Error::InvalidReview;
 
 pub struct ReleaseReviewMutation;
 
@@ -13,6 +14,10 @@ impl ReleaseReviewMutation {
         rating: Option<i16>,
         text: Option<String>,
     ) -> Result<ReleaseReview> {
+        if rating.is_none() && text.is_none() {
+            return Err(InvalidReview.into());
+        }
+
         let env = ctx.data::<crate::graphql::Context>()?;
         let release = env
             .db()

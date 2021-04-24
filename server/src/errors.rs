@@ -17,6 +17,8 @@ pub enum Error {
     InvalidUsernameLength(i32, i32),
     #[error("password must be {0} to {1} characters")]
     InvalidPasswordLength(i32, i32),
+    #[error("review must have rating or text")]
+    InvalidReview,
 }
 
 impl warp::reject::Reject for Error {}
