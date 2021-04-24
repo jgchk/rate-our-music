@@ -11,6 +11,16 @@ INSERT
         );
 
 INSERT
+    INTO account_role
+        ( account_id
+        , role_id
+        )
+    VALUES
+        ( 0
+        , 0
+        );
+
+INSERT
     INTO release 
         ( id
         , title

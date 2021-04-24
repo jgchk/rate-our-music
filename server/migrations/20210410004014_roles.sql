@@ -4,4 +4,4 @@ CREATE TABLE role
 ,   name    TEXT    NOT NULL
 );
 
-INSERT INTO role (name) VALUES ('admin');
+INSERT INTO role (id, name) VALUES (0, 'admin');
