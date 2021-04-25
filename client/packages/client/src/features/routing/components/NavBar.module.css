@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background: var(--background-light);
+  border-bottom: 1px solid var(--border);
+}
+
+.inner {
+  width: 100%;
+  max-width: 1600px;
+  padding: var(--space-4);
+}
