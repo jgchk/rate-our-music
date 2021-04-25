@@ -5,6 +5,7 @@
   ],
   "scripts": {
     "core": "yarn workspace @builder/core",
+    "plugin-copy": "yarn workspace @builder/plugin-copy",
     "plugin-dev-server": "yarn workspace @builder/plugin-dev-server",
     "plugin-esbuild": "yarn workspace @builder/plugin-esbuild",
     "plugin-eslint": "yarn workspace @builder/plugin-eslint",

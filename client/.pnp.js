@@ -34,8 +34,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           reference: 'workspace:packages/client',
         },
         {
+          name: 'rym-scraper',
+          reference: 'workspace:packages/rym-scraper',
+        },
+        {
           name: '@builder/core',
           reference: 'workspace:packages/builder/packages/core',
+        },
+        {
+          name: '@builder/plugin-copy',
+          reference: 'workspace:packages/builder/packages/plugin-copy',
         },
         {
           name: '@builder/plugin-dev-server',
@@ -68,6 +76,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       fallbackExclusionList: [
         ['@builder/core', ['workspace:packages/builder/packages/core']],
         [
+          '@builder/plugin-copy',
+          ['workspace:packages/builder/packages/plugin-copy'],
+        ],
+        [
           '@builder/plugin-dev-server',
           ['workspace:packages/builder/packages/plugin-dev-server'],
         ],
@@ -94,6 +106,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         ['builder', ['workspace:packages/builder']],
         ['client', ['workspace:packages/client']],
         ['rate-our-music', ['workspace:.']],
+        ['rym-scraper', ['workspace:packages/rym-scraper']],
       ],
       fallbackPool: [],
       locationBlacklistData: [],
@@ -1749,6 +1762,30 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          '@builder/plugin-copy',
+          [
+            [
+              'workspace:packages/builder/packages/plugin-copy',
+              {
+                packageLocation: './packages/builder/packages/plugin-copy/',
+                packageDependencies: [
+                  [
+                    '@builder/plugin-copy',
+                    'workspace:packages/builder/packages/plugin-copy',
+                  ],
+                  ['@builder/core', 'workspace:packages/builder/packages/core'],
+                  ['@types/node', 'npm:14.14.41'],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e',
+                  ],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+          ],
+        ],
+        [
           '@builder/plugin-dev-server',
           [
             [
@@ -3005,6 +3042,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          '@types/chrome',
+          [
+            [
+              'npm:0.0.135',
+              {
+                packageLocation:
+                  './.yarn/cache/@types-chrome-npm-0.0.135-461405b430-0619796ce1.zip/node_modules/@types/chrome/',
+                packageDependencies: [
+                  ['@types/chrome', 'npm:0.0.135'],
+                  ['@types/filesystem', 'npm:0.0.30'],
+                  ['@types/har-format', 'npm:1.2.5'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
           '@types/connect',
           [
             [
@@ -3129,6 +3184,37 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          '@types/filesystem',
+          [
+            [
+              'npm:0.0.30',
+              {
+                packageLocation:
+                  './.yarn/cache/@types-filesystem-npm-0.0.30-1d0b4f7b1a-258d047812.zip/node_modules/@types/filesystem/',
+                packageDependencies: [
+                  ['@types/filesystem', 'npm:0.0.30'],
+                  ['@types/filewriter', 'npm:0.0.29'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@types/filewriter',
+          [
+            [
+              'npm:0.0.29',
+              {
+                packageLocation:
+                  './.yarn/cache/@types-filewriter-npm-0.0.29-08151cd903-7a178fb74d.zip/node_modules/@types/filewriter/',
+                packageDependencies: [['@types/filewriter', 'npm:0.0.29']],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
           '@types/glob',
           [
             [
@@ -3141,6 +3227,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['@types/minimatch', 'npm:3.0.4'],
                   ['@types/node', 'npm:14.14.41'],
                 ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@types/har-format',
+          [
+            [
+              'npm:1.2.5',
+              {
+                packageLocation:
+                  './.yarn/cache/@types-har-format-npm-1.2.5-3b7666ab65-1dbaa1d7cd.zip/node_modules/@types/har-format/',
+                packageDependencies: [['@types/har-format', 'npm:1.2.5']],
                 linkType: 'HARD',
               },
             ],
@@ -15433,6 +15533,39 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['tslib', 'npm:1.14.1'],
                 ],
                 linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          'rym-scraper',
+          [
+            [
+              'workspace:packages/rym-scraper',
+              {
+                packageLocation: './packages/rym-scraper/',
+                packageDependencies: [
+                  ['rym-scraper', 'workspace:packages/rym-scraper'],
+                  ['@builder/core', 'workspace:packages/builder/packages/core'],
+                  [
+                    '@builder/plugin-copy',
+                    'workspace:packages/builder/packages/plugin-copy',
+                  ],
+                  [
+                    '@builder/plugin-esbuild',
+                    'workspace:packages/builder/packages/plugin-esbuild',
+                  ],
+                  [
+                    '@builder/plugin-eslint',
+                    'workspace:packages/builder/packages/plugin-eslint',
+                  ],
+                  [
+                    '@builder/plugin-typescript',
+                    'workspace:packages/builder/packages/plugin-typescript',
+                  ],
+                  ['@types/chrome', 'npm:0.0.135'],
+                ],
+                linkType: 'SOFT',
               },
             ],
           ],

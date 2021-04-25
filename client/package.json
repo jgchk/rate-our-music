@@ -6,6 +6,7 @@
   "scripts": {
     "builder": "yarn workspace builder",
     "client": "yarn workspace client",
+    "scraper": "yarn workspace rym-scraper",
     "dev": "yarn client dev",
     "prod": "yarn client prod"
   },

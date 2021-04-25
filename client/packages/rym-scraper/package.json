@@ -1,0 +1,17 @@
+{
+  "name": "rym-scraper",
+  "scripts": {
+    "dev": "mkdir -p ./output && cp manifest.json ./output && node build.js --dev",
+    "prod": "mkdir -p ./output && cp manifest.json ./output && node build.js --prod"
+  },
+  "devDependencies": {
+    "@builder/core": "workspace:packages/builder/packages/core",
+    "@builder/plugin-copy": "workspace:packages/builder/packages/plugin-copy",
+    "@builder/plugin-esbuild": "workspace:packages/builder/packages/plugin-esbuild",
+    "@builder/plugin-eslint": "workspace:packages/builder/packages/plugin-eslint",
+    "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript"
+  },
+  "dependencies": {
+    "@types/chrome": "^0.0.135"
+  }
+}

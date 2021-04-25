@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "RYM Scraper",
+  "version": "1.0.0",
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.rateyourmusic.com/release/*"],
+      "js": ["release/index.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["./background/index.js"]
+  },
+  "permissions": ["storage", "downloads"]
+}

@@ -644,6 +644,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@builder/plugin-copy@workspace:packages/builder/packages/plugin-copy":
+  version: 0.0.0-use.local
+  resolution: "@builder/plugin-copy@workspace:packages/builder/packages/plugin-copy"
+  dependencies:
+    "@builder/core": "workspace:packages/builder/packages/core"
+    "@types/node": ^14.14.41
+    typescript: ^4.2.4
+  languageName: unknown
+  linkType: soft
+
 "@builder/plugin-dev-server@workspace:packages/builder/packages/plugin-dev-server":
   version: 0.0.0-use.local
   resolution: "@builder/plugin-dev-server@workspace:packages/builder/packages/plugin-dev-server"
@@ -1134,6 +1144,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome@npm:^0.0.135":
+  version: 0.0.135
+  resolution: "@types/chrome@npm:0.0.135"
+  dependencies:
+    "@types/filesystem": "*"
+    "@types/har-format": "*"
+  checksum: 0619796ce1a174d807d82c412f4c988447d3b3f4195a993dd88166864ed568623e8bad9f7aaae96c99b2cefcf9532ead978ae36ade21dc6dfd8435a34db277ec
+  languageName: node
+  linkType: hard
+
 "@types/connect@npm:*":
   version: 3.4.34
   resolution: "@types/connect@npm:3.4.34"
@@ -1202,6 +1222,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/filesystem@npm:*":
+  version: 0.0.30
+  resolution: "@types/filesystem@npm:0.0.30"
+  dependencies:
+    "@types/filewriter": "*"
+  checksum: 258d04781219eafa4a79c0b3c6279ade52bfacf79a279cd4b4a703c0bb8b531fc5323ebcbc95acebccaf28a823ee9f8682a819fdb9c0a5bb3a059aac92a026bd
+  languageName: node
+  linkType: hard
+
+"@types/filewriter@npm:*":
+  version: 0.0.29
+  resolution: "@types/filewriter@npm:0.0.29"
+  checksum: 7a178fb74d3973d422005420d1b05c9054189edbdc34511803a3090221e466b7732e4e1eff8188be59dd4bd59c566d4411efe83c0cfd66293e7b1cc7a8385975
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.1":
   version: 7.1.3
   resolution: "@types/glob@npm:7.1.3"
@@ -1209,6 +1245,13 @@ __metadata:
     "@types/minimatch": "*"
     "@types/node": "*"
   checksum: 633bf1dda9a30899b233ed6b97c75cdd59f2ee856a12240c85474ce6889e26b3b3520b62de56f6bb61824af0ef51b311a0cae305f27ba0de8ddc4898a3673d42
+  languageName: node
+  linkType: hard
+
+"@types/har-format@npm:*":
+  version: 1.2.5
+  resolution: "@types/har-format@npm:1.2.5"
+  checksum: 1dbaa1d7cddb2fa0ddf533e8ae7f20bca2116738274a1a1e9fe2863b6c26e668b59ac4dfdfb45450d5c374de689721647ca891aa342e239049f69d5de3604cd9
   languageName: node
   linkType: hard
 
@@ -7925,6 +7968,19 @@ resolve@^2.0.0-next.3:
   checksum: 1146975cbd5388ee5e61450235dc5670931e43cce71813f567977d334acc4d75c6e8d9d293df67e1fb31510b99fc8957943d4a9b550d109e4dc69967a8471543
   languageName: node
   linkType: hard
+
+"rym-scraper@workspace:packages/rym-scraper":
+  version: 0.0.0-use.local
+  resolution: "rym-scraper@workspace:packages/rym-scraper"
+  dependencies:
+    "@builder/core": "workspace:packages/builder/packages/core"
+    "@builder/plugin-copy": "workspace:packages/builder/packages/plugin-copy"
+    "@builder/plugin-esbuild": "workspace:packages/builder/packages/plugin-esbuild"
+    "@builder/plugin-eslint": "workspace:packages/builder/packages/plugin-eslint"
+    "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript"
+    "@types/chrome": ^0.0.135
+  languageName: unknown
+  linkType: soft
 
 "safe-buffer@npm:5.1.2, safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
