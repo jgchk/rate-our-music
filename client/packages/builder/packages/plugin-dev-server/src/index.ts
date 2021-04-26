@@ -22,6 +22,7 @@ export const devServerPlugin = (options: DevServerPluginOptions): Plugin => ({
     httpServer.listen(8080)
     build.onClose(() => {
       httpServer.close()
+      wsServer.close()
     })
 
     build.onBuilt((result) => {

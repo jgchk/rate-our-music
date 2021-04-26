@@ -1,3 +1,4 @@
 .eslintrc.js
-output/
+tailwind.config.js
 packages/*/build.js
+output/

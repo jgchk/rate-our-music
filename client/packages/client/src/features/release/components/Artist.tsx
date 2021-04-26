@@ -4,7 +4,6 @@ import { Link } from '../../common/components/Link'
 import { useGetArtistAction } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
-import classes from './Artist.module.css'
 
 export type Props = { id: number }
 
@@ -24,7 +23,7 @@ export const Artist: FunctionComponent<Props> = ({ id }) => {
   if (!artist) return <div>No artist found with id: {id}</div>
 
   return (
-    <Link className={classes.artist} href={`/artist/${artist.id}`}>
+    <Link className='font-lg' href={`/artist/${artist.id}`}>
       {artist.name}
     </Link>
   )

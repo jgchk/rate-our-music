@@ -5,6 +5,8 @@
   ],
   "scripts": {
     "core": "yarn workspace @builder/core",
+    "esbuild-plugin-pnp": "yarn workspace @builder/esbuild-plugin-pnp",
+    "esbuild-plugin-postcss": "yarn workspace @builder/esbuild-plugin-postcss",
     "plugin-copy": "yarn workspace @builder/plugin-copy",
     "plugin-dev-server": "yarn workspace @builder/plugin-dev-server",
     "plugin-esbuild": "yarn workspace @builder/plugin-esbuild",

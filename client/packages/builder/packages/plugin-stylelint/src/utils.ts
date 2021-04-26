@@ -22,3 +22,6 @@ export const formatResult = ({ result, warning }: ResultWarning): Issue => {
     },
   }
 }
+
+export const isErrorObject = (error: unknown): error is { message: string } =>
+  typeof error === 'object' && error !== null && 'message' in error

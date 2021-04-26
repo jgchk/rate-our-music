@@ -6,9 +6,7 @@ import {
 } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
-import pageClasses from '../pages/ReleasePage.module.css'
 import { RatingStars } from './RatingStars'
-import classes from './ReviewWithText.module.css'
 import { UserLink } from './UserLink'
 
 export type Props = {
@@ -31,8 +29,8 @@ export const ReleaseReviewWithText: FunctionComponent<Props> = ({ id }) => {
   if (!review) return <div>No review found with id: {id}</div>
 
   return (
-    <div className={pageClasses.section}>
-      <div className={classes.header}>
+    <div>
+      <div className='flex align-center justify-between'>
         <UserLink id={review.user} />
         <RatingStars value={review.rating ?? 0} />
       </div>
@@ -57,8 +55,8 @@ export const TrackReviewWithText: FunctionComponent<Props> = ({ id }) => {
   if (!review) return <div>No review found with id: {id}</div>
 
   return (
-    <div className={pageClasses.section}>
-      <div className={classes.header}>
+    <div>
+      <div className='flex align-center justify-between'>
         <UserLink id={review.user} />
         <RatingStars value={review.rating ?? 0} />
       </div>

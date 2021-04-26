@@ -1,6 +1,6 @@
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads'
 import * as stylelint from 'stylelint'
-import { formatResult, isError, isWarning } from './utils'
+import { formatResult, isError, isErrorObject, isWarning } from './utils'
 import {
   FromThread,
   Plugin,
@@ -57,9 +57,23 @@ if (!isMainThread) {
     switch (message.fn) {
       case 'onBuild': {
         return void (async () => {
-          const { results } = await stylelint.lint({
-            files: message.args.files ?? files,
-          })
+          let results: stylelint.LintResult[]
+          try {
+            results = (
+              await stylelint.lint({
+                files: message.args.files ?? files,
+              })
+            ).results
+          } catch (error: unknown) {
+            if (
+              isErrorObject(error) &&
+              error.message.startsWith('No files matching the pattern')
+            ) {
+              results = (await stylelint.lint({ files })).results
+            } else {
+              throw error
+            }
+          }
 
           const messages = results.flatMap((result) =>
             result.warnings.map((warning) => ({ result, warning }))

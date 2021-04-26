@@ -2,7 +2,6 @@ import { FunctionComponent, h } from 'preact'
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 import { range } from '../../common/utils/array'
 import { RatingStar } from './RatingStars'
-import classes from './RatingStars.module.css'
 
 const RatingStarInput: FunctionComponent<{
   value: number
@@ -27,11 +26,7 @@ const RatingStarInput: FunctionComponent<{
   }
 
   return (
-    <div
-      className={classes.interactive}
-      ref={ref}
-      onMouseMove={handleMouseMove}
-    >
+    <div className='cursor-pointer' ref={ref} onMouseMove={handleMouseMove}>
       <RatingStar value={value} />
     </div>
   )
@@ -47,7 +42,7 @@ export const RatingStarsInput: FunctionComponent<{
 
   return (
     <div
-      className={classes.container}
+      className='flex'
       onClick={() => onChange(displayValue)}
       onMouseLeave={() => setDisplayValue(value)}
     >

@@ -644,6 +644,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@builder/esbuild-plugin-pnp@workspace:packages/builder/packages/esbuild-plugin-pnp":
+  version: 0.0.0-use.local
+  resolution: "@builder/esbuild-plugin-pnp@workspace:packages/builder/packages/esbuild-plugin-pnp"
+  dependencies:
+    "@builder/core": "workspace:packages/builder/packages/core"
+    "@types/node": ^14.14.41
+    "@types/pnpapi": ^0.0.1
+    esbuild: ^0.11.12
+    typescript: ^4.2.4
+  languageName: unknown
+  linkType: soft
+
+"@builder/esbuild-plugin-postcss@workspace:packages/builder/packages/esbuild-plugin-postcss":
+  version: 0.0.0-use.local
+  resolution: "@builder/esbuild-plugin-postcss@workspace:packages/builder/packages/esbuild-plugin-postcss"
+  dependencies:
+    "@builder/core": "workspace:packages/builder/packages/core"
+    "@types/node": ^14.14.41
+    "@types/tmp": ^0.2.0
+    esbuild: ^0.11.12
+    postcss: ^8.2.10
+    postcss-modules: ^4.0.0
+    tmp: ^0.2.1
+    typescript: ^4.2.4
+  languageName: unknown
+  linkType: soft
+
 "@builder/plugin-copy@workspace:packages/builder/packages/plugin-copy":
   version: 0.0.0-use.local
   resolution: "@builder/plugin-copy@workspace:packages/builder/packages/plugin-copy"
@@ -677,15 +704,7 @@ __metadata:
   dependencies:
     "@builder/core": "workspace:packages/builder/packages/core"
     "@types/node": ^14.14.41
-    "@types/pnpapi": ^0.0.1
-    "@types/tmp": ^0.2.0
     esbuild: ^0.11.12
-    esbuild-plugin-pnp: ^0.3.0
-    postcss: ^8.2.10
-    postcss-color-mod-function: ^3.0.3
-    postcss-modules: ^4.0.0
-    postcss-nesting: ^7.0.1
-    tmp: ^0.2.1
     typescript: ^4.2.4
   languageName: unknown
   linkType: soft
@@ -744,13 +763,6 @@ __metadata:
     typescript: ^4.2.4
   languageName: unknown
   linkType: soft
-
-"@csstools/convert-colors@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@csstools/convert-colors@npm:1.4.0"
-  checksum: c8c8e6b5b3c2ae7e2c4a0ff376b79e09c8e350f3a3973eee8d42372f3e49d41c43172087c426e33fefdb9057de8a6f23cabf31e6201adce3f78d4b25e1722b50
-  languageName: node
-  linkType: hard
 
 "@eslint/eslintrc@npm:^0.4.0":
   version: 0.4.0
@@ -2502,12 +2514,16 @@ __metadata:
   resolution: "client@workspace:packages/client"
   dependencies:
     "@builder/core": "workspace:packages/builder/packages/core"
+    "@builder/esbuild-plugin-pnp": "workspace:packages/builder/packages/esbuild-plugin-pnp"
+    "@builder/esbuild-plugin-postcss": "workspace:packages/builder/packages/esbuild-plugin-postcss"
     "@builder/plugin-dev-server": "workspace:packages/builder/packages/plugin-dev-server"
     "@builder/plugin-esbuild": "workspace:packages/builder/packages/plugin-esbuild"
     "@builder/plugin-eslint": "workspace:packages/builder/packages/plugin-eslint"
     "@builder/plugin-graphql": "workspace:packages/builder/packages/plugin-graphql"
     "@builder/plugin-stylelint": "workspace:packages/builder/packages/plugin-stylelint"
     "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript"
+    postcss: ^8.2.12
+    postcss-import: ^14.0.1
     preact: ^10.5.13
     typescript: ^4.2.4
     typescript-plugin-css-modules: ^3.2.0
@@ -3293,15 +3309,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-plugin-pnp@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "esbuild-plugin-pnp@npm:0.3.0"
-  peerDependencies:
-    esbuild: ^0.8.1
-  checksum: b80ab17bea35ab6eaf9a9adc14c52667c0a5e2c7c8c8e97194c57feb7d14b7247228745a3ad34f69447d6c5241081f38b9786948b879bf0051a479ce74450edc
-  languageName: node
-  linkType: hard
-
 "esbuild@npm:^0.11.12":
   version: 0.11.12
   resolution: "esbuild@npm:0.11.12"
@@ -3928,13 +3935,6 @@ __metadata:
   version: 3.1.1
   resolution: "flatted@npm:3.1.1"
   checksum: 1065cd78294ea651b8c1b96c298a3e70893a23da655e2288e40c06d5d9b1ebce4bd977e604678e01065a92580f3de5078d60d9ee4cdcede9a9989859d7eb5057
-  languageName: node
-  linkType: hard
-
-"flatten@npm:^1.0.2":
-  version: 1.0.3
-  resolution: "flatten@npm:1.0.3"
-  checksum: 8a382594dc7bb4e4f28739a4abcd9d6f5c74d4be370892c10386a09656722e1a822137dc48c4bff15758e0656f8fee7bb3001133d068431796cf17b1f52a969a
   languageName: node
   linkType: hard
 
@@ -6915,7 +6915,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"pify@npm:^2.0.0":
+"pify@npm:^2.0.0, pify@npm:^2.3.0":
   version: 2.3.0
   resolution: "pify@npm:2.3.0"
   checksum: d5758aa570bbd5969c62b5f745065006827ef4859b32af302e3df2bb5978e6c1e50c2360d7ffefa102e451084f4530115c84570c185ba5153ee9871c977fe278
@@ -6968,17 +6968,6 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss-color-mod-function@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "postcss-color-mod-function@npm:3.0.3"
-  dependencies:
-    "@csstools/convert-colors": ^1.4.0
-    postcss: ^7.0.2
-    postcss-values-parser: ^2.0.0
-  checksum: dd484df73c5623bd8cb27d9f465b858f7334ec739e3914fe000b823130c269af105caec81fc0b3280b377954b91ee6606769ebde78833bf9b0b786574baad75e
-  languageName: node
-  linkType: hard
-
 "postcss-filter-plugins@npm:^3.0.1":
   version: 3.0.1
   resolution: "postcss-filter-plugins@npm:3.0.1"
@@ -7021,6 +7010,19 @@ fsevents@~2.3.1:
     lodash: ^4.17.4
     postcss: ^6.0.2
   checksum: e5db6c7b4af4ecc376f9d406663773a6abf941a254dab39ffa28ebc463abe8958640298a73b351b1281009909ca3fe9cecace64ee3eb0bb0ec53650a452d83b3
+  languageName: node
+  linkType: hard
+
+"postcss-import@npm:^14.0.1":
+  version: 14.0.1
+  resolution: "postcss-import@npm:14.0.1"
+  dependencies:
+    postcss-value-parser: ^4.0.0
+    read-cache: ^1.0.0
+    resolve: ^1.1.7
+  peerDependencies:
+    postcss: ^8.0.0
+  checksum: e903063ed17358988174f637a8b951de47e72a3d68e4a45e363c261943cc1e7efe78e9db4f13166ad3cf176f3e4b9f51f3192d3894f192bbef57871f94dd0cc5
   languageName: node
   linkType: hard
 
@@ -7137,15 +7139,6 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss-nesting@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "postcss-nesting@npm:7.0.1"
-  dependencies:
-    postcss: ^7.0.2
-  checksum: ffc3c12f831b83f3276be86d6cf4d7e897146cbd7d40c01765ff8b25bcc238e9503741a63acd157e8a54df588f8a5a6d46aa6c2c27ab242985503b4d2208ddab
-  languageName: node
-  linkType: hard
-
 "postcss-reporter@npm:^6.0.0":
   version: 6.0.1
   resolution: "postcss-reporter@npm:6.0.1"
@@ -7250,21 +7243,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss-value-parser@npm:^4.1.0":
+"postcss-value-parser@npm:^4.0.0, postcss-value-parser@npm:^4.1.0":
   version: 4.1.0
   resolution: "postcss-value-parser@npm:4.1.0"
   checksum: 70831403886859289f650550a38889857022c5bbe264fd5d39cfad5207b3e1d33422edc031c1a922f3ae29d0dff98837a8bf126c840374d2b0079e7d57cf7d71
-  languageName: node
-  linkType: hard
-
-"postcss-values-parser@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "postcss-values-parser@npm:2.0.1"
-  dependencies:
-    flatten: ^1.0.2
-    indexes-of: ^1.0.1
-    uniq: ^1.0.1
-  checksum: dfc25618bed3ba74da9adb4df9535dc0edd03e4618fb6774d0327934970876f93f565071bce97faa96ef236da2ce43ec2efeae240fc2eedc0e764e379b3e9441
   languageName: node
   linkType: hard
 
@@ -7298,6 +7280,17 @@ fsevents@~2.3.1:
     nanoid: ^3.1.22
     source-map: ^0.6.1
   checksum: 83912f846376ceb501d887951bb3c7f5efc16452b124ba5ffbdd27f718dabd1edce8f6ef777a88aeb93366081cc2a3804581b2e6711a1e89ecaecb0dff2d2b73
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.2.12":
+  version: 8.2.12
+  resolution: "postcss@npm:8.2.12"
+  dependencies:
+    colorette: ^1.2.2
+    nanoid: ^3.1.22
+    source-map: ^0.6.1
+  checksum: f16956a6cc20ae78390338362e0640fa25a88895ddc55bd5850536a3140897a538fe91b5d6dc9c84147a20ff100f6389b7445deb539159bea4df7e584f5a63ac
   languageName: node
   linkType: hard
 
@@ -7468,6 +7461,15 @@ fsevents@~2.3.1:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
+  languageName: node
+  linkType: hard
+
+"read-cache@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "read-cache@npm:1.0.0"
+  dependencies:
+    pify: ^2.3.0
+  checksum: 17a1996977e6b7f6d7086ccd3a918b1d353ec012888a2a074d0a9ed846a386241e461007466adc34c9d463c8e2797a42edc717fe01e5c03592710513f23657f5
   languageName: node
   linkType: hard
 
@@ -7858,7 +7860,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"resolve@^1.10.0, resolve@^1.13.1, resolve@^1.17.0, resolve@^1.20.0":
+"resolve@^1.1.7, resolve@^1.10.0, resolve@^1.13.1, resolve@^1.17.0, resolve@^1.20.0":
   version: 1.20.0
   resolution: "resolve@npm:1.20.0"
   dependencies:
@@ -7878,7 +7880,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.7#builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>":
   version: 1.20.0
   resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
   dependencies:

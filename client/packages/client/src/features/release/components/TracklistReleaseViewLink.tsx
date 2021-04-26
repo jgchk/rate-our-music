@@ -1,19 +1,16 @@
 import { FunctionComponent, h } from 'preact'
 import { CornerUpLeft } from '../../common/components/icons/CornerUpLeft'
-import { clsx } from '../../common/utils/clsx'
 import { Link } from '../../routing/components/Link'
-import trackClasses from './Track.module.css'
-import classes from './TracklistReleaseViewLink.module.css'
 
 export type Props = {
   href: string
 }
 
 export const ReleaseViewLink: FunctionComponent<Props> = ({ href }) => (
-  <Link className={clsx(classes.container, trackClasses.container)} href={href}>
-    <div className={classes.icon}>
-      <CornerUpLeft />
+  <Link className={'flex p-3'} href={href}>
+    <div className='flex-1'>
+      <CornerUpLeft size={20} />
     </div>
-    <div className={classes.text}>Release View</div>
+    <div className='flex-16 font-medium'>Release View</div>
   </Link>
 )

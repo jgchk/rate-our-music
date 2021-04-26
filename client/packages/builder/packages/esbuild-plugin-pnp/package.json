@@ -1,5 +1,5 @@
 {
-  "name": "@builder/plugin-esbuild",
+  "name": "@builder/esbuild-plugin-pnp",
   "main": "./output/index.js",
   "types": "./output/index.d.ts",
   "files": [
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@builder/core": "workspace:packages/builder/packages/core",
+    "@types/pnpapi": "^0.0.1",
     "esbuild": "^0.11.12"
   },
   "devDependencies": {

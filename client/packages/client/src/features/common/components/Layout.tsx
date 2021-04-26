@@ -2,8 +2,6 @@ import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { useLoginAction } from '../../auth/hooks/useAuthAction'
 import { NavBar } from '../../routing/components/NavBar'
-import { clsx } from '../utils/clsx'
-import classes from './Layout.module.css'
 
 export const Layout: FunctionComponent = ({ children }) => {
   // TODO: move somewhere that makes more sense
@@ -11,9 +9,11 @@ export const Layout: FunctionComponent = ({ children }) => {
   useEffect(() => login('admin', 'admin'), [login])
 
   return (
-    <div className={clsx(classes.outer, 'dark')}>
-      <NavBar />
-      <div className={classes.inner}>{children}</div>
+    <div className='w-screen h-screen'>
+      <div className='w-full h-full flex flex-col align-center'>
+        <NavBar />
+        <div className='flex-1 w-full max-w-screen-2xl'>{children}</div>
+      </div>
     </div>
   )
 }

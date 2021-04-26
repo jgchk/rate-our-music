@@ -1,5 +1,5 @@
 {
-  "name": "@builder/plugin-esbuild",
+  "name": "@builder/esbuild-plugin-postcss",
   "main": "./output/index.js",
   "types": "./output/index.d.ts",
   "files": [
@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@builder/core": "workspace:packages/builder/packages/core",
-    "esbuild": "^0.11.12"
+    "@types/tmp": "^0.2.0",
+    "esbuild": "^0.11.12",
+    "postcss": "^8.2.10",
+    "postcss-modules": "^4.0.0",
+    "tmp": "^0.2.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.41",

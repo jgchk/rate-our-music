@@ -42,6 +42,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           reference: 'workspace:packages/builder/packages/core',
         },
         {
+          name: '@builder/esbuild-plugin-pnp',
+          reference: 'workspace:packages/builder/packages/esbuild-plugin-pnp',
+        },
+        {
+          name: '@builder/esbuild-plugin-postcss',
+          reference:
+            'workspace:packages/builder/packages/esbuild-plugin-postcss',
+        },
+        {
           name: '@builder/plugin-copy',
           reference: 'workspace:packages/builder/packages/plugin-copy',
         },
@@ -75,6 +84,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         '(^(?:\\.yarn\\/sdks(?:\\/(?!\\.)(?:(?:(?!(?:^|\\/)\\.).)*?)|$))$)',
       fallbackExclusionList: [
         ['@builder/core', ['workspace:packages/builder/packages/core']],
+        [
+          '@builder/esbuild-plugin-pnp',
+          ['workspace:packages/builder/packages/esbuild-plugin-pnp'],
+        ],
+        [
+          '@builder/esbuild-plugin-postcss',
+          ['workspace:packages/builder/packages/esbuild-plugin-postcss'],
+        ],
         [
           '@builder/plugin-copy',
           ['workspace:packages/builder/packages/plugin-copy'],
@@ -1762,6 +1779,66 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
+          '@builder/esbuild-plugin-pnp',
+          [
+            [
+              'workspace:packages/builder/packages/esbuild-plugin-pnp',
+              {
+                packageLocation:
+                  './packages/builder/packages/esbuild-plugin-pnp/',
+                packageDependencies: [
+                  [
+                    '@builder/esbuild-plugin-pnp',
+                    'workspace:packages/builder/packages/esbuild-plugin-pnp',
+                  ],
+                  ['@builder/core', 'workspace:packages/builder/packages/core'],
+                  ['@types/node', 'npm:14.14.41'],
+                  ['@types/pnpapi', 'npm:0.0.1'],
+                  ['esbuild', 'npm:0.11.12'],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e',
+                  ],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+          ],
+        ],
+        [
+          '@builder/esbuild-plugin-postcss',
+          [
+            [
+              'workspace:packages/builder/packages/esbuild-plugin-postcss',
+              {
+                packageLocation:
+                  './packages/builder/packages/esbuild-plugin-postcss/',
+                packageDependencies: [
+                  [
+                    '@builder/esbuild-plugin-postcss',
+                    'workspace:packages/builder/packages/esbuild-plugin-postcss',
+                  ],
+                  ['@builder/core', 'workspace:packages/builder/packages/core'],
+                  ['@types/node', 'npm:14.14.41'],
+                  ['@types/tmp', 'npm:0.2.0'],
+                  ['esbuild', 'npm:0.11.12'],
+                  ['postcss', 'npm:8.2.10'],
+                  [
+                    'postcss-modules',
+                    'virtual:237320e181e5184f765b060839ed93fff0955dfcd184a685459c090baa2cc6170ba90f418675cd8cd73c39ab1238006fa7e427c9efefe38c776381a81527290c#npm:4.0.0',
+                  ],
+                  ['tmp', 'npm:0.2.1'],
+                  [
+                    'typescript',
+                    'patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e',
+                  ],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+          ],
+        ],
+        [
           '@builder/plugin-copy',
           [
             [
@@ -1834,21 +1911,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ],
                   ['@builder/core', 'workspace:packages/builder/packages/core'],
                   ['@types/node', 'npm:14.14.41'],
-                  ['@types/pnpapi', 'npm:0.0.1'],
-                  ['@types/tmp', 'npm:0.2.0'],
                   ['esbuild', 'npm:0.11.12'],
-                  [
-                    'esbuild-plugin-pnp',
-                    'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:0.3.0',
-                  ],
-                  ['postcss', 'npm:8.2.10'],
-                  ['postcss-color-mod-function', 'npm:3.0.3'],
-                  [
-                    'postcss-modules',
-                    'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:4.0.0',
-                  ],
-                  ['postcss-nesting', 'npm:7.0.1'],
-                  ['tmp', 'npm:0.2.1'],
                   [
                     'typescript',
                     'patch:typescript@npm%3A4.2.4#builtin<compat/typescript>::version=4.2.4&hash=a45b0e',
@@ -1992,22 +2055,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ],
                 ],
                 linkType: 'SOFT',
-              },
-            ],
-          ],
-        ],
-        [
-          '@csstools/convert-colors',
-          [
-            [
-              'npm:1.4.0',
-              {
-                packageLocation:
-                  './.yarn/cache/@csstools-convert-colors-npm-1.4.0-43f8302fcb-c8c8e6b5b3.zip/node_modules/@csstools/convert-colors/',
-                packageDependencies: [
-                  ['@csstools/convert-colors', 'npm:1.4.0'],
-                ],
-                linkType: 'HARD',
               },
             ],
           ],
@@ -5655,6 +5702,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['client', 'workspace:packages/client'],
                   ['@builder/core', 'workspace:packages/builder/packages/core'],
                   [
+                    '@builder/esbuild-plugin-pnp',
+                    'workspace:packages/builder/packages/esbuild-plugin-pnp',
+                  ],
+                  [
+                    '@builder/esbuild-plugin-postcss',
+                    'workspace:packages/builder/packages/esbuild-plugin-postcss',
+                  ],
+                  [
                     '@builder/plugin-dev-server',
                     'workspace:packages/builder/packages/plugin-dev-server',
                   ],
@@ -5677,6 +5732,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     '@builder/plugin-typescript',
                     'workspace:packages/builder/packages/plugin-typescript',
+                  ],
+                  ['postcss', 'npm:8.2.12'],
+                  [
+                    'postcss-import',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:14.0.1',
                   ],
                   ['preact', 'npm:10.5.13'],
                   [
@@ -7125,37 +7185,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
         ],
         [
-          'esbuild-plugin-pnp',
-          [
-            [
-              'npm:0.3.0',
-              {
-                packageLocation:
-                  './.yarn/cache/esbuild-plugin-pnp-npm-0.3.0-c8f5fdc52d-b80ab17bea.zip/node_modules/esbuild-plugin-pnp/',
-                packageDependencies: [['esbuild-plugin-pnp', 'npm:0.3.0']],
-                linkType: 'SOFT',
-              },
-            ],
-            [
-              'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:0.3.0',
-              {
-                packageLocation:
-                  './.yarn/$$virtual/esbuild-plugin-pnp-virtual-85b01cf5a1/0/cache/esbuild-plugin-pnp-npm-0.3.0-c8f5fdc52d-b80ab17bea.zip/node_modules/esbuild-plugin-pnp/',
-                packageDependencies: [
-                  [
-                    'esbuild-plugin-pnp',
-                    'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:0.3.0',
-                  ],
-                  ['@types/esbuild', null],
-                  ['esbuild', 'npm:0.11.12'],
-                ],
-                packagePeers: ['@types/esbuild', 'esbuild'],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
           'escalade',
           [
             [
@@ -8296,20 +8325,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation:
                   './.yarn/cache/flatted-npm-3.1.1-ffd80d62a2-1065cd7829.zip/node_modules/flatted/',
                 packageDependencies: [['flatted', 'npm:3.1.1']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'flatten',
-          [
-            [
-              'npm:1.0.3',
-              {
-                packageLocation:
-                  './.yarn/cache/flatten-npm-1.0.3-87bf6559dd-8a382594dc.zip/node_modules/flatten/',
-                packageDependencies: [['flatten', 'npm:1.0.3']],
                 linkType: 'HARD',
               },
             ],
@@ -9466,14 +9481,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:8642c9fe67dbdb86a4c3ed8b1b4850456c4beb1982d85845652b2a9d6b98a2662eb77bfcdb74c0041e502e2bad7bff63992c39acd759a404ca3eda5af9d1345d#npm:5.1.0',
+              'virtual:55f8a70dfa07a73ddb205ec665298bfaece9a764f0c504e6ba6f165e257c6a5aa6d71eedde8759476a5626208b4f672b47cad0ec4021b44fda09aa939e0aa5d2#npm:5.1.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/icss-utils-virtual-37ff3147c9/0/cache/icss-utils-npm-5.1.0-8d8c062d07-4bf5c2e25b.zip/node_modules/icss-utils/',
+                  './.yarn/$$virtual/icss-utils-virtual-64d2ff9db9/0/cache/icss-utils-npm-5.1.0-8d8c062d07-4bf5c2e25b.zip/node_modules/icss-utils/',
                 packageDependencies: [
                   [
                     'icss-utils',
-                    'virtual:8642c9fe67dbdb86a4c3ed8b1b4850456c4beb1982d85845652b2a9d6b98a2662eb77bfcdb74c0041e502e2bad7bff63992c39acd759a404ca3eda5af9d1345d#npm:5.1.0',
+                    'virtual:55f8a70dfa07a73ddb205ec665298bfaece9a764f0c504e6ba6f165e257c6a5aa6d71eedde8759476a5626208b4f672b47cad0ec4021b44fda09aa939e0aa5d2#npm:5.1.0',
                   ],
                   ['@types/postcss', null],
                   ['postcss', 'npm:8.2.10'],
@@ -13622,21 +13637,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 linkType: 'HARD',
               },
             ],
-          ],
-        ],
-        [
-          'postcss-color-mod-function',
-          [
             [
-              'npm:3.0.3',
+              'npm:8.2.12',
               {
                 packageLocation:
-                  './.yarn/cache/postcss-color-mod-function-npm-3.0.3-1c53b2ef12-dd484df73c.zip/node_modules/postcss-color-mod-function/',
+                  './.yarn/cache/postcss-npm-8.2.12-04b65adb65-f16956a6cc.zip/node_modules/postcss/',
                 packageDependencies: [
-                  ['postcss-color-mod-function', 'npm:3.0.3'],
-                  ['@csstools/convert-colors', 'npm:1.4.0'],
-                  ['postcss', 'npm:7.0.35'],
-                  ['postcss-values-parser', 'npm:2.0.1'],
+                  ['postcss', 'npm:8.2.12'],
+                  ['colorette', 'npm:1.2.2'],
+                  ['nanoid', 'npm:3.1.22'],
+                  ['source-map', 'npm:0.6.1'],
                 ],
                 linkType: 'HARD',
               },
@@ -13765,6 +13775,43 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['lodash', 'npm:4.17.21'],
                   ['postcss', 'npm:6.0.23'],
                 ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          'postcss-import',
+          [
+            [
+              'npm:14.0.1',
+              {
+                packageLocation:
+                  './.yarn/cache/postcss-import-npm-14.0.1-98dd213246-e903063ed1.zip/node_modules/postcss-import/',
+                packageDependencies: [['postcss-import', 'npm:14.0.1']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:14.0.1',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/postcss-import-virtual-1d569ce019/0/cache/postcss-import-npm-14.0.1-98dd213246-e903063ed1.zip/node_modules/postcss-import/',
+                packageDependencies: [
+                  [
+                    'postcss-import',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:14.0.1',
+                  ],
+                  ['@types/postcss', null],
+                  ['postcss', 'npm:8.2.12'],
+                  ['postcss-value-parser', 'npm:4.1.0'],
+                  ['read-cache', 'npm:1.0.0'],
+                  [
+                    'resolve',
+                    'patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa',
+                  ],
+                ],
+                packagePeers: ['@types/postcss', 'postcss'],
                 linkType: 'HARD',
               },
             ],
@@ -13919,14 +13966,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:4.0.0',
+              'virtual:237320e181e5184f765b060839ed93fff0955dfcd184a685459c090baa2cc6170ba90f418675cd8cd73c39ab1238006fa7e427c9efefe38c776381a81527290c#npm:4.0.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/postcss-modules-virtual-6411f4bf6e/0/cache/postcss-modules-npm-4.0.0-8af58e4db6-6ffe437f92.zip/node_modules/postcss-modules/',
+                  './.yarn/$$virtual/postcss-modules-virtual-75e3595219/0/cache/postcss-modules-npm-4.0.0-8af58e4db6-6ffe437f92.zip/node_modules/postcss-modules/',
                 packageDependencies: [
                   [
                     'postcss-modules',
-                    'virtual:0743ba1a12373037becf65d1075d24feedca0350953e1310a87b0b2cdebb22da7b0018dfcf09af5f4b3204a670beb74dc9404d044c015fc12658a649b19cf074#npm:4.0.0',
+                    'virtual:237320e181e5184f765b060839ed93fff0955dfcd184a685459c090baa2cc6170ba90f418675cd8cd73c39ab1238006fa7e427c9efefe38c776381a81527290c#npm:4.0.0',
                   ],
                   ['@types/postcss', null],
                   ['generic-names', 'npm:2.0.1'],
@@ -13935,19 +13982,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['postcss', 'npm:8.2.10'],
                   [
                     'postcss-modules-extract-imports',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
                   ],
                   [
                     'postcss-modules-local-by-default',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
                   ],
                   [
                     'postcss-modules-scope',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
                   ],
                   [
                     'postcss-modules-values',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
                   ],
                   ['string-hash', 'npm:1.1.3'],
                 ],
@@ -13972,14 +14019,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+              'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/postcss-modules-extract-imports-virtual-f4032dad58/0/cache/postcss-modules-extract-imports-npm-3.0.0-619311282d-874b94fd94.zip/node_modules/postcss-modules-extract-imports/',
+                  './.yarn/$$virtual/postcss-modules-extract-imports-virtual-7c2d7212b6/0/cache/postcss-modules-extract-imports-npm-3.0.0-619311282d-874b94fd94.zip/node_modules/postcss-modules-extract-imports/',
                 packageDependencies: [
                   [
                     'postcss-modules-extract-imports',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
                   ],
                   ['@types/postcss', null],
                   ['postcss', 'npm:8.2.10'],
@@ -14005,19 +14052,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+              'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/postcss-modules-local-by-default-virtual-8642c9fe67/0/cache/postcss-modules-local-by-default-npm-4.0.0-794014f0a5-c0331dbc56.zip/node_modules/postcss-modules-local-by-default/',
+                  './.yarn/$$virtual/postcss-modules-local-by-default-virtual-55f8a70dfa/0/cache/postcss-modules-local-by-default-npm-4.0.0-794014f0a5-c0331dbc56.zip/node_modules/postcss-modules-local-by-default/',
                 packageDependencies: [
                   [
                     'postcss-modules-local-by-default',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
                   ],
                   ['@types/postcss', null],
                   [
                     'icss-utils',
-                    'virtual:8642c9fe67dbdb86a4c3ed8b1b4850456c4beb1982d85845652b2a9d6b98a2662eb77bfcdb74c0041e502e2bad7bff63992c39acd759a404ca3eda5af9d1345d#npm:5.1.0',
+                    'virtual:55f8a70dfa07a73ddb205ec665298bfaece9a764f0c504e6ba6f165e257c6a5aa6d71eedde8759476a5626208b4f672b47cad0ec4021b44fda09aa939e0aa5d2#npm:5.1.0',
                   ],
                   ['postcss', 'npm:8.2.10'],
                   ['postcss-selector-parser', 'npm:6.0.5'],
@@ -14042,14 +14089,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+              'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/postcss-modules-scope-virtual-0c99a588d0/0/cache/postcss-modules-scope-npm-3.0.0-0678040a26-0b30c7bd28.zip/node_modules/postcss-modules-scope/',
+                  './.yarn/$$virtual/postcss-modules-scope-virtual-8a0f1a96ef/0/cache/postcss-modules-scope-npm-3.0.0-0678040a26-0b30c7bd28.zip/node_modules/postcss-modules-scope/',
                 packageDependencies: [
                   [
                     'postcss-modules-scope',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:3.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:3.0.0',
                   ],
                   ['@types/postcss', null],
                   ['postcss', 'npm:8.2.10'],
@@ -14074,40 +14121,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
-              'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+              'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
               {
                 packageLocation:
-                  './.yarn/$$virtual/postcss-modules-values-virtual-f1eb3250e5/0/cache/postcss-modules-values-npm-4.0.0-63d7ec543a-43fa6db334.zip/node_modules/postcss-modules-values/',
+                  './.yarn/$$virtual/postcss-modules-values-virtual-9b0a986191/0/cache/postcss-modules-values-npm-4.0.0-63d7ec543a-43fa6db334.zip/node_modules/postcss-modules-values/',
                 packageDependencies: [
                   [
                     'postcss-modules-values',
-                    'virtual:6411f4bf6e421c92473f40d8dfbbb2ef3e345d54e0177db41c94d02493819238005a7fb2a143cad831cefa5100c39a13e140f16f3bf31f13afa0005ec3fbc754#npm:4.0.0',
+                    'virtual:75e35952193fa12e11c193e31773337dd00f7262097ed6f40ba798b81c7dc29c1bc7f3aa262e9c6d7a22c881bc1c682ce3ee8dd4bbd56ade1f2bc5600298d820#npm:4.0.0',
                   ],
                   ['@types/postcss', null],
                   [
                     'icss-utils',
-                    'virtual:8642c9fe67dbdb86a4c3ed8b1b4850456c4beb1982d85845652b2a9d6b98a2662eb77bfcdb74c0041e502e2bad7bff63992c39acd759a404ca3eda5af9d1345d#npm:5.1.0',
+                    'virtual:55f8a70dfa07a73ddb205ec665298bfaece9a764f0c504e6ba6f165e257c6a5aa6d71eedde8759476a5626208b4f672b47cad0ec4021b44fda09aa939e0aa5d2#npm:5.1.0',
                   ],
                   ['postcss', 'npm:8.2.10'],
                 ],
                 packagePeers: ['@types/postcss', 'postcss'],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'postcss-nesting',
-          [
-            [
-              'npm:7.0.1',
-              {
-                packageLocation:
-                  './.yarn/cache/postcss-nesting-npm-7.0.1-f6e24b9ad4-ffc3c12f83.zip/node_modules/postcss-nesting/',
-                packageDependencies: [
-                  ['postcss-nesting', 'npm:7.0.1'],
-                  ['postcss', 'npm:7.0.35'],
-                ],
                 linkType: 'HARD',
               },
             ],
@@ -14368,25 +14398,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation:
                   './.yarn/cache/postcss-value-parser-npm-4.1.0-4620e3e849-7083140388.zip/node_modules/postcss-value-parser/',
                 packageDependencies: [['postcss-value-parser', 'npm:4.1.0']],
-                linkType: 'HARD',
-              },
-            ],
-          ],
-        ],
-        [
-          'postcss-values-parser',
-          [
-            [
-              'npm:2.0.1',
-              {
-                packageLocation:
-                  './.yarn/cache/postcss-values-parser-npm-2.0.1-b7d7dda30d-dfc25618be.zip/node_modules/postcss-values-parser/',
-                packageDependencies: [
-                  ['postcss-values-parser', 'npm:2.0.1'],
-                  ['flatten', 'npm:1.0.3'],
-                  ['indexes-of', 'npm:1.0.1'],
-                  ['uniq', 'npm:1.0.1'],
-                ],
                 linkType: 'HARD',
               },
             ],
@@ -14738,6 +14749,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation:
                   './.yarn/cache/react-is-npm-16.13.1-a9b9382b4f-11bcf1267a.zip/node_modules/react-is/',
                 packageDependencies: [['react-is', 'npm:16.13.1']],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          'read-cache',
+          [
+            [
+              'npm:1.0.0',
+              {
+                packageLocation:
+                  './.yarn/cache/read-cache-npm-1.0.0-00fa89ed05-17a1996977.zip/node_modules/read-cache/',
+                packageDependencies: [
+                  ['read-cache', 'npm:1.0.0'],
+                  ['pify', 'npm:2.3.0'],
+                ],
                 linkType: 'HARD',
               },
             ],

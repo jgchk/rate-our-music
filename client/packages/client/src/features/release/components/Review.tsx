@@ -7,7 +7,6 @@ import {
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
 import { RatingStars } from './RatingStars'
-import classes from './Review.module.css'
 import { UserLink } from './UserLink'
 
 export type Props = {
@@ -30,7 +29,7 @@ export const ReleaseReview: FunctionComponent<Props> = ({ id }) => {
   if (!review) return <div>No review found with id: {id}</div>
 
   return (
-    <div className={classes.container}>
+    <div className='flex align-center justify-between'>
       <UserLink id={review.user} />
       <RatingStars value={review.rating ?? 0} />
     </div>
@@ -53,7 +52,7 @@ export const TrackReview: FunctionComponent<Props> = ({ id }) => {
   if (!review) return <div>No review found with id: {id}</div>
 
   return (
-    <div className={classes.container}>
+    <div className='flex align-center justify-between'>
       <UserLink id={review.user} />
       <RatingStars value={review.rating ?? 0} />
     </div>

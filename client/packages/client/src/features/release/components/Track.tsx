@@ -4,7 +4,6 @@ import { useGetTrackAction } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
 import { Link } from '../../routing/components/Link'
-import classes from './Track.module.css'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
 const formatTime = (ms: number) => {
@@ -42,11 +41,13 @@ export const Track: FunctionComponent<Props> = ({ id, index }) => {
   if (!track) return <div>No track found with id: {id}</div>
 
   return (
-    <Link className={classes.container} href={`/track/${id}`}>
-      <div className={classes.num}>{index + 1}</div>
-      <div className={classes.title}>{track.title}</div>
-      <div className={classes.duration}>
-        {track.durationMs && formatTime(track.durationMs)}
+    <Link className='flex p-3' href={`/track/${id}`}>
+      <div className='flex-1'>{index + 1}</div>
+      <div className={track.durationMs === undefined ? 'flex-16' : 'flex-15'}>
+        {track.title}
+      </div>
+      <div className='flex-1 text-right'>
+        {track.durationMs !== undefined && formatTime(track.durationMs)}
       </div>
     </Link>
   )

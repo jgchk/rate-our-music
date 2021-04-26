@@ -6,7 +6,6 @@ import {
 } from '../../common/hooks/useAction'
 import { useDispatch, useSelector } from '../../common/state/store'
 import { findMap } from '../../common/utils/array'
-import { clsx } from '../../common/utils/clsx'
 import { isLoading } from '../../common/utils/remote-data'
 import { Artist } from '../components/Artist'
 import { RatingStarsInput } from '../components/RatingStarsInput'
@@ -20,7 +19,6 @@ import {
   createTrackReview,
   updateTrackReviewRating,
 } from '../state/track-reviews'
-import classes from './ReleasePage.module.css'
 
 export type Props = {
   trackId: number
@@ -82,13 +80,11 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
   }
 
   return (
-    <div className={classes.container}>
-      <div className={clsx(classes.column, classes.left)}>
-        {release.coverArt && (
-          <img className={classes.coverArt} src={release.coverArt} />
-        )}
+    <div className='flex gap-4 p-4'>
+      <div className='flex flex-col gap-3 flex-1'>
+        {release.coverArt && <img className='w-full' src={release.coverArt} />}
         {release.tracks.size > 0 && (
-          <div className={classes.tracklist}>
+          <div className='flex flex-col'>
             <ReleaseViewLink href={`/release/${release.id}`} />
             {[...release.tracks].map((id, i) => (
               <Track key={id} id={id} index={i} />
@@ -97,10 +93,10 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
         )}
       </div>
 
-      <div className={clsx(classes.column, classes.right)}>
-        <div className={classes.section}>
-          <div className={classes.title}>{track.title}</div>
-          <ol className={clsx(classes.artists, classes.commaSeparatedList)}>
+      <div className='flex flex-col gap-3 flex-2'>
+        <div>
+          <div className='font-3xl'>{track.title}</div>
+          <ol className='comma-list'>
             {[...track.artists].map((id) => (
               <li key={id}>
                 <Artist id={id} />
@@ -112,8 +108,8 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
           )}
         </div>
 
-        <div className={classes.section}>
-          <ol className={classes.commaSeparatedList}>
+        <div>
+          <ol className='comma-list'>
             {Object.keys(track.genres)
               .map(Number)
               .map((id) => (
@@ -124,14 +120,14 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
           </ol>
         </div>
 
-        <div className={classes.section}>
+        <div>
           {track.siteRating !== undefined && (
             <div>{(track.siteRating / 2).toFixed(1)}</div>
           )}
         </div>
 
         {user && (
-          <div className={classes.section}>
+          <div>
             <RatingStarsInput
               value={userReview?.rating ?? 0}
               onChange={(rating) => {
@@ -154,7 +150,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
         )}
 
         {reviewIds && reviewIds.size > 0 && (
-          <div className={classes.section}>
+          <div>
             {[...reviewIds].map((id) => (
               <TrackReview key={id} id={id} />
             ))}

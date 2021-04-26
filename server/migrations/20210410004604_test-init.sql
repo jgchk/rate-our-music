@@ -55,3 +55,25 @@ INSERT
         , 1
         , 206000
         );
+
+INSERT
+    INTO artist
+        ( id
+        , name
+        )
+    VALUES
+        ( 0
+        , 'Euglossine'
+        );
+
+INSERT
+    INTO release_artist
+        ( release_id
+        , artist_id
+        , display_order
+        )
+    VALUES
+        ( 0
+        , 0
+        , 0
+        );

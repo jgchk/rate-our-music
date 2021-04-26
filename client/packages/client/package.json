@@ -9,12 +9,16 @@
   },
   "devDependencies": {
     "@builder/core": "workspace:packages/builder/packages/core",
+    "@builder/esbuild-plugin-pnp": "workspace:packages/builder/packages/esbuild-plugin-pnp",
+    "@builder/esbuild-plugin-postcss": "workspace:packages/builder/packages/esbuild-plugin-postcss",
     "@builder/plugin-dev-server": "workspace:packages/builder/packages/plugin-dev-server",
     "@builder/plugin-esbuild": "workspace:packages/builder/packages/plugin-esbuild",
     "@builder/plugin-eslint": "workspace:packages/builder/packages/plugin-eslint",
     "@builder/plugin-graphql": "workspace:packages/builder/packages/plugin-graphql",
     "@builder/plugin-stylelint": "workspace:packages/builder/packages/plugin-stylelint",
     "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript",
+    "postcss": "^8.2.12",
+    "postcss-import": "^14.0.1",
     "typescript": "^4.2.4",
     "typescript-plugin-css-modules": "^3.2.0"
   }

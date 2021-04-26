@@ -3,7 +3,6 @@ import { useEffect } from 'preact/hooks'
 import { useGetReleaseAction } from '../../common/hooks/useAction'
 import { useDispatch, useSelector } from '../../common/state/store'
 import { findMap } from '../../common/utils/array'
-import { clsx } from '../../common/utils/clsx'
 import { isLoading } from '../../common/utils/remote-data'
 import { Artist } from '../components/Artist'
 import { RatingStarsInput } from '../components/RatingStarsInput'
@@ -16,7 +15,6 @@ import {
   createReleaseReview,
   updateReleaseReviewRating,
 } from '../state/release-reviews'
-import classes from './ReleasePage.module.css'
 
 export type Props = {
   releaseId: number
@@ -61,23 +59,21 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
   }
 
   return (
-    <div className={classes.container}>
-      <div className={clsx(classes.column, classes.left)}>
-        {release.coverArt && (
-          <img className={classes.coverArt} src={release.coverArt} />
-        )}
+    <div className='flex gap-4 p-4'>
+      <div className='flex flex-col gap-3 flex-1'>
+        {release.coverArt && <img className='w-full' src={release.coverArt} />}
         {release.tracks.size > 0 && (
-          <div className={classes.tracklist}>
+          <div className='flex flex-col'>
             {[...release.tracks].map((id, i) => (
               <Track key={id} id={id} index={i} />
             ))}
           </div>
         )}
       </div>
-      <div className={clsx(classes.column, classes.right)}>
-        <div className={classes.section}>
-          <div className={classes.title}>{release.title}</div>
-          <ol className={clsx(classes.artists, classes.commaSeparatedList)}>
+      <div className='flex flex-col gap-3 flex-2'>
+        <div>
+          <div className='font-3xl'>{release.title}</div>
+          <ol className='comma-list'>
             {[...release.artists].map((id) => (
               <li key={id}>
                 <Artist id={id} />
@@ -89,8 +85,8 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
           )}
         </div>
 
-        <div className={classes.section}>
-          <ol className={classes.commaSeparatedList}>
+        <div>
+          <ol className='comma-list'>
             {Object.keys(release.genres)
               .map(Number)
               .map((id) => (
@@ -101,14 +97,14 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
           </ol>
         </div>
 
-        <div className={classes.section}>
+        <div>
           {release.siteRating !== undefined && (
             <div>{(release.siteRating / 2).toFixed(1)}</div>
           )}
         </div>
 
         {user && (
-          <div className={classes.section}>
+          <div>
             <RatingStarsInput
               value={userReview?.rating ?? 0}
               onChange={(rating) => {
@@ -131,7 +127,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
         )}
 
         {reviewIds && reviewIds.size > 0 && (
-          <div className={classes.section}>
+          <div>
             {[...reviewIds].map((id) => (
               <ReleaseReview key={id} id={id} />
             ))}

@@ -4,7 +4,11 @@ import { PluginOnBuildResult } from '@builder/core'
 
 export const makeWebsocketServer = (
   server: Server
-): { server: WebSocket.Server; send: (msg: PluginOnBuildResult) => void } => {
+): {
+  server: WebSocket.Server
+  send: (msg: PluginOnBuildResult) => void
+  close: () => void
+} => {
   const wss = new WebSocket.Server({ server })
 
   return {
@@ -14,6 +18,11 @@ export const makeWebsocketServer = (
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(msg))
         }
+      }
+    },
+    close: () => {
+      for (const client of wss.clients) {
+        client.close()
       }
     },
   }
