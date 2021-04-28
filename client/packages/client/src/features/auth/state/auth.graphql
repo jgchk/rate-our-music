@@ -13,3 +13,9 @@ mutation Login($username: String!, $password: String!) {
     }
   }
 }
+
+mutation Logout($force: Boolean!) {
+  account {
+    logout(force: $force)
+  }
+}

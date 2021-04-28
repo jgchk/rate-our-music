@@ -1,10 +1,21 @@
 import { FunctionComponent, h } from 'preact'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useCallback, useContext, useEffect, useState } from 'preact/hooks'
 import { findMap } from '../../common/utils/array'
 import { RouterContext } from '../contexts/RouterContext'
 import { routes } from '../routes'
 
 export const Router: FunctionComponent = () => {
+  const { location } = useContext(RouterContext)
+
+  const view = findMap(routes, ([matcher, view]) => {
+    const params = matcher(location)
+    if (params) return view(params as never)
+  })
+
+  return view === undefined ? <div>404</div> : view
+}
+
+export const RouterProvider: FunctionComponent = ({ children }) => {
   const [location, setLocation] = useState(window.location.pathname)
 
   const push = useCallback((newLocation: string) => {
@@ -18,14 +29,9 @@ export const Router: FunctionComponent = () => {
     return () => window.removeEventListener('popstate', handler)
   }, [])
 
-  const view = findMap(routes, ([matcher, view]) => {
-    const params = matcher(window.location.pathname)
-    if (params) return view(params as never)
-  })
-
   return (
     <RouterContext.Provider value={{ location, push }}>
-      {view === undefined ? <div>404</div> : view}
+      {children}
     </RouterContext.Provider>
   )
 }

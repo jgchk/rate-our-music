@@ -1,14 +1,16 @@
 import { FunctionComponent, h } from 'preact'
 import { Layout } from './features/common/components/Layout'
 import { StateProvider } from './features/common/state/store'
-import { Router } from './features/routing/components/Router'
+import { Router, RouterProvider } from './features/routing/components/Router'
 
 import './styles/index.css'
 
 export const App: FunctionComponent = () => (
   <StateProvider>
-    <Layout>
-      <Router />
-    </Layout>
+    <RouterProvider>
+      <Layout>
+        <Router />
+      </Layout>
+    </RouterProvider>
   </StateProvider>
 )

@@ -3,6 +3,7 @@ import { Result, err, ok } from './result'
 export type Options = {
   method?: HttpMethod
   json?: unknown
+  headers?: Record<string, string>
 }
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'HEAD' | 'DELETE'
@@ -41,10 +42,12 @@ const send = async (
   url: string,
   options: Options = {}
 ): Promise<Result<HttpError, Response & ResponseAugment>> => {
-  const headers =
-    options.json !== undefined
+  const headers = {
+    ...(options.json !== undefined
       ? { 'Content-Type': 'application/json' }
-      : undefined
+      : undefined),
+    ...options.headers,
+  }
   const body =
     options.json !== undefined ? JSON.stringify(options.json) : undefined
   const request = {

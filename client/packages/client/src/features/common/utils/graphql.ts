@@ -1,19 +1,22 @@
 import {
   GraphqlError,
   GraphqlResponse,
+  Requester,
   getSdk,
   graphqlError,
   isErrorResponse,
 } from '../../../generated/graphql'
-import { HttpError, post } from './http'
+import { HttpError, Options, post } from './http'
 import { Result, err, isErr, ok } from './result'
 
-const requester = async <R, V>(
+const requester: Requester<Options> = async <R, V>(
   doc: string,
-  variables: V
+  variables: V,
+  options?: Options
 ): Promise<Result<HttpError | GraphqlError, R>> => {
   const response = await post('/graphql', {
     json: { query: doc, variables },
+    ...options,
   })
 
   if (isErr(response)) return err(response.error)

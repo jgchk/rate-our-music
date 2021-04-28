@@ -301,6 +301,14 @@ export type LoginMutation = { __typename?: 'Mutation' } & {
   }
 }
 
+export type LogoutMutationVariables = Exact<{
+  force: Scalars['Boolean']
+}>
+
+export type LogoutMutation = { __typename?: 'Mutation' } & {
+  account: { __typename?: 'AccountMutation' } & Pick<AccountMutation, 'logout'>
+}
+
 export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
   Artist,
   'id' | 'name'
@@ -504,6 +512,13 @@ mutation Login($username: String!, $password: String!) {
         username
       }
     }
+  }
+}`
+
+export const LogoutMutationDocument = `
+mutation Logout($force: Boolean!) {
+  account {
+    logout(force: $force)
   }
 }`
 
@@ -839,6 +854,15 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   ): Promise<Result<HttpError | GraphqlError, LoginMutation>> =>
     requester<LoginMutation, LoginMutationVariables>(
       LoginMutationDocument,
+      variables,
+      options
+    ),
+  logout: (
+    variables: LogoutMutationVariables,
+    options?: O
+  ): Promise<Result<HttpError | GraphqlError, LogoutMutation>> =>
+    requester<LogoutMutation, LogoutMutationVariables>(
+      LogoutMutationDocument,
       variables,
       options
     ),

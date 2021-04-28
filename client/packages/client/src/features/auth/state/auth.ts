@@ -1,11 +1,14 @@
-import { GraphqlError, LoginMutation } from '../../../generated/graphql'
+import {
+  GraphqlError,
+  LoginMutation,
+  LogoutMutation,
+} from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
 import { graphql } from '../../common/utils/graphql'
 import { HttpError } from '../../common/utils/http'
 import {
   RemoteData,
   fromResult,
-  initial,
   isSuccess,
   loading,
 } from '../../common/utils/remote-data'
@@ -16,9 +19,6 @@ import {
 
 export type AuthState = {
   auth: Auth | undefined
-  requests: {
-    login: RemoteData<HttpError | GraphqlError, LoginMutation>
-  }
 }
 
 export type Auth = {
@@ -32,35 +32,33 @@ export type Auth = {
 
 export const authReducer: Reducer<AuthState> = (state, action) => {
   if (state === undefined) {
-    const initialState: AuthState = {
-      auth: undefined,
-      requests: {
-        login: initial,
-      },
-    }
+    const initialState: AuthState = { auth: undefined }
     return initialState
   }
 
   switch (action._type) {
     case 'auth/login': {
-      const newState: AuthState = {
-        ...state,
-        requests: {
-          ...state.requests,
-          login: action.request,
-        },
-      }
-
       if (isSuccess(action.request)) {
         const response = action.request.data.account.login
-        newState.auth = {
-          ...newState.auth,
-          token: response.token,
-          user: response.account.id,
+        return {
+          ...state,
+          auth: {
+            token: response.token,
+            user: response.account.id,
+          },
         }
+      } else {
+        return state
       }
+    }
 
-      return newState
+    case 'auth/logout': {
+      return isSuccess(action.request)
+        ? {
+            ...state,
+            auth: undefined,
+          }
+        : state
     }
 
     default:
@@ -72,7 +70,7 @@ export const authReducer: Reducer<AuthState> = (state, action) => {
 // Actions
 //
 
-export type AuthActions = LoginAction
+export type AuthActions = LoginAction | LogoutAction
 
 export type LoginAction = {
   _type: 'auth/login'
@@ -85,4 +83,20 @@ export const login = async function* (
   yield { _type: 'auth/login', request: loading }
   const response = await graphql.login({ username, password })
   yield { _type: 'auth/login', request: fromResult(response) }
+}
+
+export type LogoutAction = {
+  _type: 'auth/logout'
+  request: RemoteData<HttpError | GraphqlError, LogoutMutation>
+}
+export const logout = async function* (
+  token: string,
+  force?: boolean
+): AsyncGenerator<LogoutAction> {
+  yield { _type: 'auth/logout', request: loading }
+  const response = await graphql.logout(
+    { force: !!force },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  yield { _type: 'auth/logout', request: fromResult(response) }
 }
