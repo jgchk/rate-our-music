@@ -1,10 +1,10 @@
-:root {
+/* :root {
   --break-sm: 640px;
   --break-md: 768px;
   --break-lg: 1024px;
   --break-xl: 1280px;
   --break-2xl: 1536px;
-}
+} */
 
 .w-screen {
   width: 100vw;
@@ -21,5 +21,5 @@
 }
 
 .max-w-screen-2xl {
-  max-width: var(--break-2xl);
+  max-width: 1536px;
 }
