@@ -1,4 +1,5 @@
 import { FunctionComponent, h } from 'preact'
+import { useMemo } from 'preact/hooks'
 import { Link } from '../../common/components/Link'
 import { PartialDate } from '../state/releases'
 
@@ -33,14 +34,19 @@ const formatMonth = (i: number) => {
 
 export type Props = { releaseDate: PartialDate }
 
-export const ReleaseDate: FunctionComponent<Props> = ({ releaseDate }) => (
-  <div>
-    {releaseDate.day && <span>{releaseDate.day}</span>}{' '}
-    {releaseDate.month && (
-      <Link href={`/chart/${releaseDate.year}/${releaseDate.month}`}>
-        {formatMonth(releaseDate.month)}
-      </Link>
-    )}{' '}
-    <Link href={`/chart/${releaseDate.year}`}>{releaseDate.year}</Link>
-  </div>
-)
+export const ReleaseDate: FunctionComponent<Props> = ({ releaseDate }) => {
+  const chartLink = useMemo(() => {
+    // TODO
+    return '/chart'
+  }, [])
+
+  return (
+    <div>
+      {releaseDate.day && <span>{releaseDate.day}</span>}{' '}
+      {releaseDate.month && (
+        <Link href={chartLink}>{formatMonth(releaseDate.month)}</Link>
+      )}{' '}
+      <Link href={chartLink}>{releaseDate.year}</Link>
+    </div>
+  )
+}

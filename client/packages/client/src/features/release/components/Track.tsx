@@ -1,9 +1,11 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect } from 'preact/hooks'
+import { useEffect, useMemo } from 'preact/hooks'
 import { useGetTrackAction } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
 import { Link } from '../../routing/components/Link'
+import { trackRoute } from '../../routing/routes'
+import { build } from '../../routing/utils/parser'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
 const formatTime = (ms: number) => {
@@ -35,13 +37,15 @@ export const Track: FunctionComponent<Props> = ({ id, index }) => {
     }
   }, [getTrack, id, track])
 
+  const trackLink = useMemo(() => build(trackRoute)({ trackId: id }), [id])
+
   if (getTrackAction && isLoading(getTrackAction.request)) {
     return <div>Loading...</div>
   }
   if (!track) return <div>No track found with id: {id}</div>
 
   return (
-    <Link className='flex p-3' href={`/track/${id}`}>
+    <Link className='flex p-3' href={trackLink}>
       <div className='flex-1'>{index + 1}</div>
       <div className={track.durationMs === undefined ? 'flex-16' : 'flex-15'}>
         {track.title}

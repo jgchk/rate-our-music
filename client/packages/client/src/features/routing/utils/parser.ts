@@ -1,4 +1,4 @@
-import { EmptyObject, GenericObject } from '../../common/utils/types'
+import { GenericObject } from '../../common/utils/types'
 
 // Base param type
 export type ParamType<T> = {
@@ -93,7 +93,9 @@ export type Matcher<P> = (str: string) => P | undefined
 
 export type TypeOf<M extends Matcher<unknown>> = NonNullable<ReturnType<M>>
 
-export const route = (options: Partial<Options> = {}): Route<EmptyObject> => ({
+export const route = (
+  options: Partial<Options> = {}
+): Route<GenericObject> => ({
   options: { ...defaultOptions, ...options },
   parts: [],
 })
@@ -152,3 +154,14 @@ export const match = <P>(route: Route<P>): Matcher<P> => (str) => {
 
   return (params as unknown) as P
 }
+
+export const build = <P extends Record<string, unknown>>(route: Route<P>) => (
+  inputs: P
+): string =>
+  route.options.prefix +
+  route.parts
+    .map((part) =>
+      isParam(part) ? part.paramType.stringify(inputs[part.name]) : part
+    )
+    .join(route.options.delimiter) +
+  route.options.suffix

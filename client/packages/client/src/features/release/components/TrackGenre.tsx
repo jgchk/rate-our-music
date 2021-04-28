@@ -1,9 +1,11 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect } from 'preact/hooks'
+import { useEffect, useMemo } from 'preact/hooks'
 import { Link } from '../../common/components/Link'
 import { useGetTrackGenreAction } from '../../common/hooks/useAction'
 import { useSelector } from '../../common/state/store'
 import { isLoading } from '../../common/utils/remote-data'
+import { genreRoute } from '../../routing/routes'
+import { build } from '../../routing/utils/parser'
 
 export type Props = {
   id: number
@@ -20,6 +22,8 @@ export const TrackGenre: FunctionComponent<Props> = ({ id, trackId }) => {
     }
   }, [genre, getTrackGenre, id, trackId])
 
+  const genreLink = useMemo(() => build(genreRoute)({ genreId: id }), [id])
+
   if (getTrackGenreAction && isLoading(getTrackGenreAction.request)) {
     return <div>Loading...</div>
   }
@@ -27,5 +31,5 @@ export const TrackGenre: FunctionComponent<Props> = ({ id, trackId }) => {
     return <div>No genre found with id: {id}</div>
   }
 
-  return <Link href={`/genre/${genre.id}`}>{genre.name}</Link>
+  return <Link href={genreLink}>{genre.name}</Link>
 }
