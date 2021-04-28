@@ -1,7 +1,7 @@
 fragment releaseReviewData on ReleaseReview {
   id
   account {
-    ...accountData
+    ...partialAccountData
   }
   rating
   text

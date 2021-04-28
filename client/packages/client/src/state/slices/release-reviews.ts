@@ -25,6 +25,7 @@ export type ReleaseReviewsState = {
 export type ReleaseReview = {
   id: number
   user: number
+  release: number
   rating?: number
   text?: string
 }
@@ -36,6 +37,7 @@ export type ReleaseReview = {
 const mapReview = (review: ReleaseReviewDataFragment): ReleaseReview => ({
   id: review.id,
   user: review.account.id,
+  release: review.release.id,
   rating: review.rating ?? undefined,
   text: review.text ?? undefined,
 })
@@ -72,9 +74,17 @@ export const releaseReviewsReducer: Reducer<ReleaseReviewsState> = (
       return mergeIds(state, [review])
     }
 
-    case 'release/get': {
+    case 'release/getFull': {
       if (!isSuccess(action.request)) return state
       const releaseReviews = action.request.data.release.get.reviews.map(
+        mapReview
+      )
+      return mergeIds(state, releaseReviews)
+    }
+
+    case 'user/getFull': {
+      if (!isSuccess(action.request)) return state
+      const releaseReviews = action.request.data.account.get.releaseReviews.map(
         mapReview
       )
       return mergeIds(state, releaseReviews)
@@ -94,7 +104,7 @@ export type ReleaseReviewActions =
   | GetReleaseReviewAction
   | UpdateReleaseReviewRatingAction
 
-type ReleaseReviewInput = Omit<ReleaseReview, 'id' | 'user'>
+type ReleaseReviewInput = Omit<ReleaseReview, 'id' | 'user' | 'release'>
 
 export type CreateReleaseReviewAction = {
   _type: 'review/release/create'

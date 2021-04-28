@@ -1,6 +1,7 @@
 import {
-  GetReleaseQuery,
-  ReleaseDataFragment,
+  FullReleaseDataFragment,
+  GetFullReleaseQuery,
+  PartialReleaseDataFragment,
   ReleaseGenreDataFragment,
 } from '../../generated/graphql'
 import { GraphqlRequestError, graphql } from '../../utils/graphql'
@@ -10,7 +11,7 @@ import {
   isSuccess,
   loading,
 } from '../../utils/remote-data'
-import { ids } from '../../utils/state'
+import { ids, mergeIds } from '../../utils/state'
 import { Reducer } from '../store'
 
 //
@@ -18,17 +19,20 @@ import { Reducer } from '../store'
 //
 
 export type ReleasesState = {
-  [id: number]: Release
+  [id: number]: PartialRelease | FullRelease
 }
 
-export type Release = {
+export type PartialRelease = {
   id: number
   title: string
   artists: Set<number>
   releaseDate?: PartialDate
   coverArt?: string
-  tracks: Set<number>
   genres: GenreMap
+}
+
+export type FullRelease = PartialRelease & {
+  tracks: Set<number>
   siteRating?: number
   reviews: Set<number>
 }
@@ -40,6 +44,10 @@ export type PartialDate = {
 }
 
 export type GenreMap = { [id: number]: number }
+
+export const isFullRelease = (
+  release: PartialRelease | FullRelease
+): release is FullRelease => 'tracks' in release
 
 //
 // Mappers
@@ -53,7 +61,9 @@ const mapGenres = (genres: ReleaseGenreDataFragment[]): GenreMap => {
   return genreMap
 }
 
-const mapRelease = (release: ReleaseDataFragment): Release => ({
+const mapPartialRelease = (
+  release: PartialReleaseDataFragment
+): PartialRelease => ({
   id: release.id,
   title: release.title,
   artists: ids(release.artists),
@@ -65,8 +75,12 @@ const mapRelease = (release: ReleaseDataFragment): Release => ({
       }
     : undefined,
   coverArt: release.coverArt ?? undefined,
-  tracks: ids(release.tracks),
   genres: mapGenres(release.genres),
+})
+
+const mapFullRelease = (release: FullReleaseDataFragment): FullRelease => ({
+  ...mapPartialRelease(release),
+  tracks: ids(release.tracks),
   siteRating: release.siteRating ?? undefined,
   reviews: ids(release.reviews),
 })
@@ -82,9 +96,9 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
   }
 
   switch (action._type) {
-    case 'release/get': {
+    case 'release/getFull': {
       if (!isSuccess(action.request)) return state
-      const release = mapRelease(action.request.data.release.get)
+      const release = mapFullRelease(action.request.data.release.get)
       return { ...state, [release.id]: release }
     }
 
@@ -103,7 +117,9 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
         ...state,
         [release.id]: {
           ...release,
-          reviews: release.reviews.add(review.id),
+          reviews: isFullRelease(release)
+            ? release.reviews.add(review.id)
+            : undefined,
           siteRating: review.release.siteRating ?? undefined,
         },
       }
@@ -128,6 +144,15 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
       }
     }
 
+    case 'user/getFull': {
+      if (!isSuccess(action.request)) return state
+
+      const reviews = action.request.data.account.get.releaseReviews.map(
+        (review) => mapPartialRelease(review.release)
+      )
+      return mergeIds(state, reviews)
+    }
+
     default:
       return state
   }
@@ -137,20 +162,20 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
 // Actions
 //
 
-export type ReleaseActions = GetReleaseAction
+export type ReleaseActions = GetFullReleaseAction
 
-export type GetReleaseAction = {
-  _type: 'release/get'
-  request: RemoteData<GraphqlRequestError, GetReleaseQuery>
+export type GetFullReleaseAction = {
+  _type: 'release/getFull'
+  request: RemoteData<GraphqlRequestError, GetFullReleaseQuery>
 }
-export const getRelease = async function* (
+export const getFullRelease = async function* (
   id: number
-): AsyncGenerator<GetReleaseAction> {
+): AsyncGenerator<GetFullReleaseAction> {
   yield {
-    _type: 'release/get',
+    _type: 'release/getFull',
     request: loading,
   }
 
-  const response = await graphql.getRelease({ id })
-  yield { _type: 'release/get', request: fromResult(response) }
+  const response = await graphql.getFullRelease({ id })
+  yield { _type: 'release/getFull', request: fromResult(response) }
 }

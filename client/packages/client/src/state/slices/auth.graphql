@@ -2,7 +2,7 @@ fragment authData on Auth {
   token
   exp
   account {
-    ...accountData
+    ...partialAccountData
   }
 }
 

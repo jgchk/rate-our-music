@@ -74,7 +74,7 @@ export const tracksReducer: Reducer<TracksState> = (state, action) => {
       return { ...state, [track.id]: track }
     }
 
-    case 'release/get': {
+    case 'release/getFull': {
       if (!isSuccess(action.request)) return state
       const tracks = action.request.data.release.get.tracks.map(mapTrack)
       return mergeIds(state, tracks)

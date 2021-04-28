@@ -20,6 +20,8 @@ export type Account = {
   __typename?: 'Account'
   id: Scalars['Int']
   username: Scalars['String']
+  releaseReviews: Array<ReleaseReview>
+  trackReviews: Array<TrackReview>
 }
 
 export type AccountMutation = {
@@ -302,7 +304,7 @@ export type GetArtistQuery = { __typename?: 'Query' } & {
 export type AuthDataFragment = { __typename?: 'Auth' } & Pick<
   Auth,
   'token' | 'exp'
-> & { account: { __typename?: 'Account' } & AccountDataFragment }
+> & { account: { __typename?: 'Account' } & PartialAccountDataFragment }
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']
@@ -367,7 +369,7 @@ export type ReleaseReviewDataFragment = { __typename?: 'ReleaseReview' } & Pick<
   ReleaseReview,
   'id' | 'rating' | 'text'
 > & {
-    account: { __typename?: 'Account' } & AccountDataFragment
+    account: { __typename?: 'Account' } & PartialAccountDataFragment
     release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
   }
 
@@ -405,7 +407,21 @@ export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
   }
 }
 
-export type ReleaseDataFragment = { __typename?: 'Release' } & Pick<
+export type PartialReleaseDataFragment = { __typename?: 'Release' } & Pick<
+  Release,
+  'id' | 'title' | 'coverArt'
+> & {
+    artists: Array<{ __typename?: 'Artist' } & ArtistDataFragment>
+    releaseDate?: Maybe<
+      { __typename?: 'ReleaseDate' } & Pick<
+        ReleaseDate,
+        'day' | 'month' | 'year'
+      >
+    >
+    genres: Array<{ __typename?: 'ReleaseGenre' } & ReleaseGenreDataFragment>
+  }
+
+export type FullReleaseDataFragment = { __typename?: 'Release' } & Pick<
   Release,
   'id' | 'title' | 'coverArt' | 'siteRating'
 > & {
@@ -421,13 +437,13 @@ export type ReleaseDataFragment = { __typename?: 'Release' } & Pick<
     reviews: Array<{ __typename?: 'ReleaseReview' } & ReleaseReviewDataFragment>
   }
 
-export type GetReleaseQueryVariables = Exact<{
+export type GetFullReleaseQueryVariables = Exact<{
   id: Scalars['Int']
 }>
 
-export type GetReleaseQuery = { __typename?: 'Query' } & {
+export type GetFullReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
-    get: { __typename?: 'Release' } & ReleaseDataFragment
+    get: { __typename?: 'Release' } & FullReleaseDataFragment
   }
 }
 
@@ -435,7 +451,7 @@ export type TrackReviewDataFragment = { __typename?: 'TrackReview' } & Pick<
   TrackReview,
   'id' | 'rating' | 'text'
 > & {
-    account: { __typename?: 'Account' } & AccountDataFragment
+    account: { __typename?: 'Account' } & PartialAccountDataFragment
     track: { __typename?: 'Track' } & Pick<Track, 'id' | 'siteRating'>
   }
 
@@ -493,18 +509,42 @@ export type GetTrackQuery = { __typename?: 'Query' } & {
   }
 }
 
-export type AccountDataFragment = { __typename?: 'Account' } & Pick<
+export type PartialAccountDataFragment = { __typename?: 'Account' } & Pick<
   Account,
   'id' | 'username'
 >
 
-export type GetUserQueryVariables = Exact<{
+export type FullAccountDataFragment = { __typename?: 'Account' } & Pick<
+  Account,
+  'id' | 'username'
+> & {
+    releaseReviews: Array<
+      { __typename?: 'ReleaseReview' } & {
+        release: { __typename?: 'Release' } & PartialReleaseDataFragment
+      } & ReleaseReviewDataFragment
+    >
+    trackReviews: Array<
+      { __typename?: 'TrackReview' } & TrackReviewDataFragment
+    >
+  }
+
+export type GetPartialUserQueryVariables = Exact<{
   id: Scalars['Int']
 }>
 
-export type GetUserQuery = { __typename?: 'Query' } & {
+export type GetPartialUserQuery = { __typename?: 'Query' } & {
   account: { __typename?: 'AccountQuery' } & {
-    get: { __typename?: 'Account' } & AccountDataFragment
+    get: { __typename?: 'Account' } & PartialAccountDataFragment
+  }
+}
+
+export type GetFullUserQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetFullUserQuery = { __typename?: 'Query' } & {
+  account: { __typename?: 'AccountQuery' } & {
+    get: { __typename?: 'Account' } & FullAccountDataFragment
   }
 }
 
@@ -641,8 +681,8 @@ mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
   }
 }`
 
-export const GetReleaseQueryDocument = `
-query GetRelease($id: Int!) {
+export const GetFullReleaseQueryDocument = `
+query GetFullRelease($id: Int!) {
   release {
     get(id: $id) {
       id
@@ -811,12 +851,69 @@ query GetTrack($id: Int!) {
   }
 }`
 
-export const GetUserQueryDocument = `
-query GetUser($id: Int!) {
+export const GetPartialUserQueryDocument = `
+query GetPartialUser($id: Int!) {
   account {
     get(id: $id) {
       id
       username
+    }
+  }
+}`
+
+export const GetFullUserQueryDocument = `
+query GetFullUser($id: Int!) {
+  account {
+    get(id: $id) {
+      id
+      username
+      releaseReviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+        release {
+          id
+          siteRating
+        }
+        release {
+          id
+          title
+          artists {
+            id
+            name
+          }
+          releaseDate {
+            day
+            month
+            year
+          }
+          coverArt
+          genres {
+            genre {
+              id
+              name
+            }
+            weight
+          }
+        }
+      }
+      trackReviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+        track {
+          id
+          siteRating
+        }
+      }
     }
   }
 }`
@@ -948,12 +1045,12 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
       UpdateReleaseReviewRatingMutation,
       UpdateReleaseReviewRatingMutationVariables
     >(UpdateReleaseReviewRatingMutationDocument, variables, options),
-  getRelease: (
-    variables: GetReleaseQueryVariables,
+  getFullRelease: (
+    variables: GetFullReleaseQueryVariables,
     options?: O
-  ): Promise<Result<E, GetReleaseQuery>> =>
-    requester<GetReleaseQuery, GetReleaseQueryVariables>(
-      GetReleaseQueryDocument,
+  ): Promise<Result<E, GetFullReleaseQuery>> =>
+    requester<GetFullReleaseQuery, GetFullReleaseQueryVariables>(
+      GetFullReleaseQueryDocument,
       variables,
       options
     ),
@@ -992,12 +1089,21 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
       variables,
       options
     ),
-  getUser: (
-    variables: GetUserQueryVariables,
+  getPartialUser: (
+    variables: GetPartialUserQueryVariables,
     options?: O
-  ): Promise<Result<E, GetUserQuery>> =>
-    requester<GetUserQuery, GetUserQueryVariables>(
-      GetUserQueryDocument,
+  ): Promise<Result<E, GetPartialUserQuery>> =>
+    requester<GetPartialUserQuery, GetPartialUserQueryVariables>(
+      GetPartialUserQueryDocument,
+      variables,
+      options
+    ),
+  getFullUser: (
+    variables: GetFullUserQueryVariables,
+    options?: O
+  ): Promise<Result<E, GetFullUserQuery>> =>
+    requester<GetFullUserQuery, GetFullUserQueryVariables>(
+      GetFullUserQueryDocument,
       variables,
       options
     ),

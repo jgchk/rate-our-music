@@ -1,7 +1,7 @@
 fragment trackReviewData on TrackReview {
   id
   account {
-    ...accountData
+    ...partialAccountData
   }
   rating
   text

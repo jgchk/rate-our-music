@@ -78,12 +78,20 @@ export const trackReviewsReducer: Reducer<TrackReviewsState> = (
       return mergeIds(state, trackReviews)
     }
 
-    case 'release/get': {
+    case 'release/getFull': {
       if (!isSuccess(action.request)) return state
       const response = action.request.data.release.get
       const trackReviews = response.tracks
         .flatMap((track) => track.reviews)
         .map(mapReview)
+      return mergeIds(state, trackReviews)
+    }
+
+    case 'user/getFull': {
+      if (!isSuccess(action.request)) return state
+      const trackReviews = action.request.data.account.get.trackReviews.map(
+        mapReview
+      )
       return mergeIds(state, trackReviews)
     }
 

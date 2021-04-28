@@ -33,7 +33,13 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
   }
 
   switch (action._type) {
-    case 'release/get': {
+    case 'artist/get': {
+      if (!isSuccess(action.request)) return state
+      const artist = action.request.data.artist.get
+      return mergeIds(state, [artist])
+    }
+
+    case 'release/getFull': {
       if (!isSuccess(action.request)) return state
 
       const response = action.request.data.release.get

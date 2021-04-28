@@ -54,7 +54,20 @@ impl<'a> TrackReviewDatabase<'a> {
         )
         .fetch_all(self.0)
         .await
-        .map_err(|e| e.into())
+        .map_err(Error::from)
+    }
+
+    pub async fn get_by_account(&self, account_id: i32) -> Result<Vec<TrackReview>, Error> {
+        sqlx::query_as!(
+            TrackReview,
+            "SELECT *
+            FROM track_review
+            WHERE account_id = $1",
+            account_id
+        )
+        .fetch_all(self.0)
+        .await
+        .map_err(Error::from)
     }
 
     pub async fn average_by_track(&self, track_id: i32) -> Result<Option<BigDecimal>, Error> {

@@ -8,7 +8,8 @@ import { TrackReviewWithText } from '../components/ReviewWithText'
 import { Track } from '../components/Track'
 import { TrackGenre } from '../components/TrackGenre'
 import { ReleaseViewLink } from '../components/TracklistReleaseViewLink'
-import { useGetReleaseAction, useGetTrackAction } from '../hooks/useAction'
+import { useGetFullReleaseAction, useGetTrackAction } from '../hooks/useAction'
+import { isFullRelease } from '../state/slices/releases'
 import {
   createTrackReview,
   updateTrackReviewRating,
@@ -55,25 +56,27 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
     }
   }, [getTrack, track, trackId])
 
-  const [getRelease, getReleaseAction] = useGetReleaseAction()
+  const [getFullRelease, getFullReleaseAction] = useGetFullReleaseAction()
   useEffect(() => {
     if (
       track !== undefined &&
-      (release === undefined || release.id !== track.release)
+      (release === undefined ||
+        release.id !== track.release ||
+        !isFullRelease(release))
     ) {
-      getRelease(track.release)
+      getFullRelease(track.release)
     }
-  }, [getRelease, release, track])
-
-  if (
-    (getTrackAction && isLoading(getTrackAction.request)) ||
-    (getReleaseAction && isLoading(getReleaseAction.request))
-  ) {
-    return <div>Loading...</div>
-  }
+  }, [getFullRelease, release, track])
 
   if (!track || !release) {
     return <div />
+  }
+  if (
+    (getTrackAction && isLoading(getTrackAction.request)) ||
+    (getFullReleaseAction && isLoading(getFullReleaseAction.request)) ||
+    !isFullRelease(release)
+  ) {
+    return <div>Loading...</div>
   }
 
   return (

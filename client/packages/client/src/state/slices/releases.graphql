@@ -1,4 +1,21 @@
-fragment releaseData on Release {
+fragment partialReleaseData on Release {
+  id
+  title
+  artists {
+    ...artistData
+  }
+  releaseDate {
+    day
+    month
+    year
+  }
+  coverArt
+  genres {
+    ...releaseGenreData
+  }
+}
+
+fragment fullReleaseData on Release {
   id
   title
   artists {
@@ -22,10 +39,10 @@ fragment releaseData on Release {
   }
 }
 
-query GetRelease($id: Int!) {
+query GetFullRelease($id: Int!) {
   release {
     get(id: $id) {
-      ...releaseData
+      ...fullReleaseData
     }
   }
 }

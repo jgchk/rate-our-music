@@ -1,6 +1,6 @@
 import { FunctionComponent, h } from 'preact'
 import { useEffect, useMemo } from 'preact/hooks'
-import { useGetUserAction } from '../hooks/useAction'
+import { useGetPartialUserAction } from '../hooks/useAction'
 import { build } from '../router/parser'
 import { userRoute } from '../router/routes'
 import { useSelector } from '../state/store'
@@ -12,16 +12,16 @@ export type Props = { id: number }
 export const UserLink: FunctionComponent<Props> = ({ id }) => {
   const user = useSelector((state) => state.users[id])
 
-  const [getUser, getUserAction] = useGetUserAction()
+  const [getPartialUser, getPartialUserAction] = useGetPartialUserAction()
   useEffect(() => {
     if (user === undefined || user.id !== id) {
-      getUser(id)
+      getPartialUser(id)
     }
-  }, [getUser, id, user])
+  }, [getPartialUser, id, user])
 
   const userLink = useMemo(() => build(userRoute)({ userId: id }), [id])
 
-  if (getUserAction && isLoading(getUserAction.request)) {
+  if (getPartialUserAction && isLoading(getPartialUserAction.request)) {
     return <div>Loading...</div>
   }
   if (!user) {

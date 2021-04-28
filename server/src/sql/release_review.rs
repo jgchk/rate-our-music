@@ -57,6 +57,19 @@ impl<'a> ReleaseReviewDatabase<'a> {
         .map_err(Error::from)
     }
 
+    pub async fn get_by_account(&self, account_id: i32) -> Result<Vec<ReleaseReview>, Error> {
+        sqlx::query_as!(
+            ReleaseReview,
+            "SELECT *
+            FROM release_review
+            WHERE account_id = $1",
+            account_id
+        )
+        .fetch_all(self.0)
+        .await
+        .map_err(Error::from)
+    }
+
     pub async fn average_by_release(&self, release_id: i32) -> Result<Option<BigDecimal>, Error> {
         let result = sqlx::query!(
             "SELECT AVG(rating)

@@ -3,6 +3,7 @@ import { LoginPage } from '../pages/LoginPage'
 import { LogoutPage } from '../pages/LogoutPage'
 import { ReleasePage } from '../pages/ReleasePage'
 import { TrackPage } from '../pages/TrackPage'
+import { UserPage } from '../pages/UserPage'
 import { pipe } from '../utils/pipe'
 import { Matcher, extend, int, match, param, route } from './parser'
 
@@ -28,6 +29,7 @@ const matcher = <P,>(matcher: Matcher<P>, view: (params: P) => VNode) =>
 export const routes = [
   matcher(match(loginRoute), () => <LoginPage />),
   matcher(match(logoutRoute), () => <LogoutPage />),
+  matcher(match(userRoute), (params) => <UserPage userId={params.userId} />),
   matcher(match(releaseRoute), (params) => (
     <ReleasePage releaseId={params.releaseId} />
   )),

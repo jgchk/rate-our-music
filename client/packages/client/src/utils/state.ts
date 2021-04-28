@@ -8,6 +8,7 @@ export const mergeIds = <T extends HasId>(
   record: IdRecord<T>,
   arr: T[]
 ): IdRecord<T> =>
-  arr.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {
-    ...record,
-  })
+  arr.reduce(
+    (acc, curr) => ({ ...acc, [curr.id]: { ...record[curr.id], ...curr } }),
+    { ...record }
+  )

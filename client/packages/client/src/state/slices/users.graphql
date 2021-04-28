@@ -1,12 +1,34 @@
-fragment accountData on Account {
+fragment partialAccountData on Account {
   id
   username
 }
 
-query GetUser($id: Int!) {
+fragment fullAccountData on Account {
+  id
+  username
+  releaseReviews {
+    ...releaseReviewData
+    release {
+      ...partialReleaseData
+    }
+  }
+  trackReviews {
+    ...trackReviewData
+  }
+}
+
+query GetPartialUser($id: Int!) {
   account {
     get(id: $id) {
-      ...accountData
+      ...partialAccountData
+    }
+  }
+}
+
+query GetFullUser($id: Int!) {
+  account {
+    get(id: $id) {
+      ...fullAccountData
     }
   }
 }

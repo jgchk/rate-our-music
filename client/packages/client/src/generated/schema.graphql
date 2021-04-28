@@ -6,6 +6,8 @@ directive @ifdef on FIELD
 type Account {
   id: Int!
   username: String!
+  releaseReviews: [ReleaseReview!]!
+  trackReviews: [TrackReview!]!
 }
 
 type AccountMutation {
