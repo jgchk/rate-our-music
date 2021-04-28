@@ -18,7 +18,7 @@ process.env.NODE_ENV = isDev ? 'development' : 'production'
 void Builder({
   cwd: __dirname,
   watch: isDev ? ['./src'] : undefined,
-  entries: ['./src/main.tsx'],
+  entries: ['./src/index.tsx'],
   outdir: './output',
   clean: true,
   plugins: [

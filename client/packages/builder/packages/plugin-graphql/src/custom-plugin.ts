@@ -114,7 +114,7 @@ export const plugin: PluginFunction = (schema, documents) => {
     ',\n'
   )}})`
 
-  const imports = [`import { Result } from '../features/common/utils/result'`]
+  const imports = [`import { Result } from '../utils/result'`]
 
   return {
     content: [docs.join('\n\n'), types.join('\n\n'), sdk].join('\n\n'),

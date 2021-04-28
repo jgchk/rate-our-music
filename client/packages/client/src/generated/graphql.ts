@@ -1,4 +1,4 @@
-import { Result } from '../features/common/utils/result'
+import { Result } from '../utils/result'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
@@ -284,6 +284,21 @@ export type TrackReviewQueryGetArgs = {
   id: Scalars['Int']
 }
 
+export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
+  Artist,
+  'id' | 'name'
+>
+
+export type GetArtistQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetArtistQuery = { __typename?: 'Query' } & {
+  artist: { __typename?: 'ArtistQuery' } & {
+    get: { __typename?: 'Artist' } & ArtistDataFragment
+  }
+}
+
 export type AuthDataFragment = { __typename?: 'Auth' } & Pick<
   Auth,
   'token' | 'exp'
@@ -313,21 +328,6 @@ export type RefreshMutationVariables = Exact<{ [key: string]: never }>
 export type RefreshMutation = { __typename?: 'Mutation' } & {
   account: { __typename?: 'AccountMutation' } & {
     refresh: { __typename?: 'Auth' } & AuthDataFragment
-  }
-}
-
-export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
-  Artist,
-  'id' | 'name'
->
-
-export type GetArtistQueryVariables = Exact<{
-  id: Scalars['Int']
-}>
-
-export type GetArtistQuery = { __typename?: 'Query' } & {
-  artist: { __typename?: 'ArtistQuery' } & {
-    get: { __typename?: 'Artist' } & ArtistDataFragment
   }
 }
 
@@ -508,6 +508,16 @@ export type GetUserQuery = { __typename?: 'Query' } & {
   }
 }
 
+export const GetArtistQueryDocument = `
+query GetArtist($id: Int!) {
+  artist {
+    get(id: $id) {
+      id
+      name
+    }
+  }
+}`
+
 export const LoginMutationDocument = `
 mutation Login($username: String!, $password: String!) {
   account {
@@ -539,16 +549,6 @@ mutation Refresh {
         id
         username
       }
-    }
-  }
-}`
-
-export const GetArtistQueryDocument = `
-query GetArtist($id: Int!) {
-  artist {
-    get(id: $id) {
-      id
-      name
     }
   }
 }`
@@ -869,6 +869,15 @@ export type Requester<E, O = Record<string, never>> = <R, V>(
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getSdk = <E, O>(requester: Requester<E, O>) => ({
+  getArtist: (
+    variables: GetArtistQueryVariables,
+    options?: O
+  ): Promise<Result<E, GetArtistQuery>> =>
+    requester<GetArtistQuery, GetArtistQueryVariables>(
+      GetArtistQueryDocument,
+      variables,
+      options
+    ),
   login: (
     variables: LoginMutationVariables,
     options?: O
@@ -893,15 +902,6 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
   ): Promise<Result<E, RefreshMutation>> =>
     requester<RefreshMutation, RefreshMutationVariables>(
       RefreshMutationDocument,
-      variables,
-      options
-    ),
-  getArtist: (
-    variables: GetArtistQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetArtistQuery>> =>
-    requester<GetArtistQuery, GetArtistQueryVariables>(
-      GetArtistQueryDocument,
       variables,
       options
     ),

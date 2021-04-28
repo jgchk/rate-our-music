@@ -1,8 +1,9 @@
 import { FunctionComponent, h } from 'preact'
-import { useAuthRefresh } from './features/auth/hooks/useAuthRefresh'
-import { Layout } from './features/common/components/Layout'
-import { StateProvider } from './features/common/state/store'
-import { Router, RouterProvider } from './features/routing/components/Router'
+import { Layout } from './components/Layout'
+import { useAuthRefresh } from './hooks/useAuthRefresh'
+import { Router } from './router/Router'
+import { RouterProvider } from './router/useRouterContext'
+import { StateProvider } from './state/store'
 
 import './styles/index.css'
 
