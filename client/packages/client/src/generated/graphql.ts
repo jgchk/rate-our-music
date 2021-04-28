@@ -1,4 +1,3 @@
-import { HttpError } from '../features/common/utils/http'
 import { Result } from '../features/common/utils/result'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -840,18 +839,18 @@ export const graphqlError = (
   message?: string
 ): GraphqlError => ({ name: 'GraphqlError', message, errors })
 
-export type Requester<O = Record<string, never>> = <R, V>(
+export type Requester<E, O = Record<string, never>> = <R, V>(
   doc: string,
   vars?: V,
   options?: O
-) => Promise<Result<HttpError | GraphqlError, R>>
+) => Promise<Result<E, R>>
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getSdk = <O>(requester: Requester<O>) => ({
+export const getSdk = <E, O>(requester: Requester<E, O>) => ({
   login: (
     variables: LoginMutationVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, LoginMutation>> =>
+  ): Promise<Result<E, LoginMutation>> =>
     requester<LoginMutation, LoginMutationVariables>(
       LoginMutationDocument,
       variables,
@@ -860,7 +859,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   logout: (
     variables: LogoutMutationVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, LogoutMutation>> =>
+  ): Promise<Result<E, LogoutMutation>> =>
     requester<LogoutMutation, LogoutMutationVariables>(
       LogoutMutationDocument,
       variables,
@@ -869,7 +868,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getArtist: (
     variables: GetArtistQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetArtistQuery>> =>
+  ): Promise<Result<E, GetArtistQuery>> =>
     requester<GetArtistQuery, GetArtistQueryVariables>(
       GetArtistQueryDocument,
       variables,
@@ -878,7 +877,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getReleaseGenre: (
     variables: GetReleaseGenreQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetReleaseGenreQuery>> =>
+  ): Promise<Result<E, GetReleaseGenreQuery>> =>
     requester<GetReleaseGenreQuery, GetReleaseGenreQueryVariables>(
       GetReleaseGenreQueryDocument,
       variables,
@@ -887,7 +886,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getTrackGenre: (
     variables: GetTrackGenreQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetTrackGenreQuery>> =>
+  ): Promise<Result<E, GetTrackGenreQuery>> =>
     requester<GetTrackGenreQuery, GetTrackGenreQueryVariables>(
       GetTrackGenreQueryDocument,
       variables,
@@ -896,7 +895,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getReleaseReview: (
     variables: GetReleaseReviewQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetReleaseReviewQuery>> =>
+  ): Promise<Result<E, GetReleaseReviewQuery>> =>
     requester<GetReleaseReviewQuery, GetReleaseReviewQueryVariables>(
       GetReleaseReviewQueryDocument,
       variables,
@@ -905,7 +904,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   createReleaseReview: (
     variables: CreateReleaseReviewMutationVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, CreateReleaseReviewMutation>> =>
+  ): Promise<Result<E, CreateReleaseReviewMutation>> =>
     requester<
       CreateReleaseReviewMutation,
       CreateReleaseReviewMutationVariables
@@ -913,9 +912,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   updateReleaseReviewRating: (
     variables: UpdateReleaseReviewRatingMutationVariables,
     options?: O
-  ): Promise<
-    Result<HttpError | GraphqlError, UpdateReleaseReviewRatingMutation>
-  > =>
+  ): Promise<Result<E, UpdateReleaseReviewRatingMutation>> =>
     requester<
       UpdateReleaseReviewRatingMutation,
       UpdateReleaseReviewRatingMutationVariables
@@ -923,7 +920,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getRelease: (
     variables: GetReleaseQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetReleaseQuery>> =>
+  ): Promise<Result<E, GetReleaseQuery>> =>
     requester<GetReleaseQuery, GetReleaseQueryVariables>(
       GetReleaseQueryDocument,
       variables,
@@ -932,7 +929,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getTrackReview: (
     variables: GetTrackReviewQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetTrackReviewQuery>> =>
+  ): Promise<Result<E, GetTrackReviewQuery>> =>
     requester<GetTrackReviewQuery, GetTrackReviewQueryVariables>(
       GetTrackReviewQueryDocument,
       variables,
@@ -941,7 +938,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   createTrackReview: (
     variables: CreateTrackReviewMutationVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, CreateTrackReviewMutation>> =>
+  ): Promise<Result<E, CreateTrackReviewMutation>> =>
     requester<CreateTrackReviewMutation, CreateTrackReviewMutationVariables>(
       CreateTrackReviewMutationDocument,
       variables,
@@ -950,9 +947,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   updateTrackReviewRating: (
     variables: UpdateTrackReviewRatingMutationVariables,
     options?: O
-  ): Promise<
-    Result<HttpError | GraphqlError, UpdateTrackReviewRatingMutation>
-  > =>
+  ): Promise<Result<E, UpdateTrackReviewRatingMutation>> =>
     requester<
       UpdateTrackReviewRatingMutation,
       UpdateTrackReviewRatingMutationVariables
@@ -960,7 +955,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getTrack: (
     variables: GetTrackQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetTrackQuery>> =>
+  ): Promise<Result<E, GetTrackQuery>> =>
     requester<GetTrackQuery, GetTrackQueryVariables>(
       GetTrackQueryDocument,
       variables,
@@ -969,7 +964,7 @@ export const getSdk = <O>(requester: Requester<O>) => ({
   getUser: (
     variables: GetUserQueryVariables,
     options?: O
-  ): Promise<Result<HttpError | GraphqlError, GetUserQuery>> =>
+  ): Promise<Result<E, GetUserQuery>> =>
     requester<GetUserQuery, GetUserQueryVariables>(
       GetUserQueryDocument,
       variables,

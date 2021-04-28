@@ -33,15 +33,30 @@ const httpError = (
   options,
 })
 
+export type ConnectionRefusedError = {
+  name: 'ConnectionRefusedError'
+}
+
+const connectionRefusedError = (): ConnectionRefusedError => ({
+  name: 'ConnectionRefusedError',
+})
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isHttpError = (error: any): error is HttpError =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   typeof error === 'object' && error.name === 'HttpError'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isConnectionRefusedError = (error: any): boolean =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  typeof error === 'object' && error.message === 'Failed to fetch'
+
 const send = async (
   url: string,
   options: Options = {}
-): Promise<Result<HttpError, Response & ResponseAugment>> => {
+): Promise<
+  Result<HttpError | ConnectionRefusedError, Response & ResponseAugment>
+> => {
   const headers = {
     ...(options.json !== undefined
       ? { 'Content-Type': 'application/json' }
@@ -68,6 +83,7 @@ const send = async (
     })
   } catch (error: unknown) {
     if (isHttpError(error)) return err(error)
+    if (isConnectionRefusedError(error)) return err(connectionRefusedError())
     throw error
   }
 }
@@ -75,5 +91,6 @@ const send = async (
 export const post = (
   url: string,
   options: Omit<Options, 'method'> = {}
-): Promise<Result<HttpError, Response & ResponseAugment>> =>
-  send(url, { method: 'POST', ...options })
+): Promise<
+  Result<HttpError | ConnectionRefusedError, Response & ResponseAugment>
+> => send(url, { method: 'POST', ...options })

@@ -1,7 +1,6 @@
-import { GetArtistQuery, GraphqlError } from '../../../generated/graphql'
+import { GetArtistQuery } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -65,7 +64,7 @@ export type ArtistActions = GetArtistAction
 
 export type GetArtistAction = {
   _type: 'artist/get'
-  request: RemoteData<HttpError | GraphqlError, GetArtistQuery>
+  request: RemoteData<GraphqlRequestError, GetArtistQuery>
 }
 export const getArtist = async function* (
   id: number

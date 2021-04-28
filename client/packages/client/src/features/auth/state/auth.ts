@@ -1,11 +1,6 @@
-import {
-  GraphqlError,
-  LoginMutation,
-  LogoutMutation,
-} from '../../../generated/graphql'
+import { LoginMutation, LogoutMutation } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -74,7 +69,7 @@ export type AuthActions = LoginAction | LogoutAction
 
 export type LoginAction = {
   _type: 'auth/login'
-  request: RemoteData<HttpError | GraphqlError, LoginMutation>
+  request: RemoteData<GraphqlRequestError, LoginMutation>
 }
 export const login = async function* (
   username: string,
@@ -87,7 +82,7 @@ export const login = async function* (
 
 export type LogoutAction = {
   _type: 'auth/logout'
-  request: RemoteData<HttpError | GraphqlError, LogoutMutation>
+  request: RemoteData<GraphqlRequestError, LogoutMutation>
 }
 export const logout = async function* (
   token: string,

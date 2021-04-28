@@ -1,11 +1,9 @@
 import {
   GetReleaseGenreQuery,
   GetTrackGenreQuery,
-  GraphqlError,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -67,7 +65,7 @@ export type GenreActions = GetReleaseGenreAction | GetTrackGenreAction
 
 export type GetReleaseGenreAction = {
   _type: 'genre/release/get'
-  request: RemoteData<HttpError | GraphqlError, GetReleaseGenreQuery>
+  request: RemoteData<GraphqlRequestError, GetReleaseGenreQuery>
 }
 export const getReleaseGenre = async function* (
   genreId: number,
@@ -80,7 +78,7 @@ export const getReleaseGenre = async function* (
 
 export type GetTrackGenreAction = {
   _type: 'genre/track/get'
-  request: RemoteData<HttpError | GraphqlError, GetTrackGenreQuery>
+  request: RemoteData<GraphqlRequestError, GetTrackGenreQuery>
 }
 export const getTrackGenre = async function* (
   genreId: number,

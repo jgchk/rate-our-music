@@ -1,12 +1,10 @@
 import {
   GetReleaseQuery,
-  GraphqlError,
   ReleaseDataFragment,
   ReleaseGenreDataFragment,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -143,7 +141,7 @@ export type ReleaseActions = GetReleaseAction
 
 export type GetReleaseAction = {
   _type: 'release/get'
-  request: RemoteData<HttpError | GraphqlError, GetReleaseQuery>
+  request: RemoteData<GraphqlRequestError, GetReleaseQuery>
 }
 export const getRelease = async function* (
   id: number

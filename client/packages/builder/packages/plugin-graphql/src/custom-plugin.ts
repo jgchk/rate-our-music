@@ -68,7 +68,7 @@ export const plugin: PluginFunction = (schema, documents) => {
 
     docs.push(`export const ${docType} = \`\n${print(operation)}\``)
 
-    actions.push(`${name}: (variables: ${variablesType}, options?: O): Promise<Result<HttpError | GraphqlError, ${resultType}>> =>
+    actions.push(`${name}: (variables: ${variablesType}, options?: O): Promise<Result<E, ${resultType}>> =>
       requester<${resultType}, ${variablesType}>(${docType}, variables, options)
     `)
   }
@@ -106,18 +106,15 @@ export const plugin: PluginFunction = (schema, documents) => {
       errors: GraphqlErr[],
       message?: string
     ): GraphqlError => ({ name: 'GraphqlError', message, errors })`,
-    `export type Requester<O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => Promise<Result<HttpError | GraphqlError, R>>`,
+    `export type Requester<E, O = Record<string, never>> = <R, V>(doc: string, vars?: V, options?: O) => Promise<Result<E, R>>`,
   ]
 
   const sdk = `// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  export const getSdk = <O>(requester: Requester<O>) => ({${actions.join(
+  export const getSdk = <E, O>(requester: Requester<E, O>) => ({${actions.join(
     ',\n'
   )}})`
 
-  const imports = [
-    `import { HttpError } from '../features/common/utils/http'`,
-    `import { Result } from '../features/common/utils/result'`,
-  ]
+  const imports = [`import { Result } from '../features/common/utils/result'`]
 
   return {
     content: [docs.join('\n\n'), types.join('\n\n'), sdk].join('\n\n'),

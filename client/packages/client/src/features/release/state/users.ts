@@ -1,7 +1,6 @@
-import { GetUserQuery, GraphqlError } from '../../../generated/graphql'
+import { GetUserQuery } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -98,7 +97,7 @@ export type UserActions = GetUserAction
 
 export type GetUserAction = {
   _type: 'user/get'
-  request: RemoteData<HttpError | GraphqlError, GetUserQuery>
+  request: RemoteData<GraphqlRequestError, GetUserQuery>
 }
 export const getUser = async function* (
   id: number

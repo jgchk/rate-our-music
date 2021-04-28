@@ -1,13 +1,11 @@
 import {
   CreateTrackReviewMutation,
   GetTrackReviewQuery,
-  GraphqlError,
   TrackReviewDataFragment,
   UpdateTrackReviewRatingMutation,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -107,7 +105,7 @@ type TrackReviewInput = Omit<TrackReview, 'id' | 'user'>
 
 export type CreateTrackReviewAction = {
   _type: 'review/track/create'
-  request: RemoteData<HttpError | GraphqlError, CreateTrackReviewMutation>
+  request: RemoteData<GraphqlRequestError, CreateTrackReviewMutation>
   trackId: number
   review: TrackReviewInput
 }
@@ -132,7 +130,7 @@ export const createTrackReview = async function* (
 
 export type GetTrackReviewAction = {
   _type: 'review/track/get'
-  request: RemoteData<HttpError | GraphqlError, GetTrackReviewQuery>
+  request: RemoteData<GraphqlRequestError, GetTrackReviewQuery>
   trackId: number
 }
 export const getTrackReview = async function* (
@@ -146,7 +144,7 @@ export const getTrackReview = async function* (
 
 export type UpdateTrackReviewRatingAction = {
   _type: 'review/track/update'
-  request: RemoteData<HttpError | GraphqlError, UpdateTrackReviewRatingMutation>
+  request: RemoteData<GraphqlRequestError, UpdateTrackReviewRatingMutation>
   reviewId: number
   rating: number
 }

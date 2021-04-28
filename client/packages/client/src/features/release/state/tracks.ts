@@ -1,12 +1,10 @@
 import {
   GetTrackQuery,
-  GraphqlError,
   TrackDataFragment,
   TrackGenreDataFragment,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -135,7 +133,7 @@ export type TrackActions = GetTrackAction
 
 export type GetTrackAction = {
   _type: 'track/get'
-  request: RemoteData<HttpError | GraphqlError, GetTrackQuery>
+  request: RemoteData<GraphqlRequestError, GetTrackQuery>
 }
 export const getTrack = async function* (
   id: number

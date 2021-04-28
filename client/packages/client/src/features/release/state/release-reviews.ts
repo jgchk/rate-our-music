@@ -1,13 +1,11 @@
 import {
   CreateReleaseReviewMutation,
   GetReleaseReviewQuery,
-  GraphqlError,
   ReleaseReviewDataFragment,
   UpdateReleaseReviewRatingMutation,
 } from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
-import { graphql } from '../../common/utils/graphql'
-import { HttpError } from '../../common/utils/http'
+import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
   RemoteData,
   fromResult,
@@ -100,7 +98,7 @@ type ReleaseReviewInput = Omit<ReleaseReview, 'id' | 'user'>
 
 export type CreateReleaseReviewAction = {
   _type: 'review/release/create'
-  request: RemoteData<HttpError | GraphqlError, CreateReleaseReviewMutation>
+  request: RemoteData<GraphqlRequestError, CreateReleaseReviewMutation>
   releaseId: number
   review: ReleaseReviewInput
 }
@@ -125,7 +123,7 @@ export const createReleaseReview = async function* (
 
 export type GetReleaseReviewAction = {
   _type: 'review/release/get'
-  request: RemoteData<HttpError | GraphqlError, GetReleaseReviewQuery>
+  request: RemoteData<GraphqlRequestError, GetReleaseReviewQuery>
   reviewId: number
 }
 export const getReleaseReview = async function* (
@@ -139,10 +137,7 @@ export const getReleaseReview = async function* (
 
 export type UpdateReleaseReviewRatingAction = {
   _type: 'review/release/update'
-  request: RemoteData<
-    HttpError | GraphqlError,
-    UpdateReleaseReviewRatingMutation
-  >
+  request: RemoteData<GraphqlRequestError, UpdateReleaseReviewRatingMutation>
   reviewId: number
   rating: number
 }

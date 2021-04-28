@@ -6,14 +6,19 @@ import {
   graphqlError,
   isErrorResponse,
 } from '../../../generated/graphql'
-import { HttpError, Options, post } from './http'
+import { ConnectionRefusedError, HttpError, Options, post } from './http'
 import { Result, err, isErr, ok } from './result'
 
-const requester: Requester<Options> = async <R, V>(
+export type GraphqlRequestError =
+  | HttpError
+  | ConnectionRefusedError
+  | GraphqlError
+
+const requester: Requester<GraphqlRequestError, Options> = async <R, V>(
   doc: string,
   variables: V,
   options?: Options
-): Promise<Result<HttpError | GraphqlError, R>> => {
+): Promise<Result<GraphqlRequestError, R>> => {
   const response = await post('/graphql', {
     json: { query: doc, variables },
     ...options,
