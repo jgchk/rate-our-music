@@ -25,7 +25,6 @@ export const UserLink: FunctionComponent<Props> = ({ id }) => {
     return <div>Loading...</div>
   }
   if (!user) {
-    console.log({ getUserAction })
     return <div>No user found with id: {id}</div>
   }
 
