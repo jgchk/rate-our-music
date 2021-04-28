@@ -27,7 +27,7 @@ export type AccountMutation = {
   register: Auth
   login: Auth
   logout: Scalars['Boolean']
-  refreshAuth: Auth
+  refresh: Auth
 }
 
 export type AccountMutationRegisterArgs = {
@@ -308,6 +308,14 @@ export type LogoutMutation = { __typename?: 'Mutation' } & {
   account: { __typename?: 'AccountMutation' } & Pick<AccountMutation, 'logout'>
 }
 
+export type RefreshMutationVariables = Exact<{ [key: string]: never }>
+
+export type RefreshMutation = { __typename?: 'Mutation' } & {
+  account: { __typename?: 'AccountMutation' } & {
+    refresh: { __typename?: 'Auth' } & AuthDataFragment
+  }
+}
+
 export type ArtistDataFragment = { __typename?: 'Artist' } & Pick<
   Artist,
   'id' | 'name'
@@ -518,6 +526,20 @@ export const LogoutMutationDocument = `
 mutation Logout($force: Boolean!) {
   account {
     logout(force: $force)
+  }
+}`
+
+export const RefreshMutationDocument = `
+mutation Refresh {
+  account {
+    refresh {
+      token
+      exp
+      account {
+        id
+        username
+      }
+    }
   }
 }`
 
@@ -862,6 +884,15 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
   ): Promise<Result<E, LogoutMutation>> =>
     requester<LogoutMutation, LogoutMutationVariables>(
       LogoutMutationDocument,
+      variables,
+      options
+    ),
+  refresh: (
+    variables: RefreshMutationVariables,
+    options?: O
+  ): Promise<Result<E, RefreshMutation>> =>
+    requester<RefreshMutation, RefreshMutationVariables>(
+      RefreshMutationDocument,
       variables,
       options
     ),

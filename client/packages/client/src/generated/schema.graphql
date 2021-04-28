@@ -12,7 +12,7 @@ type AccountMutation {
   register(username: String!, password: String!): Auth!
   login(username: String!, password: String!): Auth!
   logout(force: Boolean!): Boolean!
-  refreshAuth: Auth!
+  refresh: Auth!
 }
 
 type AccountQuery {

@@ -19,3 +19,11 @@ mutation Logout($force: Boolean!) {
     logout(force: $force)
   }
 }
+
+mutation Refresh {
+  account {
+    refresh {
+      ...authData
+    }
+  }
+}

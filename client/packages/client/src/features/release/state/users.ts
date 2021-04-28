@@ -33,6 +33,12 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
   }
 
   switch (action._type) {
+    case 'user/get': {
+      if (!isSuccess(action.request)) return state
+      const user: User = action.request.data.account.get
+      return { ...state, [user.id]: user }
+    }
+
     case 'auth/login': {
       if (!isSuccess(action.request)) return state
       const user: User = action.request.data.account.login.account

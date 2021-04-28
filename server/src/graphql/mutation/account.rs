@@ -77,7 +77,7 @@ impl AccountMutation {
         }
     }
 
-    async fn refresh_auth(&self, ctx: &Context<'_>) -> Result<Auth> {
+    async fn refresh(&self, ctx: &Context<'_>) -> Result<Auth> {
         match ctx.data::<crate::graphql::Context>()?.refresh_session() {
             Some(refresh_session) => {
                 let env = ctx.data::<crate::graphql::Context>()?;

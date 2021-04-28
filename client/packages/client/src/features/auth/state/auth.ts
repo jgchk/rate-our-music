@@ -1,4 +1,8 @@
-import { LoginMutation, LogoutMutation } from '../../../generated/graphql'
+import {
+  LoginMutation,
+  LogoutMutation,
+  RefreshMutation,
+} from '../../../generated/graphql'
 import { Reducer } from '../../common/state/store'
 import { GraphqlRequestError, graphql } from '../../common/utils/graphql'
 import {
@@ -33,17 +37,14 @@ export const authReducer: Reducer<AuthState> = (state, action) => {
 
   switch (action._type) {
     case 'auth/login': {
-      if (isSuccess(action.request)) {
-        const response = action.request.data.account.login
-        return {
-          ...state,
-          auth: {
-            token: response.token,
-            user: response.account.id,
-          },
-        }
-      } else {
-        return state
+      if (!isSuccess(action.request)) return state
+      const response = action.request.data.account.login
+      return {
+        ...state,
+        auth: {
+          token: response.token,
+          user: response.account.id,
+        },
       }
     }
 
@@ -56,6 +57,18 @@ export const authReducer: Reducer<AuthState> = (state, action) => {
         : state
     }
 
+    case 'auth/refresh': {
+      if (!isSuccess(action.request)) return state
+      const response = action.request.data.account.refresh
+      return {
+        ...state,
+        auth: {
+          token: response.token,
+          user: response.account.id,
+        },
+      }
+    }
+
     default:
       return state
   }
@@ -65,7 +78,7 @@ export const authReducer: Reducer<AuthState> = (state, action) => {
 // Actions
 //
 
-export type AuthActions = LoginAction | LogoutAction
+export type AuthActions = LoginAction | LogoutAction | RefreshAction
 
 export type LoginAction = {
   _type: 'auth/login'
@@ -94,4 +107,14 @@ export const logout = async function* (
     { headers: { Authorization: `Bearer ${token}` } }
   )
   yield { _type: 'auth/logout', request: fromResult(response) }
+}
+
+export type RefreshAction = {
+  _type: 'auth/refresh'
+  request: RemoteData<GraphqlRequestError, RefreshMutation>
+}
+export const refresh = async function* (): AsyncGenerator<RefreshAction> {
+  yield { _type: 'auth/refresh', request: loading }
+  const response = await graphql.refresh({})
+  yield { _type: 'auth/refresh', request: fromResult(response) }
 }
