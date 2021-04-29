@@ -99,6 +99,7 @@ export type Genre = {
 export type GenreQuery = {
   __typename?: 'GenreQuery'
   get: Genre
+  getAll: Array<Genre>
   getByRelease: ReleaseGenre
   getByTrack: TrackGenre
 }
@@ -123,6 +124,11 @@ export type Mutation = {
   artist: ArtistMutation
   releaseReview: ReleaseReviewMutation
   trackReview: TrackReviewMutation
+  release: ReleaseMutation
+}
+
+export type MutationReleaseArgs = {
+  id: Scalars['Int']
 }
 
 export type Query = {
@@ -167,6 +173,36 @@ export type ReleaseGenre = {
   release: Release
   genre: Genre
   weight: Scalars['Float']
+}
+
+export type ReleaseGenreMutation = {
+  __typename?: 'ReleaseGenreMutation'
+  vote: ReleaseGenreVote
+}
+
+export type ReleaseGenreMutationVoteArgs = {
+  value: Scalars['Int']
+}
+
+export type ReleaseGenreVote = {
+  __typename?: 'ReleaseGenreVote'
+  accountId: Scalars['Int']
+  releaseId: Scalars['Int']
+  genreId: Scalars['Int']
+  value: Scalars['Int']
+  account: Account
+  release: Release
+  genre: Genre
+  releaseGenre: ReleaseGenre
+}
+
+export type ReleaseMutation = {
+  __typename?: 'ReleaseMutation'
+  genre: ReleaseGenreMutation
+}
+
+export type ReleaseMutationGenreArgs = {
+  id: Scalars['Int']
 }
 
 export type ReleaseQuery = {
@@ -333,35 +369,47 @@ export type RefreshMutation = { __typename?: 'Mutation' } & {
   }
 }
 
-export type ReleaseGenreDataFragment = { __typename?: 'ReleaseGenre' } & Pick<
-  ReleaseGenre,
-  'weight'
-> & { genre: { __typename?: 'Genre' } & Pick<Genre, 'id' | 'name'> }
+export type GenreDataFragment = { __typename?: 'Genre' } & Pick<
+  Genre,
+  'id' | 'name' | 'description'
+>
 
-export type TrackGenreDataFragment = { __typename?: 'TrackGenre' } & Pick<
-  TrackGenre,
-  'weight'
-> & { genre: { __typename?: 'Genre' } & Pick<Genre, 'id' | 'name'> }
-
-export type GetReleaseGenreQueryVariables = Exact<{
-  genreId: Scalars['Int']
-  releaseId: Scalars['Int']
+export type GetGenreQueryVariables = Exact<{
+  id: Scalars['Int']
 }>
 
-export type GetReleaseGenreQuery = { __typename?: 'Query' } & {
+export type GetGenreQuery = { __typename?: 'Query' } & {
   genre: { __typename?: 'GenreQuery' } & {
-    getByRelease: { __typename?: 'ReleaseGenre' } & ReleaseGenreDataFragment
+    get: { __typename?: 'Genre' } & GenreDataFragment
   }
 }
 
-export type GetTrackGenreQueryVariables = Exact<{
+export type GetAllGenresQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetAllGenresQuery = { __typename?: 'Query' } & {
+  genre: { __typename?: 'GenreQuery' } & {
+    getAll: Array<{ __typename?: 'Genre' } & GenreDataFragment>
+  }
+}
+
+export type ReleaseGenreDataFragment = { __typename?: 'ReleaseGenre' } & Pick<
+  ReleaseGenre,
+  'weight'
+> & { genre: { __typename?: 'Genre' } & GenreDataFragment }
+
+export type CreateReleaseGenreVoteMutationVariables = Exact<{
+  releaseId: Scalars['Int']
   genreId: Scalars['Int']
-  trackId: Scalars['Int']
+  value: Scalars['Int']
 }>
 
-export type GetTrackGenreQuery = { __typename?: 'Query' } & {
-  genre: { __typename?: 'GenreQuery' } & {
-    getByTrack: { __typename?: 'TrackGenre' } & TrackGenreDataFragment
+export type CreateReleaseGenreVoteMutation = { __typename?: 'Mutation' } & {
+  release: { __typename?: 'ReleaseMutation' } & {
+    genre: { __typename?: 'ReleaseGenreMutation' } & {
+      vote: { __typename?: 'ReleaseGenreVote' } & {
+        release: { __typename?: 'Release' } & PartialReleaseDataFragment
+      }
+    }
   }
 }
 
@@ -446,6 +494,11 @@ export type GetFullReleaseQuery = { __typename?: 'Query' } & {
     get: { __typename?: 'Release' } & FullReleaseDataFragment
   }
 }
+
+export type TrackGenreDataFragment = { __typename?: 'TrackGenre' } & Pick<
+  TrackGenre,
+  'weight'
+> & { genre: { __typename?: 'Genre' } & GenreDataFragment }
 
 export type TrackReviewDataFragment = { __typename?: 'TrackReview' } & Pick<
   TrackReview,
@@ -593,28 +646,56 @@ mutation Refresh {
   }
 }`
 
-export const GetReleaseGenreQueryDocument = `
-query GetReleaseGenre($genreId: Int!, $releaseId: Int!) {
+export const GetGenreQueryDocument = `
+query GetGenre($id: Int!) {
   genre {
-    getByRelease(genreId: $genreId, releaseId: $releaseId) {
-      genre {
-        id
-        name
-      }
-      weight
+    get(id: $id) {
+      id
+      name
+      description
     }
   }
 }`
 
-export const GetTrackGenreQueryDocument = `
-query GetTrackGenre($genreId: Int!, $trackId: Int!) {
+export const GetAllGenresQueryDocument = `
+query GetAllGenres {
   genre {
-    getByTrack(genreId: $genreId, trackId: $trackId) {
-      genre {
-        id
-        name
+    getAll {
+      id
+      name
+      description
+    }
+  }
+}`
+
+export const CreateReleaseGenreVoteMutationDocument = `
+mutation CreateReleaseGenreVote($releaseId: Int!, $genreId: Int!, $value: Int!) {
+  release(id: $releaseId) {
+    genre(id: $genreId) {
+      vote(value: $value) {
+        release {
+          id
+          title
+          artists {
+            id
+            name
+          }
+          releaseDate {
+            day
+            month
+            year
+          }
+          coverArt
+          genres {
+            genre {
+              id
+              name
+              description
+            }
+            weight
+          }
+        }
       }
-      weight
     }
   }
 }`
@@ -712,6 +793,7 @@ query GetFullRelease($id: Int!) {
           genre {
             id
             name
+            description
           }
           weight
         }
@@ -734,6 +816,7 @@ query GetFullRelease($id: Int!) {
         genre {
           id
           name
+          description
         }
         weight
       }
@@ -830,6 +913,7 @@ query GetTrack($id: Int!) {
         genre {
           id
           name
+          description
         }
         weight
       }
@@ -896,6 +980,7 @@ query GetFullUser($id: Int!) {
             genre {
               id
               name
+              description
             }
             weight
           }
@@ -1002,24 +1087,32 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
       variables,
       options
     ),
-  getReleaseGenre: (
-    variables: GetReleaseGenreQueryVariables,
+  getGenre: (
+    variables: GetGenreQueryVariables,
     options?: O
-  ): Promise<Result<E, GetReleaseGenreQuery>> =>
-    requester<GetReleaseGenreQuery, GetReleaseGenreQueryVariables>(
-      GetReleaseGenreQueryDocument,
+  ): Promise<Result<E, GetGenreQuery>> =>
+    requester<GetGenreQuery, GetGenreQueryVariables>(
+      GetGenreQueryDocument,
       variables,
       options
     ),
-  getTrackGenre: (
-    variables: GetTrackGenreQueryVariables,
+  getAllGenres: (
+    variables: GetAllGenresQueryVariables,
     options?: O
-  ): Promise<Result<E, GetTrackGenreQuery>> =>
-    requester<GetTrackGenreQuery, GetTrackGenreQueryVariables>(
-      GetTrackGenreQueryDocument,
+  ): Promise<Result<E, GetAllGenresQuery>> =>
+    requester<GetAllGenresQuery, GetAllGenresQueryVariables>(
+      GetAllGenresQueryDocument,
       variables,
       options
     ),
+  createReleaseGenreVote: (
+    variables: CreateReleaseGenreVoteMutationVariables,
+    options?: O
+  ): Promise<Result<E, CreateReleaseGenreVoteMutation>> =>
+    requester<
+      CreateReleaseGenreVoteMutation,
+      CreateReleaseGenreVoteMutationVariables
+    >(CreateReleaseGenreVoteMutationDocument, variables, options),
   getReleaseReview: (
     variables: GetReleaseReviewQueryVariables,
     options?: O

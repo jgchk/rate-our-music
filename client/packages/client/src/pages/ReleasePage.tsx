@@ -1,9 +1,9 @@
 import { FunctionComponent, h } from 'preact'
 import { useEffect, useMemo } from 'preact/hooks'
 import { Artist } from '../components/Artist'
+import { ReleaseGenres } from '../components/Genres'
 import { RatingStarsInput } from '../components/RatingStarsInput'
 import { ReleaseDate } from '../components/ReleaseDate'
-import { ReleaseGenre } from '../components/ReleaseGenre'
 import { ReleaseReview } from '../components/Review'
 import { ReleaseReviewWithText } from '../components/ReviewWithText'
 import { Track } from '../components/Track'
@@ -94,17 +94,7 @@ export const ReleasePage: FunctionComponent<Props> = ({ releaseId }) => {
           )}
         </div>
 
-        <div>
-          <ol className='comma-list'>
-            {Object.keys(release.genres)
-              .map(Number)
-              .map((id) => (
-                <li key={id}>
-                  <ReleaseGenre id={id} releaseId={releaseId} />
-                </li>
-              ))}
-          </ol>
-        </div>
+        <ReleaseGenres releaseGenres={release.genres} releaseId={releaseId} />
 
         <div>
           {release.siteRating !== undefined && (

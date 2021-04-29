@@ -11,6 +11,12 @@ impl GenreQuery {
         Ok(genre)
     }
 
+    async fn get_all(&self, ctx: &Context<'_>) -> Result<Vec<Genre>> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let genres = env.db().genre().get_all().await?;
+        Ok(genres)
+    }
+
     async fn get_by_release(&self, genre_id: i32, release_id: i32) -> Result<ReleaseGenre> {
         Ok(ReleaseGenre {
             release_id,

@@ -1,12 +1,12 @@
 import { FunctionComponent, h } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { Artist } from '../components/Artist'
+import { TrackGenres } from '../components/Genres'
 import { RatingStarsInput } from '../components/RatingStarsInput'
 import { ReleaseDate } from '../components/ReleaseDate'
 import { TrackReview } from '../components/Review'
 import { TrackReviewWithText } from '../components/ReviewWithText'
 import { Track } from '../components/Track'
-import { TrackGenre } from '../components/TrackGenre'
 import { ReleaseViewLink } from '../components/TracklistReleaseViewLink'
 import { useGetFullReleaseAction, useGetTrackAction } from '../hooks/useAction'
 import { isFullRelease } from '../state/slices/releases'
@@ -108,17 +108,7 @@ export const TrackPage: FunctionComponent<Props> = ({ trackId }) => {
           )}
         </div>
 
-        <div>
-          <ol className='comma-list'>
-            {Object.keys(track.genres)
-              .map(Number)
-              .map((id) => (
-                <li key={id}>
-                  <TrackGenre id={id} trackId={trackId} />
-                </li>
-              ))}
-          </ol>
-        </div>
+        <TrackGenres trackGenres={track.genres} />
 
         <div>
           {track.siteRating !== undefined && (

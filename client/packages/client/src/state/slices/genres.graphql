@@ -1,31 +1,21 @@
-fragment releaseGenreData on ReleaseGenre {
-  genre {
-    id
-    name
-  }
-  weight
+fragment genreData on Genre {
+  id
+  name
+  description
 }
 
-fragment trackGenreData on TrackGenre {
+query GetGenre($id: Int!) {
   genre {
-    id
-    name
-  }
-  weight
-}
-
-query GetReleaseGenre($genreId: Int!, $releaseId: Int!) {
-  genre {
-    getByRelease(genreId: $genreId, releaseId: $releaseId) {
-      ...releaseGenreData
+    get(id: $id) {
+      ...genreData
     }
   }
 }
 
-query GetTrackGenre($genreId: Int!, $trackId: Int!) {
+query GetAllGenres {
   genre {
-    getByTrack(genreId: $genreId, trackId: $trackId) {
-      ...trackGenreData
+    getAll {
+      ...genreData
     }
   }
 }

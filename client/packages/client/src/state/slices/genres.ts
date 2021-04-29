@@ -1,6 +1,7 @@
 import {
-  GetReleaseGenreQuery,
-  GetTrackGenreQuery,
+  GenreDataFragment,
+  GetAllGenresQuery,
+  GetGenreQuery,
 } from '../../generated/graphql'
 import { GraphqlRequestError, graphql } from '../../utils/graphql'
 import {
@@ -17,13 +18,25 @@ import { Reducer } from '../store'
 //
 
 export type GenresState = {
-  [id: number]: Genre
+  genres: { [id: number]: Genre }
+  lastFetchedAll: Date | undefined
 }
 
 export type Genre = {
   id: number
   name: string
+  description?: string
 }
+
+//
+// Mappers
+//
+
+const mapGenre = (genre: GenreDataFragment): Genre => ({
+  id: genre.id,
+  name: genre.name,
+  description: genre.description ?? undefined,
+})
 
 //
 // Reducer
@@ -31,25 +44,41 @@ export type Genre = {
 
 export const genresReducer: Reducer<GenresState> = (state, action) => {
   if (state === undefined) {
-    const initialState: GenresState = {}
+    const initialState: GenresState = { genres: {}, lastFetchedAll: undefined }
     return initialState
   }
 
   switch (action._type) {
+    case 'genre/get': {
+      if (!isSuccess(action.request)) return state
+      const genre = mapGenre(action.request.data.genre.get)
+      return { ...state, genres: mergeIds(state.genres, [genre]) }
+    }
+
+    case 'genre/getAll': {
+      if (!isSuccess(action.request)) return state
+      const genres = action.request.data.genre.getAll.map(mapGenre)
+      return {
+        ...state,
+        genres: mergeIds(state.genres, genres),
+        lastFetchedAll: new Date(),
+      }
+    }
+
     case 'release/getFull': {
       if (!isSuccess(action.request)) return state
       const genres: Genre[] = action.request.data.release.get.genres.map(
-        (genre) => genre.genre
+        (genre) => mapGenre(genre.genre)
       )
-      return mergeIds(state, genres)
+      return { ...state, genres: mergeIds(state.genres, genres) }
     }
 
     case 'track/get': {
       if (!isSuccess(action.request)) return state
       const genres: Genre[] = action.request.data.track.get.genres.map(
-        (genre) => genre.genre
+        (genre) => mapGenre(genre.genre)
       )
-      return mergeIds(state, genres)
+      return { ...state, genres: mergeIds(state.genres, genres) }
     }
 
     default:
@@ -61,30 +90,26 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
 // Actions
 //
 
-export type GenreActions = GetReleaseGenreAction | GetTrackGenreAction
+export type GenreActions = GetGenreAction | GetAllGenresAction
 
-export type GetReleaseGenreAction = {
-  _type: 'genre/release/get'
-  request: RemoteData<GraphqlRequestError, GetReleaseGenreQuery>
+export type GetGenreAction = {
+  _type: 'genre/get'
+  request: RemoteData<GraphqlRequestError, GetGenreQuery>
 }
-export const getReleaseGenre = async function* (
-  genreId: number,
-  releaseId: number
-): AsyncGenerator<GetReleaseGenreAction> {
-  yield { _type: 'genre/release/get', request: loading }
-  const response = await graphql.getReleaseGenre({ genreId, releaseId })
-  yield { _type: 'genre/release/get', request: fromResult(response) }
+export const getGenre = async function* (
+  id: number
+): AsyncGenerator<GetGenreAction> {
+  yield { _type: 'genre/get', request: loading }
+  const response = await graphql.getGenre({ id })
+  yield { _type: 'genre/get', request: fromResult(response) }
 }
 
-export type GetTrackGenreAction = {
-  _type: 'genre/track/get'
-  request: RemoteData<GraphqlRequestError, GetTrackGenreQuery>
+export type GetAllGenresAction = {
+  _type: 'genre/getAll'
+  request: RemoteData<GraphqlRequestError, GetAllGenresQuery>
 }
-export const getTrackGenre = async function* (
-  genreId: number,
-  trackId: number
-): AsyncGenerator<GetTrackGenreAction> {
-  yield { _type: 'genre/track/get', request: loading }
-  const response = await graphql.getTrackGenre({ genreId, trackId })
-  yield { _type: 'genre/track/get', request: fromResult(response) }
+export const getAllGenres = async function* (): AsyncGenerator<GetAllGenresAction> {
+  yield { _type: 'genre/getAll', request: loading }
+  const response = await graphql.getAllGenres({})
+  yield { _type: 'genre/getAll', request: fromResult(response) }
 }

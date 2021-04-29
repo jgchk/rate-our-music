@@ -1,0 +1,22 @@
+fragment releaseGenreData on ReleaseGenre {
+  genre {
+    ...genreData
+  }
+  weight
+}
+
+mutation CreateReleaseGenreVote(
+  $releaseId: Int!
+  $genreId: Int!
+  $value: Int!
+) {
+  release(id: $releaseId) {
+    genre(id: $genreId) {
+      vote(value: $value) {
+        release {
+          ...partialReleaseData
+        }
+      }
+    }
+  }
+}

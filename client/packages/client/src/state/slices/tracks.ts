@@ -26,25 +26,25 @@ export type Track = {
   title: string
   durationMs: number | undefined
   release: number
-  genres: { [id: number]: number }
+  genres: Set<TrackGenre>
   siteRating?: number
   artists: Set<number>
   reviews: Set<number>
 }
 
-export type GenreMap = { [id: number]: number }
+export type TrackGenre = {
+  genreId: number
+  weight: number
+}
 
 //
 // Mappers
 //
 
-const mapGenres = (genres: TrackGenreDataFragment[]): GenreMap => {
-  const genreMap: { [id: number]: number } = {}
-  for (const genre of genres) {
-    genreMap[genre.genre.id] = genre.weight
-  }
-  return genreMap
-}
+const mapGenres = (genres: TrackGenreDataFragment[]): Set<TrackGenre> =>
+  new Set(
+    genres.map((genre) => ({ genreId: genre.genre.id, weight: genre.weight }))
+  )
 
 const mapTrack = (track: TrackDataFragment): Track => ({
   id: track.id,

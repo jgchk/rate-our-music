@@ -1,0 +1,6 @@
+fragment trackGenreData on TrackGenre {
+  genre {
+    ...genreData
+  }
+  weight
+}

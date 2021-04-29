@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'preact/hooks'
 import { getArtist } from '../state/slices/artists'
-import { getReleaseGenre, getTrackGenre } from '../state/slices/genres'
+import { getAllGenres, getGenre } from '../state/slices/genres'
 import { getReleaseReview } from '../state/slices/release-reviews'
-import { getFullRelease } from '../state/slices/releases'
+import {
+  createReleaseGenreVote,
+  getFullRelease,
+} from '../state/slices/releases'
 import { getTrackReview } from '../state/slices/track-reviews'
 import { getTrack } from '../state/slices/tracks'
 import { getFullUser, getPartialUser } from '../state/slices/users'
@@ -41,12 +44,13 @@ export const useAction = <Args extends unknown[], Act extends Action>(
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useGetFullReleaseAction = () =>
   useAction(getFullRelease, 'release/getFull')
+export const useCreateReleaseGenreVoteAction = () =>
+  useAction(createReleaseGenreVote, 'release/genreVote/create')
 export const useGetArtistAction = () => useAction(getArtist, 'artist/get')
 export const useGetTrackAction = () => useAction(getTrack, 'track/get')
-export const useGetReleaseGenreAction = () =>
-  useAction(getReleaseGenre, 'genre/release/get')
-export const useGetTrackGenreAction = () =>
-  useAction(getTrackGenre, 'genre/track/get')
+export const useGetGenreAction = () => useAction(getGenre, 'genre/get')
+export const useGetAllGenresAction = () =>
+  useAction(getAllGenres, 'genre/getAll')
 export const useGetReleaseReviewAction = () =>
   useAction(getReleaseReview, 'review/release/get')
 export const useGetTrackReviewAction = () =>

@@ -51,6 +51,7 @@ type Genre {
 
 type GenreQuery {
   get(id: Int!): Genre!
+  getAll: [Genre!]!
   getByRelease(genreId: Int!, releaseId: Int!): ReleaseGenre!
   getByTrack(genreId: Int!, trackId: Int!): TrackGenre!
 }
@@ -60,6 +61,7 @@ type Mutation {
   artist: ArtistMutation!
   releaseReview: ReleaseReviewMutation!
   trackReview: TrackReviewMutation!
+  release(id: Int!): ReleaseMutation!
 }
 
 type Query {
@@ -100,6 +102,25 @@ type ReleaseGenre {
   release: Release!
   genre: Genre!
   weight: Float!
+}
+
+type ReleaseGenreMutation {
+  vote(value: Int!): ReleaseGenreVote!
+}
+
+type ReleaseGenreVote {
+  accountId: Int!
+  releaseId: Int!
+  genreId: Int!
+  value: Int!
+  account: Account!
+  release: Release!
+  genre: Genre!
+  releaseGenre: ReleaseGenre!
+}
+
+type ReleaseMutation {
+  genre(id: Int!): ReleaseGenreMutation!
 }
 
 type ReleaseQuery {

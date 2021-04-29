@@ -17,6 +17,13 @@ impl<'a> GenreDatabase<'a> {
             .map_err(Error::from)
     }
 
+    pub async fn get_all(&self) -> Result<Vec<Genre>, Error> {
+        sqlx::query_as!(Genre, "SELECT * FROM genre")
+            .fetch_all(self.0)
+            .await
+            .map_err(Error::from)
+    }
+
     pub async fn get_by_release(&self, release_id: i32) -> Result<Vec<Genre>, Error> {
         sqlx::query_as!(
             Genre,

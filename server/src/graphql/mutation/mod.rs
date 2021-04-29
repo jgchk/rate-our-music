@@ -1,11 +1,14 @@
 mod account;
 mod artist;
+mod release;
+mod release_genre;
 mod release_review;
 mod track_review;
 
 use account::AccountMutation;
 use artist::ArtistMutation;
 use async_graphql::*;
+use release::ReleaseMutation;
 use release_review::ReleaseReviewMutation;
 use track_review::TrackReviewMutation;
 
@@ -27,5 +30,9 @@ impl Mutation {
 
     async fn track_review(&self) -> TrackReviewMutation {
         TrackReviewMutation
+    }
+
+    async fn release(&self, id: i32) -> ReleaseMutation {
+        ReleaseMutation { id }
     }
 }

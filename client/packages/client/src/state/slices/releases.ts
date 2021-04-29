@@ -1,4 +1,5 @@
 import {
+  CreateReleaseGenreVoteMutation,
   FullReleaseDataFragment,
   GetFullReleaseQuery,
   PartialReleaseDataFragment,
@@ -28,7 +29,12 @@ export type PartialRelease = {
   artists: Set<number>
   releaseDate?: PartialDate
   coverArt?: string
-  genres: GenreMap
+  genres: Set<ReleaseGenre>
+}
+
+export type ReleaseGenre = {
+  genreId: number
+  weight: number
 }
 
 export type FullRelease = PartialRelease & {
@@ -43,8 +49,6 @@ export type PartialDate = {
   year: number
 }
 
-export type GenreMap = { [id: number]: number }
-
 export const isFullRelease = (
   release: PartialRelease | FullRelease
 ): release is FullRelease => 'tracks' in release
@@ -53,13 +57,10 @@ export const isFullRelease = (
 // Mappers
 //
 
-const mapGenres = (genres: ReleaseGenreDataFragment[]): GenreMap => {
-  const genreMap: { [id: number]: number } = {}
-  for (const genre of genres) {
-    genreMap[genre.genre.id] = genre.weight
-  }
-  return genreMap
-}
+const mapGenres = (genres: ReleaseGenreDataFragment[]): Set<ReleaseGenre> =>
+  new Set(
+    genres.map((genre) => ({ genreId: genre.genre.id, weight: genre.weight }))
+  )
 
 const mapPartialRelease = (
   release: PartialReleaseDataFragment
@@ -99,7 +100,15 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
     case 'release/getFull': {
       if (!isSuccess(action.request)) return state
       const release = mapFullRelease(action.request.data.release.get)
-      return { ...state, [release.id]: release }
+      return mergeIds(state, [release])
+    }
+
+    case 'release/genreVote/create': {
+      if (!isSuccess(action.request)) return state
+      const release = mapPartialRelease(
+        action.request.data.release.genre.vote.release
+      )
+      return mergeIds(state, [release])
     }
 
     case 'review/release/create': {
@@ -146,11 +155,10 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
 
     case 'user/getFull': {
       if (!isSuccess(action.request)) return state
-
-      const reviews = action.request.data.account.get.releaseReviews.map(
+      const releases = action.request.data.account.get.releaseReviews.map(
         (review) => mapPartialRelease(review.release)
       )
-      return mergeIds(state, reviews)
+      return mergeIds(state, releases)
     }
 
     default:
@@ -162,7 +170,7 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
 // Actions
 //
 
-export type ReleaseActions = GetFullReleaseAction
+export type ReleaseActions = GetFullReleaseAction | CreateReleaseGenreVoteAction
 
 export type GetFullReleaseAction = {
   _type: 'release/getFull'
@@ -178,4 +186,26 @@ export const getFullRelease = async function* (
 
   const response = await graphql.getFullRelease({ id })
   yield { _type: 'release/getFull', request: fromResult(response) }
+}
+
+export type CreateReleaseGenreVoteAction = {
+  _type: 'release/genreVote/create'
+  request: RemoteData<GraphqlRequestError, CreateReleaseGenreVoteMutation>
+}
+export const createReleaseGenreVote = async function* (
+  token: string,
+  releaseId: number,
+  genreId: number,
+  value: number
+): AsyncGenerator<CreateReleaseGenreVoteAction> {
+  yield { _type: 'release/genreVote/create', request: loading }
+  const response = await graphql.createReleaseGenreVote(
+    {
+      releaseId,
+      genreId,
+      value,
+    },
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  yield { _type: 'release/genreVote/create', request: fromResult(response) }
 }
