@@ -10,6 +10,7 @@ import { useSelector } from '../state/store'
 import { isLoading } from '../utils/remote-data'
 import { Artist } from './Artist'
 import { Link } from './Link'
+import { RatingStars } from './RatingStars'
 
 export type Props = {
   id: number
@@ -56,12 +57,12 @@ export const ReleaseReview: FunctionComponent<Props> = ({ id }) => {
   if (!release) return <div>No release found with id: {review.release}</div>
 
   return (
-    <div>
+    <div className='flex align-center'>
+      {review.rating && <RatingStars value={review.rating} />}
       {[...release.artists].map((id) => (
         <Artist key={id} id={id} />
       ))}
       <Link href={releaseLink}>{release.title}</Link>
-      <div>{review.rating}</div>
     </div>
   )
 }

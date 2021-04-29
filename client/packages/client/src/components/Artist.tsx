@@ -26,9 +26,5 @@ export const Artist: FunctionComponent<Props> = ({ id }) => {
   }
   if (!artist) return <div>No artist found with id: {id}</div>
 
-  return (
-    <Link className='font-lg' href={artistLink}>
-      {artist.name}
-    </Link>
-  )
+  return <Link href={artistLink}>{artist.name}</Link>
 }
