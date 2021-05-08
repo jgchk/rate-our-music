@@ -14,7 +14,7 @@ type GenreInputProps = {
 }
 
 const GenreInput: FunctionComponent<GenreInputProps> = ({ onSelect }) => {
-  const [getAllGenres, getAllGenresAction] = useGetAllGenresAction()
+  const [getAllGenres] = useGetAllGenresAction()
   const genres = useSelector((state) => Object.values(state.genres.genres))
 
   const genresLastFetched = useSelector((state) => state.genres.lastFetchedAll)
@@ -73,10 +73,7 @@ export const ReleaseGenres: FunctionComponent<ReleaseGenresProps> = ({
 }) => {
   const [isVoting, setVoting] = useState(false)
 
-  const [
-    createReleaseGenreVote,
-    createReleaseGenreVoteAction,
-  ] = useCreateReleaseGenreVoteAction()
+  const [createReleaseGenreVote] = useCreateReleaseGenreVoteAction()
 
   const token = useSelector((state) => state.auth.auth?.token)
 
