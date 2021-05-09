@@ -46,3 +46,11 @@ query GetFullRelease($id: Int!) {
     }
   }
 }
+
+mutation AddRelease($release: ReleaseInput!) {
+  releases {
+    add(release: $release) {
+      ...fullReleaseData
+    }
+  }
+}

@@ -8,7 +8,7 @@ const { devServerPlugin } = require('@builder/plugin-dev-server')
 
 const { pnpPlugin } = require('@builder/esbuild-plugin-pnp')
 const { postcssPlugin } = require('@builder/esbuild-plugin-postcss')
-const postcssImport = require('postcss-import')
+const tailwind = require('tailwindcss')
 
 const args = process.argv.slice(2)
 const isDev = args.includes('--dev')
@@ -23,7 +23,7 @@ void Builder({
   clean: true,
   plugins: [
     esbuildPlugin({
-      plugins: [pnpPlugin(), postcssPlugin({ plugins: [postcssImport()] })],
+      plugins: [pnpPlugin(), postcssPlugin({ plugins: [tailwind()] })],
     }),
     typescriptPlugin(),
     eslintPlugin({ cwd: '../..' }),

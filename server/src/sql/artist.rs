@@ -41,4 +41,26 @@ impl<'a> ArtistDatabase<'a> {
         .await
         .map_err(Error::from)
     }
+
+    pub async fn search(&self, query: String) -> Result<Vec<Artist>, Error> {
+        sqlx::query!(
+            "SELECT *, name <-> $1 AS dist
+            FROM artist
+            ORDER BY dist
+            LIMIT 10",
+            query
+        )
+        .fetch_all(self.0)
+        .await
+        .map_err(Error::from)
+        .map(|result| {
+            result
+                .iter()
+                .map(|ret| Artist {
+                    id: ret.id,
+                    name: ret.name.to_owned(),
+                })
+                .collect()
+        })
+    }
 }

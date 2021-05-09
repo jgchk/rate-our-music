@@ -1,4 +1,5 @@
 import { VNode, h } from 'preact'
+import { AddReleasePage } from '../pages/AddReleasePage'
 import { LoginPage } from '../pages/LoginPage'
 import { LogoutPage } from '../pages/LogoutPage'
 import { ReleasePage } from '../pages/ReleasePage'
@@ -15,6 +16,7 @@ export const releaseRoute = pipe(
   extend('release'),
   param('releaseId', int)
 )
+export const addReleaseRoute = pipe(route(), extend('release', 'add'))
 export const trackRoute = pipe(route(), extend('track'), param('trackId', int))
 export const artistRoute = pipe(
   route(),
@@ -36,4 +38,5 @@ export const routes = [
   matcher(match(trackRoute), (params) => (
     <TrackPage trackId={params.trackId} />
   )),
+  matcher(match(addReleaseRoute), () => <AddReleasePage />),
 ] as const

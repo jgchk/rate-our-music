@@ -3,6 +3,7 @@ mod artist;
 mod genre;
 mod release;
 mod release_review;
+mod release_type;
 mod track;
 mod track_review;
 
@@ -12,6 +13,7 @@ use async_graphql::*;
 use genre::GenreQuery;
 use release::ReleaseQuery;
 use release_review::ReleaseReviewQuery;
+use release_type::ReleaseTypeQuery;
 use track::TrackQuery;
 use track_review::TrackReviewQuery;
 
@@ -45,5 +47,9 @@ impl Query {
 
     async fn track_review(&self) -> TrackReviewQuery {
         TrackReviewQuery
+    }
+
+    async fn release_type(&self) -> ReleaseTypeQuery {
+        ReleaseTypeQuery
     }
 }

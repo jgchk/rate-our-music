@@ -1,0 +1,12 @@
+fragment releaseTypeData on ReleaseType {
+  id
+  name
+}
+
+query GetAllReleaseTypes {
+  releaseType {
+    getAll {
+      ...releaseTypeData
+    }
+  }
+}

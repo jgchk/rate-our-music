@@ -8,6 +8,11 @@ import {
   releaseReviewsReducer,
 } from './slices/release-reviews'
 import {
+  ReleaseTypeActions,
+  ReleaseTypesState,
+  releaseTypesReducer,
+} from './slices/release-types'
+import {
   ReleaseActions,
   ReleasesState,
   releasesReducer,
@@ -30,6 +35,7 @@ export type RootState = {
   genres: GenresState
   releaseReviews: ReleaseReviewsState
   trackReviews: TrackReviewsState
+  releaseTypes: ReleaseTypesState
   auth: AuthState
 }
 
@@ -43,6 +49,7 @@ export type RootAction =
   | ArtistActions
   | GenreActions
   | UserActions
+  | ReleaseTypeActions
 
 export const appReducer: Reducer<RootState> = (state, action) => ({
   actions: actionsReducer(state?.actions, action),
@@ -53,5 +60,6 @@ export const appReducer: Reducer<RootState> = (state, action) => ({
   genres: genresReducer(state?.genres, action),
   releaseReviews: releaseReviewsReducer(state?.releaseReviews, action),
   trackReviews: trackReviewsReducer(state?.trackReviews, action),
+  releaseTypes: releaseTypesReducer(state?.releaseTypes, action),
   auth: authReducer(state?.auth, action),
 })

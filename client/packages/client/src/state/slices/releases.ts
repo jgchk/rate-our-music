@@ -1,9 +1,11 @@
 import {
+  AddReleaseMutation,
   CreateReleaseGenreVoteMutation,
   FullReleaseDataFragment,
   GetFullReleaseQuery,
   PartialReleaseDataFragment,
   ReleaseGenreDataFragment,
+  ReleaseInput,
 } from '../../generated/graphql'
 import { GraphqlRequestError, graphql } from '../../utils/graphql'
 import {
@@ -102,6 +104,11 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
       const release = mapFullRelease(action.request.data.release.get)
       return mergeIds(state, [release])
     }
+    case 'release/add': {
+      if (!isSuccess(action.request)) return state
+      const release = mapFullRelease(action.request.data.releases.add)
+      return mergeIds(state, [release])
+    }
 
     case 'release/genreVote/create': {
       if (!isSuccess(action.request)) return state
@@ -170,7 +177,10 @@ export const releasesReducer: Reducer<ReleasesState> = (state, action) => {
 // Actions
 //
 
-export type ReleaseActions = GetFullReleaseAction | CreateReleaseGenreVoteAction
+export type ReleaseActions =
+  | GetFullReleaseAction
+  | AddReleaseAction
+  | CreateReleaseGenreVoteAction
 
 export type GetFullReleaseAction = {
   _type: 'release/getFull'
@@ -179,13 +189,21 @@ export type GetFullReleaseAction = {
 export const getFullRelease = async function* (
   id: number
 ): AsyncGenerator<GetFullReleaseAction> {
-  yield {
-    _type: 'release/getFull',
-    request: loading,
-  }
-
+  yield { _type: 'release/getFull', request: loading }
   const response = await graphql.getFullRelease({ id })
   yield { _type: 'release/getFull', request: fromResult(response) }
+}
+
+export type AddReleaseAction = {
+  _type: 'release/add'
+  request: RemoteData<GraphqlRequestError, AddReleaseMutation>
+}
+export const addRelease = async function* (
+  release: ReleaseInput
+): AsyncGenerator<AddReleaseAction> {
+  yield { _type: 'release/add', request: loading }
+  const response = await graphql.addRelease({ release })
+  yield { _type: 'release/add', request: fromResult(response) }
 }
 
 export type CreateReleaseGenreVoteAction = {

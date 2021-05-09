@@ -1,4 +1,4 @@
-import { GetArtistQuery } from '../../generated/graphql'
+import { GetArtistQuery, SearchArtistsQuery } from '../../generated/graphql'
 import { GraphqlRequestError, graphql } from '../../utils/graphql'
 import {
   RemoteData,
@@ -38,13 +38,22 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
       const artist = action.request.data.artist.get
       return mergeIds(state, [artist])
     }
+    case 'artist/search': {
+      if (!isSuccess(action.request)) return state
+      const artists = action.request.data.artist.search
+      return mergeIds(state, artists)
+    }
 
     case 'release/getFull': {
       if (!isSuccess(action.request)) return state
-
       const response = action.request.data.release.get
       const artists: Artist[] = response.artists
-
+      return mergeIds(state, artists)
+    }
+    case 'release/add': {
+      if (!isSuccess(action.request)) return state
+      const response = action.request.data.releases.add
+      const artists: Artist[] = response.artists
       return mergeIds(state, artists)
     }
 
@@ -66,7 +75,7 @@ export const artistsReducer: Reducer<ArtistsState> = (state, action) => {
 // Actions
 //
 
-export type ArtistActions = GetArtistAction
+export type ArtistActions = GetArtistAction | SearchArtistsAction
 
 export type GetArtistAction = {
   _type: 'artist/get'
@@ -78,4 +87,16 @@ export const getArtist = async function* (
   yield { _type: 'artist/get', request: loading }
   const response = await graphql.getArtist({ id })
   yield { _type: 'artist/get', request: fromResult(response) }
+}
+
+export type SearchArtistsAction = {
+  _type: 'artist/search'
+  request: RemoteData<GraphqlRequestError, SearchArtistsQuery>
+}
+export const searchArtists = async function* (
+  query: string
+): AsyncGenerator<SearchArtistsAction> {
+  yield { _type: 'artist/search', request: loading }
+  const response = await graphql.searchArtists({ query })
+  yield { _type: 'artist/search', request: fromResult(response) }
 }

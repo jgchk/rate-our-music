@@ -19,6 +19,8 @@ pub enum Error {
     InvalidPasswordLength(i32, i32),
     #[error("review must have rating or text")]
     InvalidReview,
+    #[error("release date with a day must also include a month")]
+    InvalidReleaseDate,
 }
 
 impl warp::reject::Reject for Error {}

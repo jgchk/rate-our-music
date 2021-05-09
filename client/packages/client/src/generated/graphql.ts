@@ -74,10 +74,15 @@ export type ArtistMutationCreateArgs = {
 export type ArtistQuery = {
   __typename?: 'ArtistQuery'
   get: Artist
+  search: Array<Artist>
 }
 
 export type ArtistQueryGetArgs = {
   id: Scalars['Int']
+}
+
+export type ArtistQuerySearchArgs = {
+  query: Scalars['String']
 }
 
 export type Auth = {
@@ -124,6 +129,7 @@ export type Mutation = {
   artist: ArtistMutation
   releaseReview: ReleaseReviewMutation
   trackReview: TrackReviewMutation
+  releases: ReleasesMutation
   release: ReleaseMutation
 }
 
@@ -140,6 +146,7 @@ export type Query = {
   genre: GenreQuery
   releaseReview: ReleaseReviewQuery
   trackReview: TrackReviewQuery
+  releaseType: ReleaseTypeQuery
 }
 
 export type Release = {
@@ -161,6 +168,12 @@ export type Release = {
 
 export type ReleaseDate = {
   __typename?: 'ReleaseDate'
+  year: Scalars['Int']
+  month?: Maybe<Scalars['Int']>
+  day?: Maybe<Scalars['Int']>
+}
+
+export type ReleaseDateInput = {
   year: Scalars['Int']
   month?: Maybe<Scalars['Int']>
   day?: Maybe<Scalars['Int']>
@@ -194,6 +207,13 @@ export type ReleaseGenreVote = {
   release: Release
   genre: Genre
   releaseGenre: ReleaseGenre
+}
+
+export type ReleaseInput = {
+  title: Scalars['String']
+  releaseDate?: Maybe<ReleaseDateInput>
+  releaseTypeId: Scalars['Int']
+  artistIds: Array<Scalars['Int']>
 }
 
 export type ReleaseMutation = {
@@ -250,6 +270,26 @@ export type ReleaseReviewQuery = {
 
 export type ReleaseReviewQueryGetArgs = {
   id: Scalars['Int']
+}
+
+export type ReleaseType = {
+  __typename?: 'ReleaseType'
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
+export type ReleaseTypeQuery = {
+  __typename?: 'ReleaseTypeQuery'
+  getAll: Array<ReleaseType>
+}
+
+export type ReleasesMutation = {
+  __typename?: 'ReleasesMutation'
+  add: Release
+}
+
+export type ReleasesMutationAddArgs = {
+  release: ReleaseInput
 }
 
 export type Track = {
@@ -334,6 +374,16 @@ export type GetArtistQueryVariables = Exact<{
 export type GetArtistQuery = { __typename?: 'Query' } & {
   artist: { __typename?: 'ArtistQuery' } & {
     get: { __typename?: 'Artist' } & ArtistDataFragment
+  }
+}
+
+export type SearchArtistsQueryVariables = Exact<{
+  query: Scalars['String']
+}>
+
+export type SearchArtistsQuery = { __typename?: 'Query' } & {
+  artist: { __typename?: 'ArtistQuery' } & {
+    search: Array<{ __typename?: 'Artist' } & ArtistDataFragment>
   }
 }
 
@@ -455,6 +505,19 @@ export type UpdateReleaseReviewRatingMutation = { __typename?: 'Mutation' } & {
   }
 }
 
+export type ReleaseTypeDataFragment = { __typename?: 'ReleaseType' } & Pick<
+  ReleaseType,
+  'id' | 'name'
+>
+
+export type GetAllReleaseTypesQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetAllReleaseTypesQuery = { __typename?: 'Query' } & {
+  releaseType: { __typename?: 'ReleaseTypeQuery' } & {
+    getAll: Array<{ __typename?: 'ReleaseType' } & ReleaseTypeDataFragment>
+  }
+}
+
 export type PartialReleaseDataFragment = { __typename?: 'Release' } & Pick<
   Release,
   'id' | 'title' | 'coverArt'
@@ -492,6 +555,16 @@ export type GetFullReleaseQueryVariables = Exact<{
 export type GetFullReleaseQuery = { __typename?: 'Query' } & {
   release: { __typename?: 'ReleaseQuery' } & {
     get: { __typename?: 'Release' } & FullReleaseDataFragment
+  }
+}
+
+export type AddReleaseMutationVariables = Exact<{
+  release: ReleaseInput
+}>
+
+export type AddReleaseMutation = { __typename?: 'Mutation' } & {
+  releases: { __typename?: 'ReleasesMutation' } & {
+    add: { __typename?: 'Release' } & FullReleaseDataFragment
   }
 }
 
@@ -605,6 +678,16 @@ export const GetArtistQueryDocument = `
 query GetArtist($id: Int!) {
   artist {
     get(id: $id) {
+      id
+      name
+    }
+  }
+}`
+
+export const SearchArtistsQueryDocument = `
+query SearchArtists($query: String!) {
+  artist {
+    search(query: $query) {
       id
       name
     }
@@ -762,10 +845,96 @@ mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
   }
 }`
 
+export const GetAllReleaseTypesQueryDocument = `
+query GetAllReleaseTypes {
+  releaseType {
+    getAll {
+      id
+      name
+    }
+  }
+}`
+
 export const GetFullReleaseQueryDocument = `
 query GetFullRelease($id: Int!) {
   release {
     get(id: $id) {
+      id
+      title
+      artists {
+        id
+        name
+      }
+      releaseDate {
+        day
+        month
+        year
+      }
+      coverArt
+      tracks {
+        id
+        title
+        durationMs
+        release {
+          id
+        }
+        artists {
+          id
+          name
+        }
+        genres {
+          genre {
+            id
+            name
+            description
+          }
+          weight
+        }
+        siteRating
+        reviews {
+          id
+          account {
+            id
+            username
+          }
+          rating
+          text
+          track {
+            id
+            siteRating
+          }
+        }
+      }
+      genres {
+        genre {
+          id
+          name
+          description
+        }
+        weight
+      }
+      siteRating
+      reviews {
+        id
+        account {
+          id
+          username
+        }
+        rating
+        text
+        release {
+          id
+          siteRating
+        }
+      }
+    }
+  }
+}`
+
+export const AddReleaseMutationDocument = `
+mutation AddRelease($release: ReleaseInput!) {
+  releases {
+    add(release: $release) {
       id
       title
       artists {
@@ -1060,6 +1229,15 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
       variables,
       options
     ),
+  searchArtists: (
+    variables: SearchArtistsQueryVariables,
+    options?: O
+  ): Promise<Result<E, SearchArtistsQuery>> =>
+    requester<SearchArtistsQuery, SearchArtistsQueryVariables>(
+      SearchArtistsQueryDocument,
+      variables,
+      options
+    ),
   login: (
     variables: LoginMutationVariables,
     options?: O
@@ -1138,12 +1316,30 @@ export const getSdk = <E, O>(requester: Requester<E, O>) => ({
       UpdateReleaseReviewRatingMutation,
       UpdateReleaseReviewRatingMutationVariables
     >(UpdateReleaseReviewRatingMutationDocument, variables, options),
+  getAllReleaseTypes: (
+    variables: GetAllReleaseTypesQueryVariables,
+    options?: O
+  ): Promise<Result<E, GetAllReleaseTypesQuery>> =>
+    requester<GetAllReleaseTypesQuery, GetAllReleaseTypesQueryVariables>(
+      GetAllReleaseTypesQueryDocument,
+      variables,
+      options
+    ),
   getFullRelease: (
     variables: GetFullReleaseQueryVariables,
     options?: O
   ): Promise<Result<E, GetFullReleaseQuery>> =>
     requester<GetFullReleaseQuery, GetFullReleaseQueryVariables>(
       GetFullReleaseQueryDocument,
+      variables,
+      options
+    ),
+  addRelease: (
+    variables: AddReleaseMutationVariables,
+    options?: O
+  ): Promise<Result<E, AddReleaseMutation>> =>
+    requester<AddReleaseMutation, AddReleaseMutationVariables>(
+      AddReleaseMutationDocument,
       variables,
       options
     ),

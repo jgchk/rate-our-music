@@ -1,7 +1,7 @@
 use super::{release_genre::ReleaseGenre, release_review::ReleaseReview};
 use crate::model::artist::Artist;
 use crate::model::track::Track;
-use async_graphql::{ComplexObject, Context, Enum, InputObject, Result, SimpleObject};
+use async_graphql::{ComplexObject, Context, Result, SimpleObject};
 use num_traits::cast::ToPrimitive;
 
 #[derive(SimpleObject)]
@@ -16,31 +16,11 @@ pub struct Release {
     pub cover_art: Option<String>,
 }
 
-#[derive(SimpleObject)]
+#[derive(SimpleObject, Debug, Clone, Copy)]
 pub struct ReleaseDate {
     pub year: i16,
     pub month: Option<i16>,
     pub day: Option<i16>,
-}
-
-#[derive(InputObject)]
-pub struct ReleaseDateInput {
-    pub year: i16,
-    pub month: Option<i16>,
-    pub day: Option<i16>,
-}
-
-#[derive(sqlx::Type, Debug, Clone, Copy, Enum, Eq, PartialEq)]
-#[sqlx(type_name = "release_type", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ReleaseType {
-    Album,
-    Compilation,
-    Ep,
-    Single,
-    Mixtape,
-    DjMix,
-    Bootleg,
-    Video,
 }
 
 #[ComplexObject]

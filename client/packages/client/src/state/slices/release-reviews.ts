@@ -81,6 +81,13 @@ export const releaseReviewsReducer: Reducer<ReleaseReviewsState> = (
       )
       return mergeIds(state, releaseReviews)
     }
+    case 'release/add': {
+      if (!isSuccess(action.request)) return state
+      const releaseReviews = action.request.data.releases.add.reviews.map(
+        mapReview
+      )
+      return mergeIds(state, releaseReviews)
+    }
 
     case 'user/getFull': {
       if (!isSuccess(action.request)) return state

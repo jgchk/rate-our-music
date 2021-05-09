@@ -10,3 +10,11 @@ query GetArtist($id: Int!) {
     }
   }
 }
+
+query SearchArtists($query: String!) {
+  artist {
+    search(query: $query) {
+      ...artistData
+    }
+  }
+}

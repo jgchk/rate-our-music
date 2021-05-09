@@ -78,12 +78,14 @@ export const usersReducer: Reducer<UsersState> = (state, action) => {
 
     case 'release/getFull': {
       if (!isSuccess(action.request)) return state
-
       const response = action.request.data.release.get
-      const users = response.reviews.map((review) => ({
-        ...state[review.account.id],
-        ...review.account,
-      }))
+      const users = response.reviews.map((review) => review.account)
+      return mergeIds(state, users)
+    }
+    case 'release/add': {
+      if (!isSuccess(action.request)) return state
+      const response = action.request.data.releases.add
+      const users = response.reviews.map((review) => review.account)
       return mergeIds(state, users)
     }
 

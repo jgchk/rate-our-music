@@ -2,8 +2,10 @@ mod account;
 mod artist;
 mod genre;
 mod release;
+mod release_artist;
 mod release_genre_vote;
 mod release_review;
+mod release_type;
 mod role;
 mod track;
 mod track_genre_vote;
@@ -14,8 +16,10 @@ use account::AccountDatabase;
 use artist::ArtistDatabase;
 use genre::GenreDatabase;
 use release::ReleaseDatabase;
+use release_artist::ReleaseArtistDatabase;
 use release_genre_vote::ReleaseGenreVoteDatabase;
 use release_review::ReleaseReviewDatabase;
+use release_type::ReleaseTypeDatabase;
 use role::RoleDatabase;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -75,5 +79,13 @@ impl Database {
 
     pub fn role(&self) -> RoleDatabase {
         RoleDatabase::new(&self.pool)
+    }
+
+    pub fn release_type(&self) -> ReleaseTypeDatabase {
+        ReleaseTypeDatabase::new(&self.pool)
+    }
+
+    pub fn release_artist(&self) -> ReleaseArtistDatabase {
+        ReleaseArtistDatabase::new(&self.pool)
     }
 }

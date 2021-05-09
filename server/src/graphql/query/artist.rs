@@ -10,4 +10,10 @@ impl ArtistQuery {
         let artist = env.db().artist().get(id).await?;
         Ok(artist)
     }
+
+    async fn search(&self, ctx: &Context<'_>, query: String) -> Result<Vec<Artist>> {
+        let env = ctx.data::<crate::graphql::Context>()?;
+        let artists = env.db().artist().search(query).await?;
+        Ok(artists)
+    }
 }

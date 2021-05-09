@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'preact/hooks'
-import { getArtist } from '../state/slices/artists'
+import { getArtist, searchArtists } from '../state/slices/artists'
 import { getAllGenres, getGenre } from '../state/slices/genres'
 import { getReleaseReview } from '../state/slices/release-reviews'
+import { getAllReleaseTypes } from '../state/slices/release-types'
 import {
+  addRelease,
   createReleaseGenreVote,
   getFullRelease,
 } from '../state/slices/releases'
@@ -44,9 +46,12 @@ export const useAction = <Args extends unknown[], Act extends Action>(
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const useGetFullReleaseAction = () =>
   useAction(getFullRelease, 'release/getFull')
+export const useAddReleaseAction = () => useAction(addRelease, 'release/add')
 export const useCreateReleaseGenreVoteAction = () =>
   useAction(createReleaseGenreVote, 'release/genreVote/create')
 export const useGetArtistAction = () => useAction(getArtist, 'artist/get')
+export const useSearchArtistsAction = () =>
+  useAction(searchArtists, 'artist/search')
 export const useGetTrackAction = () => useAction(getTrack, 'track/get')
 export const useGetGenreAction = () => useAction(getGenre, 'genre/get')
 export const useGetAllGenresAction = () =>
@@ -58,4 +63,6 @@ export const useGetTrackReviewAction = () =>
 export const useGetPartialUserAction = () =>
   useAction(getPartialUser, 'user/getPartial')
 export const useGetFullUserAction = () => useAction(getFullUser, 'user/getFull')
+export const useGetAllReleaseTypesAction = () =>
+  useAction(getAllReleaseTypes, 'releaseType/getAll')
 /* eslint-enable @typescript-eslint/explicit-module-boundary-types */

@@ -6,6 +6,7 @@ pub mod release_artist;
 pub mod release_genre;
 pub mod release_genre_vote;
 pub mod release_review;
+pub mod release_type;
 pub mod role;
 pub mod track;
 pub mod track_genre;

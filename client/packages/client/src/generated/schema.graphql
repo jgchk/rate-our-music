@@ -33,6 +33,7 @@ type ArtistMutation {
 
 type ArtistQuery {
   get(id: Int!): Artist!
+  search(query: String!): [Artist!]!
 }
 
 type Auth {
@@ -61,6 +62,7 @@ type Mutation {
   artist: ArtistMutation!
   releaseReview: ReleaseReviewMutation!
   trackReview: TrackReviewMutation!
+  releases: ReleasesMutation!
   release(id: Int!): ReleaseMutation!
 }
 
@@ -72,6 +74,7 @@ type Query {
   genre: GenreQuery!
   releaseReview: ReleaseReviewQuery!
   trackReview: TrackReviewQuery!
+  releaseType: ReleaseTypeQuery!
 }
 
 type Release {
@@ -91,6 +94,12 @@ type Release {
 }
 
 type ReleaseDate {
+  year: Int!
+  month: Int
+  day: Int
+}
+
+input ReleaseDateInput {
   year: Int!
   month: Int
   day: Int
@@ -117,6 +126,13 @@ type ReleaseGenreVote {
   release: Release!
   genre: Genre!
   releaseGenre: ReleaseGenre!
+}
+
+input ReleaseInput {
+  title: String!
+  releaseDate: ReleaseDateInput
+  releaseTypeId: Int!
+  artistIds: [Int!]!
 }
 
 type ReleaseMutation {
@@ -149,6 +165,19 @@ type ReleaseReviewMutation {
 
 type ReleaseReviewQuery {
   get(id: Int!): ReleaseReview!
+}
+
+type ReleaseType {
+  id: Int!
+  name: String!
+}
+
+type ReleaseTypeQuery {
+  getAll: [ReleaseType!]!
+}
+
+type ReleasesMutation {
+  add(release: ReleaseInput!): Release!
 }
 
 type Track {

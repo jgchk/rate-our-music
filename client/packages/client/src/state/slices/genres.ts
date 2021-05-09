@@ -67,8 +67,15 @@ export const genresReducer: Reducer<GenresState> = (state, action) => {
 
     case 'release/getFull': {
       if (!isSuccess(action.request)) return state
-      const genres: Genre[] = action.request.data.release.get.genres.map(
-        (genre) => mapGenre(genre.genre)
+      const genres = action.request.data.release.get.genres.map((genre) =>
+        mapGenre(genre.genre)
+      )
+      return { ...state, genres: mergeIds(state.genres, genres) }
+    }
+    case 'release/add': {
+      if (!isSuccess(action.request)) return state
+      const genres = action.request.data.releases.add.genres.map((genre) =>
+        mapGenre(genre.genre)
       )
       return { ...state, genres: mergeIds(state.genres, genres) }
     }

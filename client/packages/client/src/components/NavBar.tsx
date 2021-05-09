@@ -1,7 +1,7 @@
 import { Fragment, FunctionComponent, h } from 'preact'
 import { useMemo } from 'preact/hooks'
 import { build } from '../router/parser'
-import { loginRoute, logoutRoute } from '../router/routes'
+import { addReleaseRoute, loginRoute, logoutRoute } from '../router/routes'
 import { Auth } from '../state/slices/auth'
 import { useSelector } from '../state/store'
 import { Link } from './Link'
@@ -9,8 +9,10 @@ import { UserLink } from './UserLink'
 
 const LoggedIn: FunctionComponent<{ auth: Auth }> = ({ auth }) => {
   const logoutLink = useMemo(() => build(logoutRoute)({}), [])
+  const addReleaseLink = useMemo(() => build(addReleaseRoute)({}), [])
   return (
     <>
+      <Link href={addReleaseLink}>+</Link>
       <UserLink id={auth.user} />
       <Link href={logoutLink}>logout</Link>
     </>

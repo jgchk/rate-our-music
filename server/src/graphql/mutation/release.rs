@@ -1,5 +1,5 @@
 use super::release_genre::ReleaseGenreMutation;
-use async_graphql::*;
+use async_graphql::Object;
 
 pub struct ReleaseMutation {
     pub id: i32,

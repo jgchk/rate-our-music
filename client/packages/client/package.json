@@ -18,7 +18,7 @@
     "@builder/plugin-stylelint": "workspace:packages/builder/packages/plugin-stylelint",
     "@builder/plugin-typescript": "workspace:packages/builder/packages/plugin-typescript",
     "postcss": "^8.2.12",
-    "postcss-import": "^14.0.1",
+    "tailwindcss": "^2.1.2",
     "typescript": "^4.2.4",
     "typescript-plugin-css-modules": "^3.2.0"
   }
