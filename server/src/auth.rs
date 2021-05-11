@@ -3,7 +3,6 @@ use crate::{environment::Environment, model::role::Role};
 use chrono::DateTime;
 use chrono::Duration;
 use chrono::Utc;
-use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -12,7 +11,7 @@ pub struct Request {
     password: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     pub sub: i32,
     pub iat: i64,
@@ -42,20 +41,4 @@ pub async fn create_token(
     let token = env.jwt().encode(&claims)?;
 
     Ok((token, expiration_date))
-}
-
-pub async fn revoke_token(env: &Environment, token: &str, exp_seconds: usize) -> Result<(), Error> {
-    env.redis()
-        .await?
-        .set_ex(token, true, exp_seconds)
-        .await
-        .map_err(|err| err.into())
-}
-
-pub async fn is_token_revoked(env: &Environment, token: &str) -> Result<bool, Error> {
-    env.redis()
-        .await?
-        .get(token)
-        .await
-        .map_err(|err| err.into())
 }

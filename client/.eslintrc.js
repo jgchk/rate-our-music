@@ -47,6 +47,7 @@ module.exports = {
     'unicorn/no-array-callback-reference': 'off',
     'unicorn/no-array-reduce': 'off',
     'unicorn/prefer-query-selector': 'off',
+    'unicorn/no-useless-undefined': 'off',
   },
   env: {
     browser: true,

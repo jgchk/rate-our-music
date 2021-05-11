@@ -32,3 +32,11 @@ query GetFullUser($id: Int!) {
     }
   }
 }
+
+query WhoAmI {
+  account {
+    whoami {
+      ...partialAccountData
+    }
+  }
+}

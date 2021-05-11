@@ -1,4 +1,5 @@
-import { Result } from '../utils/result'
+import gql from 'graphql-tag'
+import * as Urql from '@urql/preact'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
@@ -7,6 +8,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]?: Maybe<T[SubKey]> }
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]: Maybe<T[SubKey]> }
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -42,13 +44,14 @@ export type AccountMutationLoginArgs = {
   password: Scalars['String']
 }
 
-export type AccountMutationLogoutArgs = {
-  force: Scalars['Boolean']
+export type AccountMutationRefreshArgs = {
+  refreshToken: Scalars['String']
 }
 
 export type AccountQuery = {
   __typename?: 'AccountQuery'
   get: Account
+  whoami: Account
 }
 
 export type AccountQueryGetArgs = {
@@ -88,7 +91,7 @@ export type ArtistQuerySearchArgs = {
 export type Auth = {
   __typename?: 'Auth'
   token: Scalars['String']
-  exp: Scalars['Int']
+  refreshToken: Scalars['String']
   account: Account
 }
 
@@ -389,7 +392,7 @@ export type SearchArtistsQuery = { __typename?: 'Query' } & {
 
 export type AuthDataFragment = { __typename?: 'Auth' } & Pick<
   Auth,
-  'token' | 'exp'
+  'token' | 'refreshToken'
 > & { account: { __typename?: 'Account' } & PartialAccountDataFragment }
 
 export type LoginMutationVariables = Exact<{
@@ -403,15 +406,15 @@ export type LoginMutation = { __typename?: 'Mutation' } & {
   }
 }
 
-export type LogoutMutationVariables = Exact<{
-  force: Scalars['Boolean']
-}>
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
 export type LogoutMutation = { __typename?: 'Mutation' } & {
   account: { __typename?: 'AccountMutation' } & Pick<AccountMutation, 'logout'>
 }
 
-export type RefreshMutationVariables = Exact<{ [key: string]: never }>
+export type RefreshMutationVariables = Exact<{
+  refreshToken: Scalars['String']
+}>
 
 export type RefreshMutation = { __typename?: 'Mutation' } & {
   account: { __typename?: 'AccountMutation' } & {
@@ -468,7 +471,10 @@ export type ReleaseReviewDataFragment = { __typename?: 'ReleaseReview' } & Pick<
   'id' | 'rating' | 'text'
 > & {
     account: { __typename?: 'Account' } & PartialAccountDataFragment
-    release: { __typename?: 'Release' } & Pick<Release, 'id' | 'siteRating'>
+    release: { __typename?: 'Release' } & Pick<
+      Release,
+      'id' | 'title' | 'siteRating'
+    > & { artists: Array<{ __typename?: 'Artist' } & Pick<Artist, 'id'>> }
   }
 
 export type GetReleaseReviewQueryVariables = Exact<{
@@ -625,13 +631,45 @@ export type TrackDataFragment = { __typename?: 'Track' } & Pick<
     reviews: Array<{ __typename?: 'TrackReview' } & TrackReviewDataFragment>
   }
 
-export type GetTrackQueryVariables = Exact<{
+export type GetTrackPageQueryVariables = Exact<{
   id: Scalars['Int']
 }>
 
-export type GetTrackQuery = { __typename?: 'Query' } & {
+export type GetTrackPageQuery = { __typename?: 'Query' } & {
   track: { __typename?: 'TrackQuery' } & {
-    get: { __typename?: 'Track' } & TrackDataFragment
+    get: { __typename?: 'Track' } & Pick<
+      Track,
+      'id' | 'title' | 'durationMs' | 'siteRating'
+    > & {
+        release: { __typename?: 'Release' } & Pick<
+          Release,
+          'id' | 'coverArt'
+        > & {
+            tracks: Array<{ __typename?: 'Track' } & Pick<Track, 'id'>>
+            releaseDate?: Maybe<
+              { __typename?: 'ReleaseDate' } & Pick<
+                ReleaseDate,
+                'year' | 'month' | 'day'
+              >
+            >
+          }
+        artists: Array<{ __typename?: 'Artist' } & ArtistDataFragment>
+        genres: Array<{ __typename?: 'TrackGenre' } & TrackGenreDataFragment>
+        reviews: Array<{ __typename?: 'TrackReview' } & TrackReviewDataFragment>
+      }
+  }
+}
+
+export type GetPartialTrackQueryVariables = Exact<{
+  id: Scalars['Int']
+}>
+
+export type GetPartialTrackQuery = { __typename?: 'Query' } & {
+  track: { __typename?: 'TrackQuery' } & {
+    get: { __typename?: 'Track' } & Pick<
+      Track,
+      'trackNum' | 'durationMs' | 'title'
+    >
   }
 }
 
@@ -674,726 +712,628 @@ export type GetFullUserQuery = { __typename?: 'Query' } & {
   }
 }
 
-export const GetArtistQueryDocument = `
-query GetArtist($id: Int!) {
-  artist {
-    get(id: $id) {
-      id
-      name
+export type WhoAmIQueryVariables = Exact<{ [key: string]: never }>
+
+export type WhoAmIQuery = { __typename?: 'Query' } & {
+  account: { __typename?: 'AccountQuery' } & {
+    whoami: { __typename?: 'Account' } & PartialAccountDataFragment
+  }
+}
+
+export const PartialAccountDataFragmentDoc = gql`
+  fragment partialAccountData on Account {
+    id
+    username
+  }
+`
+export const AuthDataFragmentDoc = gql`
+  fragment authData on Auth {
+    token
+    refreshToken
+    account {
+      ...partialAccountData
     }
   }
-}`
-
-export const SearchArtistsQueryDocument = `
-query SearchArtists($query: String!) {
-  artist {
-    search(query: $query) {
+  ${PartialAccountDataFragmentDoc}
+`
+export const ReleaseTypeDataFragmentDoc = gql`
+  fragment releaseTypeData on ReleaseType {
+    id
+    name
+  }
+`
+export const ArtistDataFragmentDoc = gql`
+  fragment artistData on Artist {
+    id
+    name
+  }
+`
+export const GenreDataFragmentDoc = gql`
+  fragment genreData on Genre {
+    id
+    name
+    description
+  }
+`
+export const TrackGenreDataFragmentDoc = gql`
+  fragment trackGenreData on TrackGenre {
+    genre {
+      ...genreData
+    }
+    weight
+  }
+  ${GenreDataFragmentDoc}
+`
+export const TrackReviewDataFragmentDoc = gql`
+  fragment trackReviewData on TrackReview {
+    id
+    account {
+      ...partialAccountData
+    }
+    rating
+    text
+    track {
       id
-      name
+      siteRating
     }
   }
-}`
-
-export const LoginMutationDocument = `
-mutation Login($username: String!, $password: String!) {
-  account {
-    login(username: $username, password: $password) {
-      token
-      exp
-      account {
+  ${PartialAccountDataFragmentDoc}
+`
+export const TrackDataFragmentDoc = gql`
+  fragment trackData on Track {
+    id
+    title
+    durationMs
+    release {
+      id
+    }
+    artists {
+      ...artistData
+    }
+    genres {
+      ...trackGenreData
+    }
+    siteRating
+    reviews {
+      ...trackReviewData
+    }
+  }
+  ${ArtistDataFragmentDoc}
+  ${TrackGenreDataFragmentDoc}
+  ${TrackReviewDataFragmentDoc}
+`
+export const ReleaseGenreDataFragmentDoc = gql`
+  fragment releaseGenreData on ReleaseGenre {
+    genre {
+      ...genreData
+    }
+    weight
+  }
+  ${GenreDataFragmentDoc}
+`
+export const ReleaseReviewDataFragmentDoc = gql`
+  fragment releaseReviewData on ReleaseReview {
+    id
+    account {
+      ...partialAccountData
+    }
+    rating
+    text
+    release {
+      id
+      title
+      siteRating
+      artists {
         id
-        username
       }
     }
   }
-}`
-
-export const LogoutMutationDocument = `
-mutation Logout($force: Boolean!) {
-  account {
-    logout(force: $force)
+  ${PartialAccountDataFragmentDoc}
+`
+export const FullReleaseDataFragmentDoc = gql`
+  fragment fullReleaseData on Release {
+    id
+    title
+    artists {
+      ...artistData
+    }
+    releaseDate {
+      day
+      month
+      year
+    }
+    coverArt
+    tracks {
+      ...trackData
+    }
+    genres {
+      ...releaseGenreData
+    }
+    siteRating
+    reviews {
+      ...releaseReviewData
+    }
   }
-}`
-
-export const RefreshMutationDocument = `
-mutation Refresh {
-  account {
-    refresh {
-      token
-      exp
-      account {
-        id
-        username
+  ${ArtistDataFragmentDoc}
+  ${TrackDataFragmentDoc}
+  ${ReleaseGenreDataFragmentDoc}
+  ${ReleaseReviewDataFragmentDoc}
+`
+export const PartialReleaseDataFragmentDoc = gql`
+  fragment partialReleaseData on Release {
+    id
+    title
+    artists {
+      ...artistData
+    }
+    releaseDate {
+      day
+      month
+      year
+    }
+    coverArt
+    genres {
+      ...releaseGenreData
+    }
+  }
+  ${ArtistDataFragmentDoc}
+  ${ReleaseGenreDataFragmentDoc}
+`
+export const FullAccountDataFragmentDoc = gql`
+  fragment fullAccountData on Account {
+    id
+    username
+    releaseReviews {
+      ...releaseReviewData
+      release {
+        ...partialReleaseData
+      }
+    }
+    trackReviews {
+      ...trackReviewData
+    }
+  }
+  ${ReleaseReviewDataFragmentDoc}
+  ${PartialReleaseDataFragmentDoc}
+  ${TrackReviewDataFragmentDoc}
+`
+export const GetArtistDocument = gql`
+  query GetArtist($id: Int!) {
+    artist {
+      get(id: $id) {
+        ...artistData
       }
     }
   }
-}`
+  ${ArtistDataFragmentDoc}
+`
 
-export const GetGenreQueryDocument = `
-query GetGenre($id: Int!) {
-  genre {
-    get(id: $id) {
-      id
-      name
-      description
+export function useGetArtistQuery(
+  options: Omit<Urql.UseQueryArgs<GetArtistQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetArtistQuery>({ query: GetArtistDocument, ...options })
+}
+export const SearchArtistsDocument = gql`
+  query SearchArtists($query: String!) {
+    artist {
+      search(query: $query) {
+        ...artistData
+      }
     }
   }
-}`
+  ${ArtistDataFragmentDoc}
+`
 
-export const GetAllGenresQueryDocument = `
-query GetAllGenres {
-  genre {
-    getAll {
-      id
-      name
-      description
+export function useSearchArtistsQuery(
+  options: Omit<Urql.UseQueryArgs<SearchArtistsQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<SearchArtistsQuery>({
+    query: SearchArtistsDocument,
+    ...options,
+  })
+}
+export const LoginDocument = gql`
+  mutation Login($username: String!, $password: String!) {
+    account {
+      login(username: $username, password: $password) {
+        ...authData
+      }
     }
   }
-}`
+  ${AuthDataFragmentDoc}
+`
 
-export const CreateReleaseGenreVoteMutationDocument = `
-mutation CreateReleaseGenreVote($releaseId: Int!, $genreId: Int!, $value: Int!) {
-  release(id: $releaseId) {
-    genre(id: $genreId) {
-      vote(value: $value) {
-        release {
-          id
-          title
-          artists {
-            id
-            name
-          }
-          releaseDate {
-            day
-            month
-            year
-          }
-          coverArt
-          genres {
-            genre {
-              id
-              name
-              description
-            }
-            weight
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument)
+}
+export const LogoutDocument = gql`
+  mutation Logout {
+    account {
+      logout
+    }
+  }
+`
+
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(
+    LogoutDocument
+  )
+}
+export const RefreshDocument = gql`
+  mutation Refresh($refreshToken: String!) {
+    account {
+      refresh(refreshToken: $refreshToken) {
+        ...authData
+      }
+    }
+  }
+  ${AuthDataFragmentDoc}
+`
+
+export function useRefreshMutation() {
+  return Urql.useMutation<RefreshMutation, RefreshMutationVariables>(
+    RefreshDocument
+  )
+}
+export const GetGenreDocument = gql`
+  query GetGenre($id: Int!) {
+    genre {
+      get(id: $id) {
+        ...genreData
+      }
+    }
+  }
+  ${GenreDataFragmentDoc}
+`
+
+export function useGetGenreQuery(
+  options: Omit<Urql.UseQueryArgs<GetGenreQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetGenreQuery>({ query: GetGenreDocument, ...options })
+}
+export const GetAllGenresDocument = gql`
+  query GetAllGenres {
+    genre {
+      getAll {
+        ...genreData
+      }
+    }
+  }
+  ${GenreDataFragmentDoc}
+`
+
+export function useGetAllGenresQuery(
+  options: Omit<Urql.UseQueryArgs<GetAllGenresQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetAllGenresQuery>({
+    query: GetAllGenresDocument,
+    ...options,
+  })
+}
+export const CreateReleaseGenreVoteDocument = gql`
+  mutation CreateReleaseGenreVote(
+    $releaseId: Int!
+    $genreId: Int!
+    $value: Int!
+  ) {
+    release(id: $releaseId) {
+      genre(id: $genreId) {
+        vote(value: $value) {
+          release {
+            ...partialReleaseData
           }
         }
       }
     }
   }
-}`
+  ${PartialReleaseDataFragmentDoc}
+`
 
-export const GetReleaseReviewQueryDocument = `
-query GetReleaseReview($id: Int!) {
-  releaseReview {
-    get(id: $id) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
+export function useCreateReleaseGenreVoteMutation() {
+  return Urql.useMutation<
+    CreateReleaseGenreVoteMutation,
+    CreateReleaseGenreVoteMutationVariables
+  >(CreateReleaseGenreVoteDocument)
+}
+export const GetReleaseReviewDocument = gql`
+  query GetReleaseReview($id: Int!) {
+    releaseReview {
+      get(id: $id) {
+        ...releaseReviewData
       }
     }
   }
-}`
+  ${ReleaseReviewDataFragmentDoc}
+`
 
-export const CreateReleaseReviewMutationDocument = `
-mutation CreateReleaseReview($releaseId: Int!, $accountId: Int!, $rating: Int, $text: String) {
-  releaseReview {
-    create(
-      releaseId: $releaseId
-      accountId: $accountId
-      rating: $rating
-      text: $text
-    ) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
+export function useGetReleaseReviewQuery(
+  options: Omit<Urql.UseQueryArgs<GetReleaseReviewQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetReleaseReviewQuery>({
+    query: GetReleaseReviewDocument,
+    ...options,
+  })
+}
+export const CreateReleaseReviewDocument = gql`
+  mutation CreateReleaseReview(
+    $releaseId: Int!
+    $accountId: Int!
+    $rating: Int
+    $text: String
+  ) {
+    releaseReview {
+      create(
+        releaseId: $releaseId
+        accountId: $accountId
+        rating: $rating
+        text: $text
+      ) {
+        ...releaseReviewData
       }
     }
   }
-}`
+  ${ReleaseReviewDataFragmentDoc}
+`
 
-export const UpdateReleaseReviewRatingMutationDocument = `
-mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
-  releaseReview {
-    updateRating(reviewId: $reviewId, rating: $rating) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      release {
-        id
-        siteRating
+export function useCreateReleaseReviewMutation() {
+  return Urql.useMutation<
+    CreateReleaseReviewMutation,
+    CreateReleaseReviewMutationVariables
+  >(CreateReleaseReviewDocument)
+}
+export const UpdateReleaseReviewRatingDocument = gql`
+  mutation UpdateReleaseReviewRating($reviewId: Int!, $rating: Int) {
+    releaseReview {
+      updateRating(reviewId: $reviewId, rating: $rating) {
+        ...releaseReviewData
       }
     }
   }
-}`
+  ${ReleaseReviewDataFragmentDoc}
+`
 
-export const GetAllReleaseTypesQueryDocument = `
-query GetAllReleaseTypes {
-  releaseType {
-    getAll {
-      id
-      name
+export function useUpdateReleaseReviewRatingMutation() {
+  return Urql.useMutation<
+    UpdateReleaseReviewRatingMutation,
+    UpdateReleaseReviewRatingMutationVariables
+  >(UpdateReleaseReviewRatingDocument)
+}
+export const GetAllReleaseTypesDocument = gql`
+  query GetAllReleaseTypes {
+    releaseType {
+      getAll {
+        ...releaseTypeData
+      }
     }
   }
-}`
+  ${ReleaseTypeDataFragmentDoc}
+`
 
-export const GetFullReleaseQueryDocument = `
-query GetFullRelease($id: Int!) {
-  release {
-    get(id: $id) {
-      id
-      title
-      artists {
-        id
-        name
+export function useGetAllReleaseTypesQuery(
+  options: Omit<
+    Urql.UseQueryArgs<GetAllReleaseTypesQueryVariables>,
+    'query'
+  > = {}
+) {
+  return Urql.useQuery<GetAllReleaseTypesQuery>({
+    query: GetAllReleaseTypesDocument,
+    ...options,
+  })
+}
+export const GetFullReleaseDocument = gql`
+  query GetFullRelease($id: Int!) {
+    release {
+      get(id: $id) {
+        ...fullReleaseData
       }
-      releaseDate {
-        day
-        month
-        year
+    }
+  }
+  ${FullReleaseDataFragmentDoc}
+`
+
+export function useGetFullReleaseQuery(
+  options: Omit<Urql.UseQueryArgs<GetFullReleaseQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetFullReleaseQuery>({
+    query: GetFullReleaseDocument,
+    ...options,
+  })
+}
+export const AddReleaseDocument = gql`
+  mutation AddRelease($release: ReleaseInput!) {
+    releases {
+      add(release: $release) {
+        ...fullReleaseData
       }
-      coverArt
-      tracks {
+    }
+  }
+  ${FullReleaseDataFragmentDoc}
+`
+
+export function useAddReleaseMutation() {
+  return Urql.useMutation<AddReleaseMutation, AddReleaseMutationVariables>(
+    AddReleaseDocument
+  )
+}
+export const GetTrackReviewDocument = gql`
+  query GetTrackReview($id: Int!) {
+    trackReview {
+      get(id: $id) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
+`
+
+export function useGetTrackReviewQuery(
+  options: Omit<Urql.UseQueryArgs<GetTrackReviewQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetTrackReviewQuery>({
+    query: GetTrackReviewDocument,
+    ...options,
+  })
+}
+export const CreateTrackReviewDocument = gql`
+  mutation CreateTrackReview(
+    $trackId: Int!
+    $accountId: Int!
+    $rating: Int
+    $text: String
+  ) {
+    trackReview {
+      create(
+        trackId: $trackId
+        accountId: $accountId
+        rating: $rating
+        text: $text
+      ) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
+`
+
+export function useCreateTrackReviewMutation() {
+  return Urql.useMutation<
+    CreateTrackReviewMutation,
+    CreateTrackReviewMutationVariables
+  >(CreateTrackReviewDocument)
+}
+export const UpdateTrackReviewRatingDocument = gql`
+  mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
+    trackReview {
+      updateRating(reviewId: $reviewId, rating: $rating) {
+        ...trackReviewData
+      }
+    }
+  }
+  ${TrackReviewDataFragmentDoc}
+`
+
+export function useUpdateTrackReviewRatingMutation() {
+  return Urql.useMutation<
+    UpdateTrackReviewRatingMutation,
+    UpdateTrackReviewRatingMutationVariables
+  >(UpdateTrackReviewRatingDocument)
+}
+export const GetTrackPageDocument = gql`
+  query GetTrackPage($id: Int!) {
+    track {
+      get(id: $id) {
         id
         title
         durationMs
         release {
           id
-        }
-        artists {
-          id
-          name
-        }
-        genres {
-          genre {
+          coverArt
+          tracks {
             id
-            name
-            description
-          }
-          weight
-        }
-        siteRating
-        reviews {
-          id
-          account {
-            id
-            username
-          }
-          rating
-          text
-          track {
-            id
-            siteRating
-          }
-        }
-      }
-      genres {
-        genre {
-          id
-          name
-          description
-        }
-        weight
-      }
-      siteRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-        release {
-          id
-          siteRating
-        }
-      }
-    }
-  }
-}`
-
-export const AddReleaseMutationDocument = `
-mutation AddRelease($release: ReleaseInput!) {
-  releases {
-    add(release: $release) {
-      id
-      title
-      artists {
-        id
-        name
-      }
-      releaseDate {
-        day
-        month
-        year
-      }
-      coverArt
-      tracks {
-        id
-        title
-        durationMs
-        release {
-          id
-        }
-        artists {
-          id
-          name
-        }
-        genres {
-          genre {
-            id
-            name
-            description
-          }
-          weight
-        }
-        siteRating
-        reviews {
-          id
-          account {
-            id
-            username
-          }
-          rating
-          text
-          track {
-            id
-            siteRating
-          }
-        }
-      }
-      genres {
-        genre {
-          id
-          name
-          description
-        }
-        weight
-      }
-      siteRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-        release {
-          id
-          siteRating
-        }
-      }
-    }
-  }
-}`
-
-export const GetTrackReviewQueryDocument = `
-query GetTrackReview($id: Int!) {
-  trackReview {
-    get(id: $id) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-        siteRating
-      }
-    }
-  }
-}`
-
-export const CreateTrackReviewMutationDocument = `
-mutation CreateTrackReview($trackId: Int!, $accountId: Int!, $rating: Int, $text: String) {
-  trackReview {
-    create(trackId: $trackId, accountId: $accountId, rating: $rating, text: $text) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-        siteRating
-      }
-    }
-  }
-}`
-
-export const UpdateTrackReviewRatingMutationDocument = `
-mutation UpdateTrackReviewRating($reviewId: Int!, $rating: Int) {
-  trackReview {
-    updateRating(reviewId: $reviewId, rating: $rating) {
-      id
-      account {
-        id
-        username
-      }
-      rating
-      text
-      track {
-        id
-        siteRating
-      }
-    }
-  }
-}`
-
-export const GetTrackQueryDocument = `
-query GetTrack($id: Int!) {
-  track {
-    get(id: $id) {
-      id
-      title
-      durationMs
-      release {
-        id
-      }
-      artists {
-        id
-        name
-      }
-      genres {
-        genre {
-          id
-          name
-          description
-        }
-        weight
-      }
-      siteRating
-      reviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-        track {
-          id
-          siteRating
-        }
-      }
-    }
-  }
-}`
-
-export const GetPartialUserQueryDocument = `
-query GetPartialUser($id: Int!) {
-  account {
-    get(id: $id) {
-      id
-      username
-    }
-  }
-}`
-
-export const GetFullUserQueryDocument = `
-query GetFullUser($id: Int!) {
-  account {
-    get(id: $id) {
-      id
-      username
-      releaseReviews {
-        id
-        account {
-          id
-          username
-        }
-        rating
-        text
-        release {
-          id
-          siteRating
-        }
-        release {
-          id
-          title
-          artists {
-            id
-            name
           }
           releaseDate {
-            day
-            month
             year
-          }
-          coverArt
-          genres {
-            genre {
-              id
-              name
-              description
-            }
-            weight
+            month
+            day
           }
         }
-      }
-      trackReviews {
-        id
-        account {
-          id
-          username
+        artists {
+          ...artistData
         }
-        rating
-        text
-        track {
-          id
-          siteRating
+        genres {
+          ...trackGenreData
+        }
+        siteRating
+        reviews {
+          ...trackReviewData
         }
       }
     }
   }
-}`
+  ${ArtistDataFragmentDoc}
+  ${TrackGenreDataFragmentDoc}
+  ${TrackReviewDataFragmentDoc}
+`
 
-export type GraphqlResponse<D> =
-  | GraphqlSuccessResponse<D>
-  | GraphqlErrorResponse
-
-export type GraphqlSuccessResponse<D> = {
-  data: D
-  errors: undefined
+export function useGetTrackPageQuery(
+  options: Omit<Urql.UseQueryArgs<GetTrackPageQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetTrackPageQuery>({
+    query: GetTrackPageDocument,
+    ...options,
+  })
 }
+export const GetPartialTrackDocument = gql`
+  query GetPartialTrack($id: Int!) {
+    track {
+      get(id: $id) {
+        trackNum
+        durationMs
+        title
+      }
+    }
+  }
+`
 
-export type GraphqlErrorResponse = {
-  data: undefined
-  errors: GraphqlErr[]
+export function useGetPartialTrackQuery(
+  options: Omit<Urql.UseQueryArgs<GetPartialTrackQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetPartialTrackQuery>({
+    query: GetPartialTrackDocument,
+    ...options,
+  })
 }
+export const GetPartialUserDocument = gql`
+  query GetPartialUser($id: Int!) {
+    account {
+      get(id: $id) {
+        ...partialAccountData
+      }
+    }
+  }
+  ${PartialAccountDataFragmentDoc}
+`
 
-export const isErrorResponse = <D>(
-  response: GraphqlResponse<D>
-): response is GraphqlErrorResponse => !!response.errors
-
-export type GraphqlErr = {
-  locations: GraphqlErrorLocation[]
-  message: string
-  path: string[]
+export function useGetPartialUserQuery(
+  options: Omit<Urql.UseQueryArgs<GetPartialUserQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetPartialUserQuery>({
+    query: GetPartialUserDocument,
+    ...options,
+  })
 }
+export const GetFullUserDocument = gql`
+  query GetFullUser($id: Int!) {
+    account {
+      get(id: $id) {
+        ...fullAccountData
+      }
+    }
+  }
+  ${FullAccountDataFragmentDoc}
+`
 
-export type GraphqlErrorLocation = {
-  line: number
-  column: number
+export function useGetFullUserQuery(
+  options: Omit<Urql.UseQueryArgs<GetFullUserQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<GetFullUserQuery>({
+    query: GetFullUserDocument,
+    ...options,
+  })
 }
+export const WhoAmIDocument = gql`
+  query WhoAmI {
+    account {
+      whoami {
+        ...partialAccountData
+      }
+    }
+  }
+  ${PartialAccountDataFragmentDoc}
+`
 
-export type GraphqlError = {
-  name: 'GraphqlError'
-  message?: string
-  errors: GraphqlErr[]
+export function useWhoAmIQuery(
+  options: Omit<Urql.UseQueryArgs<WhoAmIQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<WhoAmIQuery>({ query: WhoAmIDocument, ...options })
 }
-
-export const graphqlError = (
-  errors: GraphqlErr[],
-  message?: string
-): GraphqlError => ({ name: 'GraphqlError', message, errors })
-
-export type Requester<E, O = Record<string, never>> = <R, V>(
-  doc: string,
-  vars?: V,
-  options?: O
-) => Promise<Result<E, R>>
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getSdk = <E, O>(requester: Requester<E, O>) => ({
-  getArtist: (
-    variables: GetArtistQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetArtistQuery>> =>
-    requester<GetArtistQuery, GetArtistQueryVariables>(
-      GetArtistQueryDocument,
-      variables,
-      options
-    ),
-  searchArtists: (
-    variables: SearchArtistsQueryVariables,
-    options?: O
-  ): Promise<Result<E, SearchArtistsQuery>> =>
-    requester<SearchArtistsQuery, SearchArtistsQueryVariables>(
-      SearchArtistsQueryDocument,
-      variables,
-      options
-    ),
-  login: (
-    variables: LoginMutationVariables,
-    options?: O
-  ): Promise<Result<E, LoginMutation>> =>
-    requester<LoginMutation, LoginMutationVariables>(
-      LoginMutationDocument,
-      variables,
-      options
-    ),
-  logout: (
-    variables: LogoutMutationVariables,
-    options?: O
-  ): Promise<Result<E, LogoutMutation>> =>
-    requester<LogoutMutation, LogoutMutationVariables>(
-      LogoutMutationDocument,
-      variables,
-      options
-    ),
-  refresh: (
-    variables: RefreshMutationVariables,
-    options?: O
-  ): Promise<Result<E, RefreshMutation>> =>
-    requester<RefreshMutation, RefreshMutationVariables>(
-      RefreshMutationDocument,
-      variables,
-      options
-    ),
-  getGenre: (
-    variables: GetGenreQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetGenreQuery>> =>
-    requester<GetGenreQuery, GetGenreQueryVariables>(
-      GetGenreQueryDocument,
-      variables,
-      options
-    ),
-  getAllGenres: (
-    variables: GetAllGenresQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetAllGenresQuery>> =>
-    requester<GetAllGenresQuery, GetAllGenresQueryVariables>(
-      GetAllGenresQueryDocument,
-      variables,
-      options
-    ),
-  createReleaseGenreVote: (
-    variables: CreateReleaseGenreVoteMutationVariables,
-    options?: O
-  ): Promise<Result<E, CreateReleaseGenreVoteMutation>> =>
-    requester<
-      CreateReleaseGenreVoteMutation,
-      CreateReleaseGenreVoteMutationVariables
-    >(CreateReleaseGenreVoteMutationDocument, variables, options),
-  getReleaseReview: (
-    variables: GetReleaseReviewQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetReleaseReviewQuery>> =>
-    requester<GetReleaseReviewQuery, GetReleaseReviewQueryVariables>(
-      GetReleaseReviewQueryDocument,
-      variables,
-      options
-    ),
-  createReleaseReview: (
-    variables: CreateReleaseReviewMutationVariables,
-    options?: O
-  ): Promise<Result<E, CreateReleaseReviewMutation>> =>
-    requester<
-      CreateReleaseReviewMutation,
-      CreateReleaseReviewMutationVariables
-    >(CreateReleaseReviewMutationDocument, variables, options),
-  updateReleaseReviewRating: (
-    variables: UpdateReleaseReviewRatingMutationVariables,
-    options?: O
-  ): Promise<Result<E, UpdateReleaseReviewRatingMutation>> =>
-    requester<
-      UpdateReleaseReviewRatingMutation,
-      UpdateReleaseReviewRatingMutationVariables
-    >(UpdateReleaseReviewRatingMutationDocument, variables, options),
-  getAllReleaseTypes: (
-    variables: GetAllReleaseTypesQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetAllReleaseTypesQuery>> =>
-    requester<GetAllReleaseTypesQuery, GetAllReleaseTypesQueryVariables>(
-      GetAllReleaseTypesQueryDocument,
-      variables,
-      options
-    ),
-  getFullRelease: (
-    variables: GetFullReleaseQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetFullReleaseQuery>> =>
-    requester<GetFullReleaseQuery, GetFullReleaseQueryVariables>(
-      GetFullReleaseQueryDocument,
-      variables,
-      options
-    ),
-  addRelease: (
-    variables: AddReleaseMutationVariables,
-    options?: O
-  ): Promise<Result<E, AddReleaseMutation>> =>
-    requester<AddReleaseMutation, AddReleaseMutationVariables>(
-      AddReleaseMutationDocument,
-      variables,
-      options
-    ),
-  getTrackReview: (
-    variables: GetTrackReviewQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetTrackReviewQuery>> =>
-    requester<GetTrackReviewQuery, GetTrackReviewQueryVariables>(
-      GetTrackReviewQueryDocument,
-      variables,
-      options
-    ),
-  createTrackReview: (
-    variables: CreateTrackReviewMutationVariables,
-    options?: O
-  ): Promise<Result<E, CreateTrackReviewMutation>> =>
-    requester<CreateTrackReviewMutation, CreateTrackReviewMutationVariables>(
-      CreateTrackReviewMutationDocument,
-      variables,
-      options
-    ),
-  updateTrackReviewRating: (
-    variables: UpdateTrackReviewRatingMutationVariables,
-    options?: O
-  ): Promise<Result<E, UpdateTrackReviewRatingMutation>> =>
-    requester<
-      UpdateTrackReviewRatingMutation,
-      UpdateTrackReviewRatingMutationVariables
-    >(UpdateTrackReviewRatingMutationDocument, variables, options),
-  getTrack: (
-    variables: GetTrackQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetTrackQuery>> =>
-    requester<GetTrackQuery, GetTrackQueryVariables>(
-      GetTrackQueryDocument,
-      variables,
-      options
-    ),
-  getPartialUser: (
-    variables: GetPartialUserQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetPartialUserQuery>> =>
-    requester<GetPartialUserQuery, GetPartialUserQueryVariables>(
-      GetPartialUserQueryDocument,
-      variables,
-      options
-    ),
-  getFullUser: (
-    variables: GetFullUserQueryVariables,
-    options?: O
-  ): Promise<Result<E, GetFullUserQuery>> =>
-    requester<GetFullUserQuery, GetFullUserQueryVariables>(
-      GetFullUserQueryDocument,
-      variables,
-      options
-    ),
-})

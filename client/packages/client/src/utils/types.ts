@@ -7,3 +7,5 @@ export type GenericObject<T = unknown> = { [key: string]: T }
 export type GenericFunction<A = unknown, R = unknown> = (...args: A[]) => R
 
 export const isDefined = <T>(t: T | undefined): t is T => t !== undefined
+export const isSome = <T>(t: T | null | undefined): t is T =>
+  t !== null && t !== undefined

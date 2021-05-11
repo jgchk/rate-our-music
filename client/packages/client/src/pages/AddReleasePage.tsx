@@ -1,19 +1,17 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect, useRef, useState } from 'preact/hooks'
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import {
-  useAddReleaseAction,
-  useGetAllReleaseTypesAction,
-  useGetArtistAction,
-  useSearchArtistsAction,
-} from '../hooks/useAction'
+  useAddReleaseMutation,
+  useGetAllReleaseTypesQuery,
+  useGetArtistQuery,
+  useSearchArtistsQuery,
+} from '../generated/graphql'
 import { useDebounce } from '../hooks/useDebounce'
 import { useOnClickOutside } from '../hooks/useOnClickOutside'
 import { build } from '../router/parser'
 import { releaseRoute } from '../router/routes'
 import { useRouterContext } from '../router/useRouterContext'
-import { useSelector } from '../state/store'
 import { clsx } from '../utils/clsx'
-import { isLoading, isSuccess } from '../utils/remote-data'
 
 const ID = {
   type: 'type',
@@ -21,22 +19,18 @@ const ID = {
 } as const
 
 export const AddReleasePage: FunctionComponent = () => {
-  const releaseTypes = useSelector((state) =>
-    Object.values(state.releaseTypes.releaseTypes)
-  )
-  const [releaseType, setReleaseType] = useState(releaseTypes[0]?.id)
+  const [{ data: releaseTypesData }] = useGetAllReleaseTypesQuery()
+  const releaseTypes = useMemo(() => releaseTypesData?.releaseType.getAll, [
+    releaseTypesData?.releaseType.getAll,
+  ])
+  const [releaseType, setReleaseType] = useState(releaseTypes?.[0]?.id)
 
-  const [getAllReleaseTypes] = useGetAllReleaseTypesAction()
-  const releaseTypesLastFetched = useSelector(
-    (state) => state.releaseTypes.lastFetchedAll
-  )
   useEffect(() => {
-    if (releaseTypesLastFetched === undefined) {
-      getAllReleaseTypes()
-    }
-  }, [getAllReleaseTypes, releaseTypesLastFetched])
-  useEffect(() => {
-    if (releaseType === undefined && releaseTypes.length > 0) {
+    if (
+      releaseType === undefined &&
+      releaseTypes !== undefined &&
+      releaseTypes.length > 0
+    ) {
       setReleaseType(releaseTypes[0]?.id)
     }
   }, [releaseType, releaseTypes])
@@ -44,22 +38,25 @@ export const AddReleasePage: FunctionComponent = () => {
   const [title, setTitle] = useState('')
   const [artistIds, setArtistIds] = useState<number[]>([])
 
-  const [addRelease, addReleaseAction] = useAddReleaseAction()
+  const [{ data: addReleaseData }, addRelease] = useAddReleaseMutation()
+
   const { push } = useRouterContext()
   useEffect(() => {
-    if (addReleaseAction && isSuccess(addReleaseAction.request)) {
-      const id = addReleaseAction.request.data.releases.add.id
+    if (addReleaseData) {
+      const id = addReleaseData.releases.add.id
       const link = build(releaseRoute)({ releaseId: id })
       push(link)
     }
-  }, [addReleaseAction, push])
+  }, [addReleaseData, push])
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault()
         if (releaseType !== undefined) {
-          addRelease({ title, releaseTypeId: releaseType, artistIds })
+          void addRelease({
+            release: { title, releaseTypeId: releaseType, artistIds },
+          })
         }
       }}
     >
@@ -72,7 +69,7 @@ export const AddReleasePage: FunctionComponent = () => {
             setReleaseType(Number.parseInt(e.currentTarget.value))
           }
         >
-          {releaseTypes.map((releaseType) => (
+          {releaseTypes?.map((releaseType) => (
             <option key={releaseType.id} value={releaseType.id}>
               {releaseType.name}
             </option>
@@ -128,19 +125,12 @@ const Artists: FunctionComponent<{
 }
 
 const Artist: FunctionComponent<{ id: number }> = ({ id }) => {
-  const artist = useSelector((state) => state.artists[id])
+  const [{ data, fetching, error }] = useGetArtistQuery({ variables: { id } })
+  const artist = useMemo(() => data?.artist.get, [data?.artist.get])
 
-  const [getArtist, getArtistAction] = useGetArtistAction()
-  useEffect(() => {
-    if (artist === undefined || artist.id !== id) {
-      getArtist(id)
-    }
-  }, [artist, getArtist, id])
-
-  if (getArtistAction && isLoading(getArtistAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!artist) return <div>No artist found with id: {id}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!artist) return <div>No artist found</div>
 
   return <div>{artist.name}</div>
 }
@@ -151,30 +141,20 @@ const ArtistInput: FunctionComponent<{
   onSelect: (id: number) => void
 }> = ({ value, onInput, onSelect }) => {
   const [isFocused, setFocused] = useState(false)
-  const [selectedId, setSelectedId] = useState<undefined | number>(
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    undefined
-  )
+  const [selectedId, setSelectedId] = useState<undefined | number>(undefined)
 
   const debouncedInput = useDebounce(value, 500)
-  const [suggestions, setSuggestions] = useState<number[]>([])
 
-  const [searchArtists, searchArtistsAction] = useSearchArtistsAction()
-  useEffect(() => {
-    searchArtists(debouncedInput)
-  }, [debouncedInput, searchArtists])
-  useEffect(() => {
-    if (searchArtistsAction && isSuccess(searchArtistsAction.request)) {
-      setSuggestions(
-        searchArtistsAction.request.data.artist.search.map(
-          (artist) => artist.id
-        )
-      )
-    }
-  }, [searchArtistsAction])
+  const [{ data }] = useSearchArtistsQuery({
+    variables: { query: debouncedInput },
+  })
+  const suggestions = useMemo(
+    () => data?.artist.search.map(({ id }) => id) ?? [],
+    [data?.artist.search]
+  )
+
   useEffect(() => {
     if (suggestions.length === 0) {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       setSelectedId(undefined)
     } else if (selectedId === undefined) {
       const firstId = suggestions[0]
@@ -230,19 +210,12 @@ const DropdownArtist: FunctionComponent<{
   onClick: () => void
   selected: boolean
 }> = ({ id, onClick, selected }) => {
-  const artist = useSelector((state) => state.artists[id])
+  const [{ data, fetching, error }] = useGetArtistQuery({ variables: { id } })
+  const artist = useMemo(() => data?.artist.get, [data?.artist.get])
 
-  const [getArtist, getArtistAction] = useGetArtistAction()
-  useEffect(() => {
-    if (artist === undefined || artist.id !== id) {
-      getArtist(id)
-    }
-  }, [artist, getArtist, id])
-
-  if (getArtistAction && isLoading(getArtistAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!artist) return <div>No artist found with id: {id}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!artist) return <div>No artist found</div>
 
   return (
     <button

@@ -13,12 +13,13 @@ type Account {
 type AccountMutation {
   register(username: String!, password: String!): Auth!
   login(username: String!, password: String!): Auth!
-  logout(force: Boolean!): Boolean!
-  refresh: Auth!
+  logout: Boolean!
+  refresh(refreshToken: String!): Auth!
 }
 
 type AccountQuery {
   get(id: Int!): Account!
+  whoami: Account!
 }
 
 type Artist {
@@ -38,7 +39,7 @@ type ArtistQuery {
 
 type Auth {
   token: String!
-  exp: Int!
+  refreshToken: String!
   account: Account!
 }
 

@@ -1,11 +1,9 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect } from 'preact/hooks'
+import { useMemo } from 'preact/hooks'
 import {
-  useGetReleaseReviewAction,
-  useGetTrackReviewAction,
-} from '../hooks/useAction'
-import { useSelector } from '../state/store'
-import { isLoading } from '../utils/remote-data'
+  useGetReleaseReviewQuery,
+  useGetTrackReviewQuery,
+} from '../generated/graphql'
 import { RatingStars } from './RatingStars'
 import { UserLink } from './UserLink'
 
@@ -14,46 +12,38 @@ export type Props = {
 }
 
 export const ReleaseReview: FunctionComponent<Props> = ({ id }) => {
-  const review = useSelector((state) => state.releaseReviews[id])
+  const [{ data, fetching, error }] = useGetReleaseReviewQuery({
+    variables: { id },
+  })
+  const review = useMemo(() => data?.releaseReview.get, [
+    data?.releaseReview.get,
+  ])
 
-  const [getReleaseReview, getReleaseReviewAction] = useGetReleaseReviewAction()
-  useEffect(() => {
-    if (review === undefined || review.id !== id) {
-      getReleaseReview(id)
-    }
-  }, [getReleaseReview, id, review])
-
-  if (getReleaseReviewAction && isLoading(getReleaseReviewAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!review) return <div>No review found with id: {id}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!review) return <div>No review found</div>
 
   return (
     <div className='flex align-center justify-between'>
-      <UserLink id={review.user} />
+      <UserLink id={review.account.id} />
       <RatingStars value={review.rating ?? 0} />
     </div>
   )
 }
 
 export const TrackReview: FunctionComponent<Props> = ({ id }) => {
-  const review = useSelector((state) => state.trackReviews[id])
+  const [{ data, fetching, error }] = useGetTrackReviewQuery({
+    variables: { id },
+  })
+  const review = useMemo(() => data?.trackReview.get, [data?.trackReview.get])
 
-  const [getTrackReview, getTrackReviewAction] = useGetTrackReviewAction()
-  useEffect(() => {
-    if (review === undefined || review.id !== id) {
-      getTrackReview(id)
-    }
-  }, [getTrackReview, id, review])
-
-  if (getTrackReviewAction && isLoading(getTrackReviewAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!review) return <div>No review found with id: {id}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!review) return <div>No review found</div>
 
   return (
     <div className='flex align-center justify-between'>
-      <UserLink id={review.user} />
+      <UserLink id={review.account.id} />
       <RatingStars value={review.rating ?? 0} />
     </div>
   )

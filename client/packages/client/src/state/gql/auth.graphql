@@ -1,6 +1,6 @@
 fragment authData on Auth {
   token
-  exp
+  refreshToken
   account {
     ...partialAccountData
   }
@@ -14,15 +14,15 @@ mutation Login($username: String!, $password: String!) {
   }
 }
 
-mutation Logout($force: Boolean!) {
+mutation Logout {
   account {
-    logout(force: $force)
+    logout
   }
 }
 
-mutation Refresh {
+mutation Refresh($refreshToken: String!) {
   account {
-    refresh {
+    refresh(refreshToken: $refreshToken) {
       ...authData
     }
   }

@@ -1,35 +1,22 @@
-use crate::auth::is_token_revoked;
-use crate::auth::revoke_token;
 use crate::environment::Environment;
 use crate::errors::Error;
 use crate::{auth, model::role::Role};
 use jsonwebtoken::TokenData;
 
+#[derive(Debug)]
 pub struct Session {
-    env: Environment,
-    raw_token: String,
     token: TokenData<auth::Claims>,
 }
 
 impl Session {
-    pub async fn new(env: Environment, raw_token: &str) -> Result<Option<Self>, Error> {
+    pub fn new(env: &Environment, raw_token: &str) -> Result<Self, Error> {
         let raw_token = raw_token.trim_start_matches("Bearer ").to_owned();
         let token = match env.jwt().decode(&raw_token) {
             Ok(token) => token,
-            Err(err) => match err {
-                Error::JWTError(_) => return Ok(None),
-                _ => return Err(err),
-            },
+            Err(err) => return Err(err),
         };
 
-        match is_token_revoked(&env, &raw_token).await? {
-            true => Ok(None),
-            false => Ok(Some(Self {
-                env,
-                raw_token,
-                token,
-            })),
-        }
+        Ok(Self { token })
     }
 
     pub fn account_id(&self) -> i32 {
@@ -38,14 +25,5 @@ impl Session {
 
     pub fn roles(&self) -> &Vec<Role> {
         &self.token.claims.roles
-    }
-
-    pub async fn invalidate(&self) -> Result<(), Error> {
-        revoke_token(
-            &self.env,
-            &self.raw_token,
-            (self.token.claims.exp - self.token.claims.iat) as usize,
-        )
-        .await
     }
 }

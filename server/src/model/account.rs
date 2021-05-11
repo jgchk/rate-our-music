@@ -28,6 +28,6 @@ impl Account {
 #[derive(SimpleObject)]
 pub struct Auth {
     pub token: String,
-    pub exp: i64,
+    pub refresh_token: String,
     pub account: Account,
 }

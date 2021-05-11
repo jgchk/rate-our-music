@@ -1,13 +1,8 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect, useMemo } from 'preact/hooks'
-import {
-  useGetFullReleaseAction,
-  useGetReleaseReviewAction,
-} from '../hooks/useAction'
+import { useMemo } from 'preact/hooks'
+import { useGetReleaseReviewQuery } from '../generated/graphql'
 import { build } from '../router/parser'
 import { releaseRoute } from '../router/routes'
-import { useSelector } from '../state/store'
-import { isLoading } from '../utils/remote-data'
 import { Artist } from './Artist'
 import { Link } from './Link'
 import { RatingStars } from './RatingStars'
@@ -17,52 +12,31 @@ export type Props = {
 }
 
 export const ReleaseReview: FunctionComponent<Props> = ({ id }) => {
-  const review = useSelector((state) => state.releaseReviews[id])
-  const release = useSelector((state) =>
-    review !== undefined ? state.releases[review.release] : undefined
-  )
-
-  const [getReleaseReview, getReleaseReviewAction] = useGetReleaseReviewAction()
-  useEffect(() => {
-    if (review === undefined || review.id !== id) {
-      getReleaseReview(id)
-    }
-  }, [getReleaseReview, id, review])
-
-  const [getRelease, getReleaseAction] = useGetFullReleaseAction()
-  useEffect(() => {
-    if (
-      review !== undefined &&
-      (release === undefined || release.id !== review.release)
-    ) {
-      getRelease(review.release)
-    }
-  }, [getRelease, release, review])
-
-  const releaseLink = useMemo(
+  const [{ data, fetching, error }] = useGetReleaseReviewQuery({
+    variables: { id },
+  })
+  const review = useMemo(() => data?.releaseReview.get, [
+    data?.releaseReview.get,
+  ])
+  const link = useMemo(
     () =>
       review !== undefined
-        ? build(releaseRoute)({ releaseId: review.release })
+        ? build(releaseRoute)({ releaseId: review.release.id })
         : undefined,
     [review]
   )
 
-  if (
-    (getReleaseReviewAction && isLoading(getReleaseReviewAction.request)) ||
-    (getReleaseAction && isLoading(getReleaseAction.request))
-  ) {
-    return <div>Loading...</div>
-  }
-  if (!review) return <div>No review found with id: {id}</div>
-  if (!release) return <div>No release found with id: {review.release}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!review) return <div>No review found</div>
 
   return (
     <div className='flex align-center'>
       {review.rating && <RatingStars value={review.rating} />}
-      {[...release.artists].map((id) => (
+      {review.release.artists.map(({ id }) => (
         <Artist key={id} id={id} />
       ))}
-      <Link href={releaseLink}>{release.title}</Link>
+      <Link href={link}>{review.release.title}</Link>
     </div>
   )
 }

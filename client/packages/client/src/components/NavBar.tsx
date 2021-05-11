@@ -1,27 +1,26 @@
 import { Fragment, FunctionComponent, h } from 'preact'
 import { useMemo } from 'preact/hooks'
+import { useWhoAmIQuery } from '../generated/graphql'
 import { build } from '../router/parser'
 import { addReleaseRoute, loginRoute, logoutRoute } from '../router/routes'
-import { Auth } from '../state/slices/auth'
-import { useSelector } from '../state/store'
 import { Link } from './Link'
 import { UserLink } from './UserLink'
 
-const LoggedIn: FunctionComponent<{ auth: Auth }> = ({ auth }) => {
+const LoggedIn: FunctionComponent<{ userId: number }> = ({ userId }) => {
   const logoutLink = useMemo(() => build(logoutRoute)({}), [])
   const addReleaseLink = useMemo(() => build(addReleaseRoute)({}), [])
   return (
     <>
       <Link href={addReleaseLink}>+</Link>
-      <UserLink id={auth.user} />
+      <UserLink id={userId} />
       <Link href={logoutLink}>logout</Link>
     </>
   )
 }
 
 export const NavBar: FunctionComponent = () => {
-  const auth = useSelector((state) => state.auth.auth)
-
+  const [{ data }] = useWhoAmIQuery()
+  const account = useMemo(() => data?.account.whoami, [data?.account.whoami])
   const loginLink = useMemo(() => build(loginRoute)({}), [])
 
   return (
@@ -29,8 +28,8 @@ export const NavBar: FunctionComponent = () => {
       <div className='w-full max-w-screen-2xl p-4 flex justify-between'>
         <div>rate our music</div>
         <div className='flex gap-1'>
-          {auth !== undefined ? (
-            <LoggedIn auth={auth} />
+          {account !== undefined ? (
+            <LoggedIn userId={account.id} />
           ) : (
             <Link href={loginLink}>login</Link>
           )}

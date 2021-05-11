@@ -1,7 +1,7 @@
 use async_graphql::SimpleObject;
 use serde::{Deserialize, Serialize};
 
-#[derive(SimpleObject, Serialize, Deserialize)]
+#[derive(Debug, SimpleObject, Serialize, Deserialize)]
 pub struct Role {
     pub id: i32,
     pub name: String,

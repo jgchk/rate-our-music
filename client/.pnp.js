@@ -1978,6 +1978,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:1.17.16',
                   ],
                   [
+                    '@graphql-codegen/typescript-urql',
+                    'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:2.0.6',
+                  ],
+                  [
                     '@graphql-tools/graphql-file-loader',
                     'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:6.2.7',
                   ],
@@ -2275,6 +2279,59 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['tslib', 'npm:2.2.0'],
                 ],
                 packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@graphql-codegen/typescript-urql',
+          [
+            [
+              'npm:2.0.6',
+              {
+                packageLocation:
+                  './.yarn/cache/@graphql-codegen-typescript-urql-npm-2.0.6-1271c43aa9-5e57fbc824.zip/node_modules/@graphql-codegen/typescript-urql/',
+                packageDependencies: [
+                  ['@graphql-codegen/typescript-urql', 'npm:2.0.6'],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:2.0.6',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@graphql-codegen-typescript-urql-virtual-5cdd4e1e47/0/cache/@graphql-codegen-typescript-urql-npm-2.0.6-1271c43aa9-5e57fbc824.zip/node_modules/@graphql-codegen/typescript-urql/',
+                packageDependencies: [
+                  [
+                    '@graphql-codegen/typescript-urql',
+                    'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:2.0.6',
+                  ],
+                  [
+                    '@graphql-codegen/plugin-helpers',
+                    'virtual:eaf343effb7ef7c1d270fa8b400d6b62e737baaa3293078f4b9dcfb4b6294f3a301b6b3a022ede19f47db53b29d97aa0feef130c2482482384a1b21debc87ee7#npm:1.18.5',
+                  ],
+                  [
+                    '@graphql-codegen/visitor-plugin-common',
+                    'virtual:f16d70968c546ff6b5cef0e8a0154148c0c5006802c7ce2479cc90d0c83786eba6a3a6366388654a77b66d0111de9624ef186134fe78b7f6bbff1ab053baa3ed#npm:1.20.0',
+                  ],
+                  ['@types/graphql', null],
+                  ['@types/graphql-tag', null],
+                  ['auto-bind', 'npm:4.0.0'],
+                  ['change-case-all', 'npm:1.0.14'],
+                  ['graphql', 'npm:15.5.0'],
+                  [
+                    'graphql-tag',
+                    'virtual:5cdd4e1e472cecd0158f2a4426dd1bf76d400399ddd42c92057fd3780a0d9cff69deb84c802b91f385302a69b7d5ac8894c13f7170cb248e5b4f431e60106b65#npm:2.12.4',
+                  ],
+                  ['tslib', 'npm:2.2.0'],
+                ],
+                packagePeers: [
+                  '@types/graphql-tag',
+                  '@types/graphql',
+                  'graphql',
+                ],
                 linkType: 'HARD',
               },
             ],
@@ -2866,6 +2923,39 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['graphql', 'npm:15.5.0'],
                   ['is-promise', 'npm:4.0.0'],
                   ['tslib', 'npm:2.0.3'],
+                ],
+                packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@graphql-typed-document-node/core',
+          [
+            [
+              'npm:3.1.0',
+              {
+                packageLocation:
+                  './.yarn/cache/@graphql-typed-document-node-core-npm-3.1.0-626997e126-f1c90f749b.zip/node_modules/@graphql-typed-document-node/core/',
+                packageDependencies: [
+                  ['@graphql-typed-document-node/core', 'npm:3.1.0'],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:344300e6d171ddf8eb7682c27e9b74355c7b8d4339e247190a709e6499b30df1894103f4ba4fdf06c18d19b5fa984274f666484fad7906cec13e2e467534bab3#npm:3.1.0',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@graphql-typed-document-node-core-virtual-98cf5b5ead/0/cache/@graphql-typed-document-node-core-npm-3.1.0-626997e126-f1c90f749b.zip/node_modules/@graphql-typed-document-node/core/',
+                packageDependencies: [
+                  [
+                    '@graphql-typed-document-node/core',
+                    'virtual:344300e6d171ddf8eb7682c27e9b74355c7b8d4339e247190a709e6499b30df1894103f4ba4fdf06c18d19b5fa984274f666484fad7906cec13e2e467534bab3#npm:3.1.0',
+                  ],
+                  ['@types/graphql', null],
+                  ['graphql', 'npm:15.5.0'],
                 ],
                 packagePeers: ['@types/graphql', 'graphql'],
                 linkType: 'HARD',
@@ -4009,6 +4099,200 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['@typescript-eslint/visitor-keys', 'npm:4.22.0'],
                   ['@typescript-eslint/types', 'npm:4.22.0'],
                   ['eslint-visitor-keys', 'npm:2.0.0'],
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@urql/core',
+          [
+            [
+              'npm:2.1.1',
+              {
+                packageLocation:
+                  './.yarn/cache/@urql-core-npm-2.1.1-2f46bae36a-cd01205476.zip/node_modules/@urql/core/',
+                packageDependencies: [['@urql/core', 'npm:2.1.1']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@urql-core-virtual-344300e6d1/0/cache/@urql-core-npm-2.1.1-2f46bae36a-cd01205476.zip/node_modules/@urql/core/',
+                packageDependencies: [
+                  [
+                    '@urql/core',
+                    'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+                  ],
+                  [
+                    '@graphql-typed-document-node/core',
+                    'virtual:344300e6d171ddf8eb7682c27e9b74355c7b8d4339e247190a709e6499b30df1894103f4ba4fdf06c18d19b5fa984274f666484fad7906cec13e2e467534bab3#npm:3.1.0',
+                  ],
+                  ['@types/graphql', null],
+                  ['graphql', 'npm:15.5.0'],
+                  ['wonka', 'npm:4.0.15'],
+                ],
+                packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@urql/devtools',
+          [
+            [
+              'npm:2.0.3',
+              {
+                packageLocation:
+                  './.yarn/cache/@urql-devtools-npm-2.0.3-e29fae5136-f422d6350b.zip/node_modules/@urql/devtools/',
+                packageDependencies: [['@urql/devtools', 'npm:2.0.3']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.3',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@urql-devtools-virtual-5672596c33/0/cache/@urql-devtools-npm-2.0.3-e29fae5136-f422d6350b.zip/node_modules/@urql/devtools/',
+                packageDependencies: [
+                  [
+                    '@urql/devtools',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.3',
+                  ],
+                  ['@types/graphql', null],
+                  ['@types/urql__core', null],
+                  [
+                    '@urql/core',
+                    'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+                  ],
+                  ['graphql', 'npm:15.5.0'],
+                  ['wonka', 'npm:4.0.15'],
+                ],
+                packagePeers: [
+                  '@types/graphql',
+                  '@types/urql__core',
+                  'graphql',
+                ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@urql/exchange-auth',
+          [
+            [
+              'npm:0.1.3',
+              {
+                packageLocation:
+                  './.yarn/cache/@urql-exchange-auth-npm-0.1.3-e613987c25-93bb9ca616.zip/node_modules/@urql/exchange-auth/',
+                packageDependencies: [['@urql/exchange-auth', 'npm:0.1.3']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:0.1.3',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@urql-exchange-auth-virtual-151359ec79/0/cache/@urql-exchange-auth-npm-0.1.3-e613987c25-93bb9ca616.zip/node_modules/@urql/exchange-auth/',
+                packageDependencies: [
+                  [
+                    '@urql/exchange-auth',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:0.1.3',
+                  ],
+                  ['@types/graphql', null],
+                  [
+                    '@urql/core',
+                    'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+                  ],
+                  ['graphql', 'npm:15.5.0'],
+                  ['wonka', 'npm:4.0.15'],
+                ],
+                packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@urql/exchange-graphcache',
+          [
+            [
+              'npm:4.1.0',
+              {
+                packageLocation:
+                  './.yarn/cache/@urql-exchange-graphcache-npm-4.1.0-11fd535605-9efb20ce00.zip/node_modules/@urql/exchange-graphcache/',
+                packageDependencies: [
+                  ['@urql/exchange-graphcache', 'npm:4.1.0'],
+                ],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:4.1.0',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@urql-exchange-graphcache-virtual-1d3c077cfe/0/cache/@urql-exchange-graphcache-npm-4.1.0-11fd535605-9efb20ce00.zip/node_modules/@urql/exchange-graphcache/',
+                packageDependencies: [
+                  [
+                    '@urql/exchange-graphcache',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:4.1.0',
+                  ],
+                  ['@types/graphql', null],
+                  [
+                    '@urql/core',
+                    'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+                  ],
+                  ['graphql', 'npm:15.5.0'],
+                  ['wonka', 'npm:4.0.15'],
+                ],
+                packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          '@urql/preact',
+          [
+            [
+              'npm:2.0.2',
+              {
+                packageLocation:
+                  './.yarn/cache/@urql-preact-npm-2.0.2-658c736b4e-6fe6134650.zip/node_modules/@urql/preact/',
+                packageDependencies: [['@urql/preact', 'npm:2.0.2']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
+              'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.2',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/@urql-preact-virtual-2ed5f36fd1/0/cache/@urql-preact-npm-2.0.2-658c736b4e-6fe6134650.zip/node_modules/@urql/preact/',
+                packageDependencies: [
+                  [
+                    '@urql/preact',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.2',
+                  ],
+                  ['@types/graphql', null],
+                  ['@types/preact', null],
+                  [
+                    '@urql/core',
+                    'virtual:5672596c3348b5164a7005a88280adfdcc03e0e6fc7f2b00d31d8968921a12b530a0772609aabd671ec3eca8cf55b284f6c64be88f65439e6444908f31caa3de#npm:2.1.1',
+                  ],
+                  ['graphql', 'npm:15.5.0'],
+                  ['preact', 'npm:10.5.13'],
+                  ['wonka', 'npm:4.0.15'],
+                ],
+                packagePeers: [
+                  '@types/graphql',
+                  '@types/preact',
+                  'graphql',
+                  'preact',
                 ],
                 linkType: 'HARD',
               },
@@ -5868,6 +6152,27 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     '@builder/plugin-typescript',
                     'workspace:packages/builder/packages/plugin-typescript',
+                  ],
+                  [
+                    '@urql/devtools',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.3',
+                  ],
+                  [
+                    '@urql/exchange-auth',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:0.1.3',
+                  ],
+                  [
+                    '@urql/exchange-graphcache',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:4.1.0',
+                  ],
+                  [
+                    '@urql/preact',
+                    'virtual:658502eb4296e93abedc18b6aa9b26978f434f08d98e21ebb0e725354b8bb54b62db9c4a1893e460c694ff7500ff5cbafa4457b0dfd26b5838868666c861e990#npm:2.0.2',
+                  ],
+                  ['graphql', 'npm:15.5.0'],
+                  [
+                    'graphql-tag',
+                    'virtual:5cdd4e1e472cecd0158f2a4426dd1bf76d400399ddd42c92057fd3780a0d9cff69deb84c802b91f385302a69b7d5ac8894c13f7170cb248e5b4f431e60106b65#npm:2.12.4',
                   ],
                   ['postcss', 'npm:8.2.12'],
                   ['preact', 'npm:10.5.13'],
@@ -9249,6 +9554,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
               },
             ],
             [
+              'npm:2.12.4',
+              {
+                packageLocation:
+                  './.yarn/cache/graphql-tag-npm-2.12.4-0af5217688-01623ede35.zip/node_modules/graphql-tag/',
+                packageDependencies: [['graphql-tag', 'npm:2.12.4']],
+                linkType: 'SOFT',
+              },
+            ],
+            [
               'virtual:190afd53a0d6c0e0c119bc6b7612f44755093ddd79bec71b9d604179dddae5e5c307e1e6a86c11637031aefc28133c33ba890d93fddfac160c33d3b8f8a9e53c#npm:2.12.3',
               {
                 packageLocation:
@@ -9257,6 +9571,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   [
                     'graphql-tag',
                     'virtual:190afd53a0d6c0e0c119bc6b7612f44755093ddd79bec71b9d604179dddae5e5c307e1e6a86c11637031aefc28133c33ba890d93fddfac160c33d3b8f8a9e53c#npm:2.12.3',
+                  ],
+                  ['@types/graphql', null],
+                  ['graphql', 'npm:15.5.0'],
+                  ['tslib', 'npm:2.2.0'],
+                ],
+                packagePeers: ['@types/graphql', 'graphql'],
+                linkType: 'HARD',
+              },
+            ],
+            [
+              'virtual:5cdd4e1e472cecd0158f2a4426dd1bf76d400399ddd42c92057fd3780a0d9cff69deb84c802b91f385302a69b7d5ac8894c13f7170cb248e5b4f431e60106b65#npm:2.12.4',
+              {
+                packageLocation:
+                  './.yarn/$$virtual/graphql-tag-virtual-3bc589c536/0/cache/graphql-tag-npm-2.12.4-0af5217688-01623ede35.zip/node_modules/graphql-tag/',
+                packageDependencies: [
+                  [
+                    'graphql-tag',
+                    'virtual:5cdd4e1e472cecd0158f2a4426dd1bf76d400399ddd42c92057fd3780a0d9cff69deb84c802b91f385302a69b7d5ac8894c13f7170cb248e5b4f431e60106b65#npm:2.12.4',
                   ],
                   ['@types/graphql', null],
                   ['graphql', 'npm:15.5.0'],
@@ -19204,6 +19536,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ['isstream', 'npm:0.1.2'],
                   ['stack-trace', 'npm:0.0.10'],
                 ],
+                linkType: 'HARD',
+              },
+            ],
+          ],
+        ],
+        [
+          'wonka',
+          [
+            [
+              'npm:4.0.15',
+              {
+                packageLocation:
+                  './.yarn/cache/wonka-npm-4.0.15-716683372a-df4fd51c15.zip/node_modules/wonka/',
+                packageDependencies: [['wonka', 'npm:4.0.15']],
                 linkType: 'HARD',
               },
             ],

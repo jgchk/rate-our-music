@@ -1,10 +1,9 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect, useMemo } from 'preact/hooks'
-import { useGetTrackAction } from '../hooks/useAction'
+import { useMemo } from 'preact/hooks'
+import { useGetPartialTrackQuery } from '../generated/graphql'
 import { build } from '../router/parser'
 import { trackRoute } from '../router/routes'
-import { useSelector } from '../state/store'
-import { isLoading } from '../utils/remote-data'
+import { isSome } from '../utils/types'
 import { Link } from './Link'
 
 const padTime = (n: number) => n.toString().padStart(2, '0')
@@ -28,30 +27,24 @@ export type Props = {
 }
 
 export const Track: FunctionComponent<Props> = ({ id, index }) => {
-  const track = useSelector((state) => state.tracks[id])
+  const [{ data, fetching, error }] = useGetPartialTrackQuery({
+    variables: { id },
+  })
+  const track = useMemo(() => data?.track.get, [data?.track.get])
+  const link = useMemo(() => build(trackRoute)({ trackId: id }), [id])
 
-  const [getTrack, getTrackAction] = useGetTrackAction()
-  useEffect(() => {
-    if (track === undefined || track.id !== id) {
-      getTrack(id)
-    }
-  }, [getTrack, id, track])
-
-  const trackLink = useMemo(() => build(trackRoute)({ trackId: id }), [id])
-
-  if (getTrackAction && isLoading(getTrackAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!track) return <div>No track found with id: {id}</div>
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!track) return <div>No track found</div>
 
   return (
-    <Link className='flex p-3' href={trackLink}>
+    <Link className='flex p-3' href={link}>
       <div className='flex-1'>{index + 1}</div>
       <div className={track.durationMs === undefined ? 'flex-16' : 'flex-15'}>
         {track.title}
       </div>
       <div className='flex-1 text-right'>
-        {track.durationMs !== undefined && formatTime(track.durationMs)}
+        {isSome(track.durationMs) && formatTime(track.durationMs)}
       </div>
     </Link>
   )

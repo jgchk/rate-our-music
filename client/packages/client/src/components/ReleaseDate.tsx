@@ -1,6 +1,6 @@
 import { FunctionComponent, h } from 'preact'
 import { useMemo } from 'preact/hooks'
-import { PartialDate } from '../state/slices/releases'
+import { ReleaseDate as ReleaseDateModel } from '../generated/graphql'
 import { Link } from './Link'
 
 const formatMonth = (i: number) => {
@@ -32,7 +32,7 @@ const formatMonth = (i: number) => {
   }
 }
 
-export type Props = { releaseDate: PartialDate }
+export type Props = { releaseDate: ReleaseDateModel }
 
 export const ReleaseDate: FunctionComponent<Props> = ({ releaseDate }) => {
   const chartLink = useMemo(() => {

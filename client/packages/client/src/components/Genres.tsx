@@ -1,11 +1,12 @@
 import { Fragment, FunctionComponent, h } from 'preact'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import {
-  useCreateReleaseGenreVoteAction,
-  useGetAllGenresAction,
-} from '../hooks/useAction'
-import { ReleaseGenre as ReleaseGenreModel } from '../state/slices/releases'
-import { useSelector } from '../state/store'
+  ReleaseGenreDataFragment,
+  TrackGenreDataFragment,
+  useCreateReleaseGenreVoteMutation,
+  useGetAllGenresQuery,
+  useWhoAmIQuery,
+} from '../generated/graphql'
 import { ReleaseGenre } from './ReleaseGenre'
 import { TrackGenre } from './TrackGenre'
 
@@ -14,28 +15,18 @@ type GenreInputProps = {
 }
 
 const GenreInput: FunctionComponent<GenreInputProps> = ({ onSelect }) => {
-  const [getAllGenres] = useGetAllGenresAction()
-  const genres = useSelector((state) => Object.values(state.genres.genres))
-
-  const genresLastFetched = useSelector((state) => state.genres.lastFetchedAll)
-  useEffect(() => {
-    if (genresLastFetched === undefined) {
-      getAllGenres()
-    }
-  }, [genresLastFetched, getAllGenres])
+  const [{ data }] = useGetAllGenresQuery()
+  const genres = useMemo(() => data?.genre.getAll, [data?.genre.getAll])
 
   const [input, setInput] = useState('')
-  const [selectedId, setSelectedId] = useState<number | undefined>(
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    undefined
-  )
+  const [selectedId, setSelectedId] = useState<number | undefined>(undefined)
 
   const suggestions = useMemo(
-    () => genres.filter((genre) => genre.name.toLowerCase().includes(input)),
+    () => genres?.filter((genre) => genre.name.toLowerCase().includes(input)),
     [genres, input]
   )
   useEffect(() => {
-    const topSuggestion = suggestions[0]
+    const topSuggestion = suggestions?.[0]
     if (topSuggestion !== undefined) {
       setSelectedId(topSuggestion.id)
     }
@@ -54,7 +45,7 @@ const GenreInput: FunctionComponent<GenreInputProps> = ({ onSelect }) => {
         }}
       />
       <ol className='comma-list'>
-        {suggestions.map((suggestion) => (
+        {suggestions?.map((suggestion) => (
           <li key={suggestion}>{suggestion.name}</li>
         ))}
       </ol>
@@ -63,7 +54,7 @@ const GenreInput: FunctionComponent<GenreInputProps> = ({ onSelect }) => {
 }
 
 export type ReleaseGenresProps = {
-  releaseGenres: Set<ReleaseGenreModel>
+  releaseGenres: ReleaseGenreDataFragment[]
   releaseId: number
 }
 
@@ -73,21 +64,21 @@ export const ReleaseGenres: FunctionComponent<ReleaseGenresProps> = ({
 }) => {
   const [isVoting, setVoting] = useState(false)
 
-  const [createReleaseGenreVote] = useCreateReleaseGenreVoteAction()
+  const [, createReleaseGenreVote] = useCreateReleaseGenreVoteMutation()
 
-  const token = useSelector((state) => state.auth.auth?.token)
+  const [{ data: userData }] = useWhoAmIQuery()
 
   return (
     <div>
       <div>Genres</div>
       <div className='flex'>
-        {releaseGenres.size === 0 ? (
+        {releaseGenres.length === 0 ? (
           <div className='flex-1'>None yet</div>
         ) : (
           <ol className='comma-list flex-1'>
-            {[...releaseGenres].map((releaseGenre) => (
-              <li key={releaseGenre.genreId}>
-                <ReleaseGenre releaseGenre={releaseGenre} />
+            {releaseGenres.map((releaseGenre) => (
+              <li key={releaseGenre.genre.id}>
+                <ReleaseGenre id={releaseGenre.genre.id} />
               </li>
             ))}
           </ol>
@@ -96,10 +87,10 @@ export const ReleaseGenres: FunctionComponent<ReleaseGenresProps> = ({
       </div>
       {isVoting && (
         <>
-          {token && (
+          {userData && (
             <GenreInput
               onSelect={(genreId) =>
-                createReleaseGenreVote(token, releaseId, genreId, 1)
+                createReleaseGenreVote({ releaseId, genreId, value: 1 })
               }
             />
           )}
@@ -110,7 +101,7 @@ export const ReleaseGenres: FunctionComponent<ReleaseGenresProps> = ({
 }
 
 export type TrackGenresProps = {
-  trackGenres: Set<ReleaseGenreModel>
+  trackGenres: TrackGenreDataFragment[]
 }
 
 export const TrackGenres: FunctionComponent<TrackGenresProps> = ({
@@ -119,9 +110,9 @@ export const TrackGenres: FunctionComponent<TrackGenresProps> = ({
   return (
     <div>
       <ol className='comma-list'>
-        {[...trackGenres].map((trackGenre) => (
-          <li key={trackGenre.genreId}>
-            <TrackGenre trackGenre={trackGenre} />
+        {trackGenres.map((trackGenre) => (
+          <li key={trackGenre.genre.id}>
+            <TrackGenre id={trackGenre.genre.id} />
           </li>
         ))}
       </ol>

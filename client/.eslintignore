@@ -2,3 +2,4 @@
 tailwind.config.js
 packages/*/build.js
 output/
+packages/client/src/generated/graphql.ts

@@ -1,0 +1,60 @@
+fragment trackData on Track {
+  id
+  title
+  durationMs
+  release {
+    id
+  }
+  artists {
+    ...artistData
+  }
+  genres {
+    ...trackGenreData
+  }
+  siteRating
+  reviews {
+    ...trackReviewData
+  }
+}
+
+query GetTrackPage($id: Int!) {
+  track {
+    get(id: $id) {
+      id
+      title
+      durationMs
+      release {
+        id
+        coverArt
+        tracks {
+          id
+        }
+        releaseDate {
+          year
+          month
+          day
+        }
+      }
+      artists {
+        ...artistData
+      }
+      genres {
+        ...trackGenreData
+      }
+      siteRating
+      reviews {
+        ...trackReviewData
+      }
+    }
+  }
+}
+
+query GetPartialTrack($id: Int!) {
+  track {
+    get(id: $id) {
+      trackNum
+      durationMs
+      title
+    }
+  }
+}

@@ -22,9 +22,8 @@ use warp::Filter;
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     let database_url = dotenv!("DATABASE_URL");
-    let redis_url = dotenv!("REDIS_URL");
     let jwt_secret = dotenv!("JWT_SECRET");
-    let env = Environment::new(database_url, redis_url, jwt_secret).await?;
+    let env = Environment::new(database_url, jwt_secret).await?;
     let env = warp::any().map(move || env.clone());
 
     let static_files = warp::fs::dir("../client/output");
@@ -36,20 +35,10 @@ async fn main() -> Result<(), Error> {
             .or(warp::any().map(|| None))
             .unify();
 
-        let refresh_token = warp::cookie("refresh_token")
-            .map(Some)
-            .or(warp::any().map(|| None))
-            .unify();
-
         let context = warp::any()
             .and(env.clone())
             .and(token)
-            .and(refresh_token)
-            .and_then(|env, token, refresh_token| async {
-                graphql::Context::new(env, token, refresh_token)
-                    .await
-                    .map_err(warp::Rejection::from)
-            })
+            .map(|env, token| graphql::Context::new(env, token))
             .boxed();
 
         let schema = graphql::schema();

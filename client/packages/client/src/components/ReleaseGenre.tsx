@@ -1,37 +1,24 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect, useMemo } from 'preact/hooks'
-import { useGetGenreAction } from '../hooks/useAction'
+import { useMemo } from 'preact/hooks'
+import { useGetGenreQuery } from '../generated/graphql'
 import { build } from '../router/parser'
 import { genreRoute } from '../router/routes'
-import { ReleaseGenre as ReleaseGenreModel } from '../state/slices/releases'
-import { useSelector } from '../state/store'
-import { isLoading } from '../utils/remote-data'
 import { Link } from './Link'
 
 export type Props = {
-  releaseGenre: ReleaseGenreModel
+  id: number
 }
 
-export const ReleaseGenre: FunctionComponent<Props> = ({
-  releaseGenre: { genreId },
-}) => {
-  const genre = useSelector((state) => state.genres.genres[genreId])
+export const ReleaseGenre: FunctionComponent<Props> = ({ id }) => {
+  const [{ data, fetching, error }] = useGetGenreQuery({
+    variables: { id },
+  })
+  const genre = useMemo(() => data?.genre.get, [data?.genre.get])
+  const link = useMemo(() => build(genreRoute)({ genreId: id }), [id])
 
-  const [getGenre, getGenreAction] = useGetGenreAction()
-  useEffect(() => {
-    if (genre === undefined || genre.id !== genreId) {
-      getGenre(genreId)
-    }
-  }, [genre, genreId, getGenre])
+  if (fetching) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!genre) return <div>No genre found</div>
 
-  const genreLink = useMemo(() => build(genreRoute)({ genreId }), [genreId])
-
-  if (getGenreAction && isLoading(getGenreAction.request)) {
-    return <div>Loading...</div>
-  }
-  if (!genre) {
-    return <div>No genre found with id: {genreId}</div>
-  }
-
-  return <Link href={genreLink}>{genre.name}</Link>
+  return <Link href={link}>{genre.name}</Link>
 }

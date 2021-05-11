@@ -1,39 +1,32 @@
 import { FunctionComponent, h } from 'preact'
-import { useEffect, useMemo, useState } from 'preact/hooks'
-import { useLoginAction } from '../hooks/useAuthAction'
+import { useEffect, useState } from 'preact/hooks'
+import { useLoginMutation } from '../generated/graphql'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useRouterContext } from '../router/useRouterContext'
-import { useSelector } from '../state/store'
-import { isFailure, isLoading } from '../utils/remote-data'
 
 export const LoginPage: FunctionComponent = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [login, loginAction] = useLoginAction()
+  const [{ data, fetching, error }, login] = useLoginMutation()
 
   const onSubmit = () => {
-    console.log({ username, password })
-    login(username, password)
+    void login({ username, password })
   }
 
-  const isLoggedIn = useSelector((state) => state.auth.auth !== undefined)
   const { push } = useRouterContext()
+  const [, setToken] = useLocalStorage<string | undefined>('token', undefined)
+  const [, setRefreshToken] = useLocalStorage<string | undefined>(
+    'refreshToken',
+    undefined
+  )
   useEffect(() => {
-    if (isLoggedIn) push('/')
-  }, [isLoggedIn, push])
-
-  const loginError = useMemo(() => {
-    if (!loginAction) return
-    if (!isFailure(loginAction.request)) return
-    const error = loginAction.request.error
-    if (error.name === 'HttpError')
-      return 'Login request failed. Try again in a few minutes.'
-    if (error.name === 'GraphqlError') {
-      if (error.errors.some((error) => error.message === 'invalid credentials'))
-        return 'Invalid credentials'
-      return 'Login request failed.'
+    if (data) {
+      setToken(data.account.login.token)
+      setRefreshToken(data.account.login.refreshToken)
+      push('/')
     }
-  }, [loginAction])
+  }, [data, push, setRefreshToken, setToken])
 
   return (
     <div>
@@ -63,8 +56,8 @@ export const LoginPage: FunctionComponent = () => {
         </label>
         <button type='submit'>Login</button>
       </form>
-      {loginAction && isLoading(loginAction.request) && 'Loading...'}
-      {loginError}
+      {fetching && 'Loading...'}
+      {error && <div>Error: {error.message}</div>}
     </div>
   )
 }

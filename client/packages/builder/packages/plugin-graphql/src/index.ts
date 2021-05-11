@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs'
 import { codegen } from '@graphql-codegen/core'
-import * as typescriptPlugin from '@graphql-codegen/typescript'
-import * as typescriptOperationsPlugin from '@graphql-codegen/typescript-operations'
+import { plugin as typescriptPlugin } from '@graphql-codegen/typescript'
+import { plugin as typescriptOperationsPlugin } from '@graphql-codegen/typescript-operations'
+import { plugin as urqlPlugin } from '@graphql-codegen/typescript-urql'
 import { GraphQLSchema, printSchema } from 'graphql'
 import * as prettier from 'prettier'
-import * as customPlugin from './custom-plugin'
 import {
   errorFormatter,
   getDocuments,
@@ -35,11 +35,9 @@ export const graphqlPlugin = (options: GraphqlPluginOptions): Plugin => ({
       const checkRemoteSchemaChanged = async () => {
         const localSchema = await getLocalSchema(localSchemaPath)
           .then(printSchema)
-          // eslint-disable-next-line unicorn/no-useless-undefined
           .catch(() => undefined)
         const remoteSchema = await getRemoteSchema(remoteSchemaUrl)
           .then(printSchema)
-          // eslint-disable-next-line unicorn/no-useless-undefined
           .catch(() => undefined)
 
         if (remoteSchema && (!localSchema || localSchema !== remoteSchema)) {
@@ -109,21 +107,24 @@ export const graphqlPlugin = (options: GraphqlPluginOptions): Plugin => ({
         plugins: [
           { typescript: {} },
           { typescriptOperations: {} },
-          { custom: {} },
+          { urql: { urqlImportFrom: '@urql/preact' } },
         ],
         pluginMap: {
-          typescript: typescriptPlugin,
-          typescriptOperations: typescriptOperationsPlugin,
-          custom: customPlugin,
+          typescript: { plugin: typescriptPlugin },
+          typescriptOperations: { plugin: typescriptOperationsPlugin },
+          urql: { plugin: urqlPlugin },
         },
       })
         .then((output) => ({ output }))
-        .catch((error) => ({
-          result: {
-            message: 'Failed to generate code',
-            errors: [formatError(error)],
-          },
-        }))
+        .catch((error) => {
+          console.log(error)
+          return {
+            result: {
+              message: 'Failed to generate code',
+              errors: [formatError(error)],
+            },
+          }
+        })
 
       if (output === undefined) return codegenResult
 

@@ -3,8 +3,6 @@ pub enum Error {
     #[error(transparent)]
     DatabaseError(#[from] sqlx::Error),
     #[error(transparent)]
-    RedisError(#[from] redis::RedisError),
-    #[error(transparent)]
     JWTError(#[from] jsonwebtoken::errors::Error),
     #[error(transparent)]
     TryFromIntError(#[from] std::num::TryFromIntError),
